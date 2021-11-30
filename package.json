@@ -1,9 +1,10 @@
 {
-  "name": "vitesse-webext",
-  "displayName": "Vitesse WebExt",
-  "version": "0.0.1",
-  "description": "[description]",
+  "name": "ones-helper",
+  "displayName": "ONES Helper",
+  "version": "1.0.0",
+  "description": "ONES 内部效率插件",
   "private": true,
+  "author": "ONES",
   "scripts": {
     "dev": "npm run clear && cross-env NODE_ENV=development run-p dev:*",
     "dev:prepare": "esno scripts/prepare.ts",
@@ -53,5 +54,10 @@
     "web-ext": "^6.3.0",
     "webext-bridge": "^4.1.1",
     "webextension-polyfill": "^0.8.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue-jsx": "^1.2.0",
+    "naive-ui": "^2.19.3",
+    "sass": "^1.42.1"
   }
 }

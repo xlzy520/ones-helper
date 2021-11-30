@@ -1,6 +1,7 @@
 import { dirname, relative } from 'path'
 import { defineConfig, UserConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+import VueJSX from '@vitejs/plugin-vue-jsx'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
@@ -21,6 +22,7 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     Vue(),
+    VueJSX(),
 
     AutoImport({
       imports: [
@@ -63,11 +65,11 @@ export const sharedConfig: UserConfig = {
   optimizeDeps: {
     include: [
       'vue',
-      '@vueuse/core',
+      // '@vueuse/core',
       'webextension-polyfill',
     ],
     exclude: [
-      'vue-demi',
+      // 'vue-demi',
     ],
   },
 }
@@ -89,6 +91,7 @@ export default defineConfig(({ command }) => ({
     terserOptions: {
       mangle: false,
     },
+    brotliSize: false,
     rollupOptions: {
       input: {
         background: r('src/background/index.html'),

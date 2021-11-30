@@ -1,5 +1,8 @@
 import { sendMessage, onMessage } from 'webext-bridge'
 import { Tabs } from 'webextension-polyfill'
+import { customApi } from './custom_api'
+
+customApi()
 
 // only on dev mode
 if (import.meta.hot) {

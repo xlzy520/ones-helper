@@ -14,7 +14,7 @@ export async function getManifest() {
     version: pkg.version,
     description: pkg.description,
     browser_action: {
-      default_icon: './assets/icon-512.png',
+      default_icon: './assets/favicon2020_x16.png',
       default_popup: './dist/popup/index.html',
     },
     options_ui: {
@@ -24,16 +24,18 @@ export async function getManifest() {
     },
     background: {
       page: './dist/background/index.html',
-      persistent: false,
+      persistent: true,
     },
     icons: {
-      16: './assets/icon-512.png',
-      48: './assets/icon-512.png',
-      128: './assets/icon-512.png',
+      16: './assets/favicon2020_x16.png',
+      48: './assets/favicon2020_x1024.png',
+      128: './assets/favicon2020_x1024.png',
     },
     permissions: [
       'tabs',
       'storage',
+      'webRequest',
+      'webRequestBlocking',
       'activeTab',
       'http://*/',
       'https://*/',
@@ -41,9 +43,10 @@ export async function getManifest() {
     content_scripts: [{
       matches: ['http://*/*', 'https://*/*'],
       js: ['./dist/contentScripts/index.global.js'],
+      css: ['./dist/contentScripts/style.css'],
     }],
     web_accessible_resources: [
-      'dist/contentScripts/style.css',
+      './dist/contentScripts/style.css',
     ],
   }
 
