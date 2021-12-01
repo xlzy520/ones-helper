@@ -11,8 +11,8 @@
         <n-tab-pane name="工作项" tab="工作项">
           <task-action />
         </n-tab-pane>
-        <n-tab-pane name="账号" tab="账号">
-          <task-action />
+        <n-tab-pane name="其他" tab="其他">
+          <other-action />
         </n-tab-pane>
       </n-tabs>
     </main>
@@ -24,6 +24,7 @@ import { NMessageProvider, NTabs, NTabPane } from 'naive-ui'
 import CustomApi from '~/popup/features/custom_api/index.vue'
 import OnesConfig from '~/popup/features/onesConfig/index.vue'
 import TaskAction from '~/popup/features/taskAction/index.vue'
+import OtherAction from '~/popup/features/otherAction/index.vue'
 
 // todo
 // 一键切换账号

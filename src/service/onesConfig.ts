@@ -1,13 +1,10 @@
 
 export function getOnesConfigApi(getAll = false): Promise<any> {
-  // console.log()
   return browser.storage.local.get('onesConfigData').then((res) => {
-    if (getAll) {
-      console.log(res)
+    if (getAll)
       return res.onesConfigData
-    }
+
     const path = location.origin + location.pathname
-    console.log(res, path, '===========打印的 ------ ')
     return res.onesConfigData[path]
   })
 }
@@ -16,9 +13,18 @@ export function saveOnesConfigApi(onesConfigData: any, clear = false): Promise<v
   if (clear)
     return browser.storage.local.set({ })
   return getOnesConfigApi(true).then((preOnesConfigData) => {
-    console.log(preOnesConfigData)
     const newOnesConfigData = { ...preOnesConfigData, ...onesConfigData }
-    console.log(newOnesConfigData)
     return browser.storage.local.set({ onesConfigData: newOnesConfigData })
   })
+}
+
+// 一些开关的配置
+export function getOtherConfig(): Promise<any> {
+  return browser.storage.local.get('otherConfigData').then((res) => {
+    return res.otherConfigData
+  })
+}
+
+export function saveOtherConfig(otherConfigData: any): Promise<void> {
+  return browser.storage.local.set({ otherConfigData })
 }

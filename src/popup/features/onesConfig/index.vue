@@ -27,7 +27,7 @@
     </div>
     <div>
     </div>
-    <div class="h-[300px] overflow-auto">
+    <div class="h-[300px] overflow-auto pb-4">
       <div v-for="item in filterConfigFields" :key="item.key" class="layout-items-center py-1">
         <n-tag type="success" class="mr-4">
           {{ item.key }}

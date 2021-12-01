@@ -3,15 +3,9 @@
     <div class="">
       <div class="layout-items-center py-2 switch-row">
         <div class="mr-4">
-          工单关联实施版本
+          Github PR分支选择优化
         </div>
-        <n-switch v-model:value="taskConfig.data.enableRelatedImplementVersion" />
-      </div>
-      <div class="layout-items-center py-2 switch-row">
-        <div class="mr-4">
-          去链接复制
-        </div>
-        <n-switch v-model:value="taskConfig.data.copy" />
+        <n-switch v-model:value="taskConfig.data.branchSelectEnhance" />
       </div>
     </div>
     <!--    <div class="layout-around">-->
@@ -29,13 +23,11 @@
 import {
   useMessage, NButton, NSwitch,
 } from 'naive-ui'
-import { getCurrentTab } from '~/common/tabs'
 import { onesConfigService } from '~/service'
 
 const taskConfig = reactive({
   data: {
-    enableRelatedImplementVersion: false,
-    copy: true,
+    branchSelectEnhance: true,
   },
 })
 
@@ -49,19 +41,6 @@ const getOtherConfig = () => {
     taskConfig.data = res
   })
 }
-const copyAll = (shouldWithLink = true) => {
-  getCurrentTab().then((tab) => {
-    const { id } = tab
-    if (id) {
-      browser.tabs.sendMessage(id, {
-        type: 'copyAllTasks',
-        data: {
-          shouldWithLink,
-        },
-      })
-    }
-  })
-}
 
 onMounted(() => {
   getOtherConfig()
@@ -69,7 +48,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.switch-row{
+.switch-row {
   border-bottom: 1px solid #eee;
 }
 </style>
