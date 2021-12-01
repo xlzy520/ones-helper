@@ -60,7 +60,7 @@ watch(taskConfig, () => {
 const getOtherConfig = () => {
   onesConfigService.getOtherConfig().then((res) => {
     console.log(res)
-    taskConfig.data = res
+    taskConfig.data = { ...taskConfig.data, ...res }
   })
 }
 const copyAll = (shouldWithLink = true) => {
