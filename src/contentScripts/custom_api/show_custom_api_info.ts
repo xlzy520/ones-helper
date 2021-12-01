@@ -16,7 +16,7 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
     // browser.storage.local.get([ONES_HOST_KEY, PROJECT_BRANCH_KEY]).then((data) => {
       // 兼容火狐，第一次拿到customApiData的时候是undefined
       const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData
-      const selectedConfig = presetOptions.find(v => v.label === preset).config
+      const selectedConfig = presetOptions.find((v: any) => v.label === preset).config
       const onesHost = selectedConfig[ONES_HOST_KEY]
       const onesHostInfoEL = createOptionEl({
         name: 'API Host',

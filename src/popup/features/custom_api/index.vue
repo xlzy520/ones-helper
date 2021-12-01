@@ -77,9 +77,14 @@ import { customApiService } from '~/service'
 
 const message = useMessage()
 
-const renderLabel = (option) => {
+interface Option {
+  config: any
+  label: string
+}
+
+const renderLabel = (option: Option) => {
   const { custom } = option.config || {}
-  const tagName = custom ? '自定义' : '系统'
+  const tagName = custom ? '自定义' : '内置'
   const tagType = custom ? 'info' : ''
   return (
     <div>
@@ -116,7 +121,7 @@ const syncFormData = async() => {
   setFormValue(customApiData)
 }
 
-const handleUpdatePresetValue = (value, option) => {
+const handleUpdatePresetValue = (value: string, option: Option) => {
   formValue.preset = value
   selectedConfig.value = option.config
   console.log(toRaw(unref(selectedConfig)))

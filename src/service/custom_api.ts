@@ -14,14 +14,14 @@ export interface PatternConfig {
 }
 
 export interface BranchData {
-  [ONES_HOST_KEY]: NUllable<string>
-  [PROJECT_BRANCH_KEY]: NUllable<string>
+  [ONES_HOST_KEY]: string|null
+  [PROJECT_BRANCH_KEY]: string|null
   [CUSTOM_API_PATTERNS]: PatternConfig[]
 }
 
 export interface CustomApiData {
-  [ONES_HOST_KEY]: NUllable<string>
-  [PROJECT_BRANCH_KEY]: NUllable<string>
+  [ONES_HOST_KEY]: string|null
+  [PROJECT_BRANCH_KEY]: string|null
   [CUSTOM_API_PATTERNS]: PatternConfig[]
 }
 

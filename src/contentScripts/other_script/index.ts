@@ -1,33 +1,59 @@
 import { onesConfigService } from '~/service'
-import { copyToClipboard } from '~/common/utils'
+import { copyToClipboard, $, $All, injectScript, isSaas, isDev } from '~/common/utils'
+import { ONESConfig } from '~/common/constants'
 
 export function run(): void {
   // logic here
 
-  const $ = function(query: string) {
-    return document.querySelector(query)
-  }
-  const $All = function(query: string) {
-    return document.querySelectorAll(query)
+  if (isSaas()) {
+    const addTaskCopyButton = () => {
+      const taskDetailHeader = $('.ui-task-detail-header')
+      const left = $('.task-basic-left')
+      if (taskDetailHeader && left) {
+        const div = document.createElement('div')
+        const text = document.createTextNode('去链接复制')
+        div.className = 'ones-helper copy-task ml-2 ui-important-link'
+        div.appendChild(text)
+        div.addEventListener('click', () => {
+          const number = taskDetailHeader.querySelector('.task-basic-task-number')?.textContent
+          const taskName = taskDetailHeader.querySelector('.task-base-title')?.textContent
+          const result = `${number}  ${taskName}`
+          copyToClipboard(result)
+        })
+        left.appendChild(div)
+      }
+    }
+    setInterval(() => {
+      if (!$('.ones-helper.copy-task'))
+        addTaskCopyButton()
+    }, 3000)
   }
 
-  // injectScriptLink
-  const injectScriptLink = function(src: string) {
-    const head = $('head')
-    const scriptTag = document.createElement('script')
-    scriptTag.src = src
-    head.appendChild(scriptTag)
+  const saveOnesConfig = (onesConfig: any) => {
+    const dataStr = JSON.stringify(onesConfig)
+    const newOnesConfig = `onesConfig=${dataStr}`
+    injectScript(newOnesConfig)
+    const path = location.origin + location.pathname
+    onesConfigService.saveOnesConfigApi({ [path]: onesConfig })
+    console.log(onesConfig)
   }
 
-  // injectScript
-  const injectScript = function(scriptContent: string) {
-    const head = $('head')
-    const scriptTag = document.createElement('script')
-    scriptTag.innerHTML = scriptContent
-    head.appendChild(scriptTag)
-  }
+  onesConfigService.getOnesConfigApi().then((res) => {
+    console.log(res)
+    if (location.href.includes('https://mars-dev.myones.net:') || isSaas()) {
+      const onesConfigScript = $All('script')[1]
+      // eslint-disable-next-line no-eval
+      const innerOnesConfig = eval(onesConfigScript.innerHTML)
+      const onesConfig = res?.wechatBindSupport ? res : innerOnesConfig
+      saveOnesConfig(onesConfig)
+    }
+    else {
+      const onesConfig = res?.wechatBindSupport ? res : ONESConfig
+      saveOnesConfig(onesConfig)
+    }
+  })
 
-  const handleCopyAllTasks = (data) => {
+  const handleCopyAllTasks = (data: any) => {
     const href = location.href
     const searchReg = /\/team\/(\w+)\/project\/(\w+).*?\/sprint\/(\w+)\/?/
     const match = href.match(searchReg)
@@ -46,7 +72,7 @@ export function run(): void {
         const tasks = res.data.buckets[0].tasks
         const { origin, pathname } = location
         const baseUrl = `${origin + pathname}#/team/${teamUUID}/task/`
-        const copyItems = tasks.map((task) => {
+        const copyItems = tasks.map((task: any) => {
           const { number, name, uuid } = task
           const url = data.shouldWithLink ? baseUrl + uuid : ''
           return `#${number} ${name}\n${url}`
@@ -60,24 +86,11 @@ export function run(): void {
 
   browser.runtime.onMessage.addListener((request) => {
     const { type, data } = request
-    if (type === 'onesConfig') {
-      const dataStr = JSON.stringify(data)
-      const newOnesConfig = `onesConfig=${dataStr}`
-      injectScript(newOnesConfig)
-      console.log(dataStr)
-    }
-    else if (type === 'copyAllTasks') {
+    if (type === 'onesConfig')
+      saveOnesConfig(data)
+    else if (type === 'copyAllTasks')
       handleCopyAllTasks(data)
-    }
+
     console.log('接收消息：', request)
   })
-
-  // console.log(localStorage)
-  const onesConfigScript = $All('script')[1]
-  const onesConfig = eval(onesConfigScript.innerHTML)
-  onesConfigService.saveOnesConfigApi(onesConfig)
-  console.log(onesConfig)
-
-  // const onesConfig13 = 'console.log(window.onesConfig);chrome.runtime.sendMessage(\'oldmdafdokhkafkajeokoniookpagnlf\', { onesConfig: \'312\' })'
-  // injectScript(onesConfig)
 }
