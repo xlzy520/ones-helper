@@ -2,16 +2,28 @@
   <div class="">
     <div class="">
       <div class="layout-items-center py-2 switch-row">
-        <div class="mr-4">
+        <div class="mr-4 w-[180px]">
           工单关联实施版本
         </div>
-        <n-switch v-model:value="taskConfig.data.enableRelatedImplementVersion" />
+        <n-switch v-model:value="taskConfig.data.enableRelatedImplementVersion" class="mr-4" />
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <question-icon />
+          </template>
+          由于Desk中不方便直接查看该私有云客户的实施版本
+        </n-tooltip>
       </div>
       <div class="layout-items-center py-2 switch-row">
-        <div class="mr-4">
+        <div class="mr-4 w-[180px]">
           去链接复制
         </div>
-        <n-switch v-model:value="taskConfig.data.copy" />
+        <n-switch v-model:value="taskConfig.data.copy" class="mr-4" />
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <question-icon />
+          </template>
+          某些情况下复制不需要带上链接
+        </n-tooltip>
       </div>
     </div>
     <!--    <div class="layout-around">-->
@@ -27,8 +39,10 @@
 
 <script setup>
 import {
-  useMessage, NButton, NSwitch,
+  useMessage, NButton, NSwitch, NTooltip,
 } from 'naive-ui'
+import QuestionIcon from '~/components/question-icon.vue'
+
 import { getCurrentTab } from '~/common/tabs'
 import { onesConfigService } from '~/service'
 

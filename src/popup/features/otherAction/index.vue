@@ -5,7 +5,13 @@
         <div class="mr-4">
           Github PR分支选择优化
         </div>
-        <n-switch v-model:value="taskConfig.data.branchSelectEnhance" />
+        <n-switch v-model:value="taskConfig.data.branchSelectEnhance" class="mr-4" />
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <question-icon />
+          </template>
+          优化preview分支选择，由于preview搜索到的分支很多，不好直接选择
+        </n-tooltip>
       </div>
     </div>
     <!--    <div class="layout-around">-->
@@ -21,9 +27,10 @@
 
 <script setup>
 import {
-  useMessage, NButton, NSwitch,
+  useMessage, NButton, NSwitch, NTooltip,
 } from 'naive-ui'
 import { onesConfigService } from '~/service'
+import QuestionIcon from '~/components/question-icon.vue'
 
 const taskConfig = reactive({
   data: {
