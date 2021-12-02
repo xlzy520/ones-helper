@@ -1,6 +1,6 @@
 <template>
   <n-message-provider>
-    <main class="w-[600px] h-[320px] px-4">
+    <main class="w-[700px] h-[320px] px-4">
       <n-tabs type="line">
         <n-tab-pane name="自定义API" tab="自定义API">
           <custom-api />
