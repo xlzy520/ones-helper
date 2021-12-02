@@ -115,11 +115,12 @@ const formValue = reactive({
 const isCustom = computed(() => selectedConfig.value.custom)
 
 const setFormValue = (data, handlePreset = true) => {
-  const { preset, presetOptions, customApiPatterns } = data
+  const { preset, presetOptions, customApiPatterns, showCustomApi } = data
   formValue.presetOptions = presetOptions
   formValue.preset = preset
   formValue.customApiPatterns = customApiPatterns
-  selectedConfig.value = presetOptions.find(v => v.label === preset).config
+  formValue.showCustomApi = showCustomApi
+  selectedConfig.value = presetOptions.find((v: Option) => v.label === preset).config
 }
 
 const syncFormData = async() => {
