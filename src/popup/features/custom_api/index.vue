@@ -19,17 +19,21 @@
         <n-form-item-grid-item :span="22" label="API Host" path="customONESApiHost">
           <n-input
             v-model:value="selectedConfig.customONESApiHost"
-            :readonly="!isCustom"
-            placeholder="输入Host"
+            :disabled="!isCustom"
+            :placeholder="isCustom?'输入Host':'点击另存为创建自定义配置'"
           />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="22" label="Project API Branch" path="customONESApiProjectBranch">
           <n-input
             v-model:value="selectedConfig.customONESApiProjectBranch"
-            :readonly="!isCustom"
-            placeholder="输入Project的分支"
+            :disabled="!isCustom"
+            :placeholder="isCustom?'输入Project的分支':'点击另存为创建自定义配置'"
           />
         </n-form-item-grid-item>
+        <n-form-item-grid-item :span="22" label="是否在页面展示提示" path="showCustomApi">
+          <n-switch v-model:value="formValue.showCustomApi" class="" />
+        </n-form-item-grid-item>
+
         <!--        <n-form-item-grid-item :span="24" label="Wiki API Branch" path="customONESApiWikiBranch">-->
         <!--          <n-input v-model:value="formValue.selectedConfig.customONESApiWikiBranch" placeholder="输入Wiki的分支" />-->
         <!--        </n-form-item-grid-item>-->
@@ -55,6 +59,7 @@
         </n-form-item-grid-item>
       </n-grid>
     </n-form>
+
     <n-modal
       v-model:show="newPreset.showModal"
       preset="dialog"
@@ -69,7 +74,7 @@
 
 <script setup lang="tsx">
 import {
-  useMessage, NForm, NInput, NSelect,
+  useMessage, NForm, NInput, NSelect, NSwitch,
   NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm,
 } from 'naive-ui'
 import { DefaultPresetOptions } from '~/common/constants'
@@ -102,6 +107,7 @@ const selectedConfig = ref({
 
 const formValue = reactive({
   preset: '',
+  showCustomApi: true,
   customApiPatterns: null,
   presetOptions: DefaultPresetOptions,
 })
@@ -124,6 +130,7 @@ const syncFormData = async() => {
 const handleUpdatePresetValue = (value: string, option: Option) => {
   formValue.preset = value
   selectedConfig.value = option.config
+  customApiService.saveCustomApi(toRaw(formValue))
   console.log(toRaw(unref(selectedConfig)))
 }
 
