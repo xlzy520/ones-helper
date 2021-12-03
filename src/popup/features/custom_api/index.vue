@@ -28,7 +28,7 @@
           <n-input
             v-model:value="selectedConfig.customONESApiProjectBranch"
             :disabled="!isCustom"
-            :placeholder="isCustom?'输入Project的分支':'点击另存为创建自定义配置'"
+            :placeholder="isCustom?'输入分支名':'点击另存为创建自定义配置'"
           />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="22" label="是否在页面展示提示" path="showCustomApi">
@@ -104,6 +104,7 @@ const message = useMessage()
 interface Option {
   config: any
   label: string
+  value: string
 }
 
 const renderLabel = (option: Option) => {
@@ -139,7 +140,7 @@ const setFormValue = (data, handlePreset = true) => {
   formValue.preset = preset
   formValue.customApiPatterns = customApiPatterns
   formValue.showCustomApi = showCustomApi
-  selectedConfig.value = presetOptions.find((v: Option) => v.label === preset).config
+  selectedConfig.value = presetOptions.find((v: Option) => v.value === preset).config
 }
 
 const syncFormData = async() => {
