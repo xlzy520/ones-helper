@@ -7,16 +7,40 @@
       <!--        :options="domains.options"-->
       <!--        @update:value="changeDomain"-->
       <!--      />-->
-      <n-button class="" type="info" @click="saveOnesConfig">
-        保存
-      </n-button>
-      <n-button class="ml-4" @click="clearOnesConfig">
-        清空全部域下的ONES Config
-      </n-button>
+      <div class="flex justify-end   w-full">
+        <n-popconfirm
+          negative-text="取消"
+          positive-text="确定"
+          placement="left-start"
+          @positive-click="clearOnesConfig"
+        >
+          <template #trigger>
+            <n-button type="warning">
+              恢复默认配置
+            </n-button>
+          </template>
+          恢复从项目配置读取的配置
+        </n-popconfirm>
+        <n-popconfirm
+          negative-text="取消"
+          positive-text="确定"
+          placement="left-start"
+          @positive-click="saveOnesConfig"
+        >
+          <template #trigger>
+            <n-button class="ml-4" type="info">
+              保存
+            </n-button>
+          </template>
+          点击会自动重载页面，让修改的配置生效！！
+        </n-popconfirm>
+      </div>
     </div>
     <n-divider class=""></n-divider>
     <n-alert title="温馨提示" type="info">
-      构建系统注入到项目一些配置项，提供编辑用于快速调试
+      <div>第一次启用插件，若是没有读取到请<b style="color:#db2777">手动刷新页面</b>！！</div>
+      <div>构建系统注入到项目一些配置项，提供编辑用于快速调试（不会保存到项目）！</div>
+      <div>下面<b style="color:#22c55e">配置项修改后生效</b>需要点击<b style="color:#db2777">保存</b>按钮</div>
     </n-alert>
     <n-divider class=""></n-divider>
     <div class="layout-items-center mb-4">
@@ -78,7 +102,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   useMessage, NSwitch, NInput, NSelect, NRadioGroup, NRadio, NSpace,
   NButton, NTag, NPopconfirm, NDivider, NGrid, NGridItem, NCard, NAlert,

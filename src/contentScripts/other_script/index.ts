@@ -172,10 +172,14 @@ export function run(): void {
 
   browser.runtime.onMessage.addListener((request) => {
     const { type, data } = request
-    if (type === 'onesConfig')
+    if (type === 'onesConfig') {
       saveOnesConfig(data)
-    else if (type === 'copyAllTasks')
+      const newOnesConfig = 'window && window.location.reload()'
+      injectScript(newOnesConfig)
+    }
+    else if (type === 'copyAllTasks') {
       handleCopyAllTasks(data)
+    }
 
     console.log('接收消息：', request)
   })
