@@ -8,7 +8,7 @@ function syncApiSetting(headerCustomer: HeaderCustomer) {
       const headers: Headers = []
       // 兼容火狐，第一次拿到customApiData的时候是undefined
       const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData
-      const selectedConfig = presetOptions.find(v => v.label === preset).config
+      const selectedConfig = presetOptions.find(v => v.value === preset).config
       const customHOST = selectedConfig[ONES_HOST_KEY]
       const isProjectApi = details.url.includes('/api/project')
       if (customHOST) {

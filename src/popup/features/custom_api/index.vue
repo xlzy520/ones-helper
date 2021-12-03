@@ -155,7 +155,13 @@ const handleUpdatePresetValue = (value: string, option: Option) => {
   console.log(toRaw(unref(selectedConfig)))
 }
 
+const trim = () => {
+  selectedConfig.value.customONESApiHost = selectedConfig.value.customONESApiHost.trim()
+  selectedConfig.value.customONESApiProjectBranch = selectedConfig.value.customONESApiProjectBranch.trim()
+}
+
 const onSubmitClick = (shouldClose = true) => {
+  trim()
   console.log(toRaw(formValue))
   customApiService.saveCustomApi(toRaw(formValue))
     .then(() => {
@@ -172,9 +178,9 @@ const onSaveAs = () => {
   newPreset.showModal = true
 }
 const onDelete = () => {
-  const index = formValue.presetOptions.findIndex(v => v.label === formValue.preset)
+  const index = formValue.presetOptions.findIndex(v => v.value === formValue.preset)
   formValue.presetOptions.splice(index, 1)
-  formValue.preset = formValue.presetOptions[0].label
+  formValue.preset = formValue.presetOptions[0].value
   setFormValue(formValue)
   onSubmitClick(false)
 }
