@@ -21,9 +21,10 @@
             v-model:value="selectedConfig.customONESApiHost"
             :disabled="!isCustom"
             :placeholder="isCustom?'输入Host':'点击另存为创建自定义配置'"
+            clearable
           />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="22" label="Project API Branch" path="customONESApiProjectBranch">
+        <n-form-item-grid-item :span="22" label="API Branch" path="customONESApiProjectBranch">
           <n-input
             v-model:value="selectedConfig.customONESApiProjectBranch"
             :disabled="!isCustom"
@@ -31,19 +32,35 @@
           />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="22" label="是否在页面展示提示" path="showCustomApi">
-          <n-switch v-model:value="formValue.showCustomApi" class="" />
+          <n-tooltip placement="right" trigger="hover">
+            <template #trigger>
+              <n-switch v-model:value="formValue.showCustomApi" class="" />
+            </template>
+            <p>网站页面右下角会有一块悬浮区域，</p><p>显示当前页面的自定义API配置信息</p>
+          </n-tooltip>
         </n-form-item-grid-item>
 
         <!--        <n-form-item-grid-item :span="24" label="Wiki API Branch" path="customONESApiWikiBranch">-->
         <!--          <n-input v-model:value="formValue.selectedConfig.customONESApiWikiBranch" placeholder="输入Wiki的分支" />-->
         <!--        </n-form-item-grid-item>-->
         <n-form-item-grid-item :span="22" label=" ">
-          <n-button class="ml-4 w-full" type="info" @click="onSubmitClick">
-            保存
-          </n-button>
-          <n-button v-if="!isCustom" class="ml-4 w-full" type="info" @click="onSaveAs">
-            另存为预设
-          </n-button>
+          <n-tooltip placement="bottom" trigger="hover">
+            <template #trigger>
+              <n-button class="ml-4 w-full" type="info" @click="onSubmitClick">
+                保存
+              </n-button>
+            </template>
+            点击则配置立即生效
+          </n-tooltip>
+          <n-tooltip placement="bottom" trigger="hover">
+            <template #trigger>
+              <n-button v-if="!isCustom" class="ml-4 w-full" type="info" @click="onSaveAs">
+                另存为预设
+              </n-button>
+            </template>
+            点击另存为则基于选中的配置自定义
+          </n-tooltip>
+
           <n-popconfirm
             negative-text="取消"
             positive-text="确定"
@@ -59,7 +76,9 @@
         </n-form-item-grid-item>
       </n-grid>
     </n-form>
-
+    <n-alert title="温馨提示" type="info">
+      这里快速配置接口请求跳转的域，开发或者线上
+    </n-alert>
     <n-modal
       v-model:show="newPreset.showModal"
       preset="dialog"
@@ -75,7 +94,7 @@
 <script setup lang="tsx">
 import {
   useMessage, NForm, NInput, NSelect, NSwitch,
-  NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm,
+  NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm, NAlert, NTooltip,
 } from 'naive-ui'
 import { DefaultPresetOptions } from '~/common/constants'
 import { customApiService } from '~/service'
@@ -89,7 +108,7 @@ interface Option {
 
 const renderLabel = (option: Option) => {
   const { custom } = option.config || {}
-  const tagName = custom ? '自定义' : '内置'
+  const tagName = custom ? '自定义请求头指向' : '内置请求头指向'
   const tagType = custom ? 'info' : ''
   return (
     <div>
@@ -136,7 +155,7 @@ const handleUpdatePresetValue = (value: string, option: Option) => {
 }
 
 const onSubmitClick = (shouldClose = true) => {
-  // console.log(toRaw(formValue))
+  console.log(toRaw(formValue))
   customApiService.saveCustomApi(toRaw(formValue))
     .then(() => {
       if (shouldClose)

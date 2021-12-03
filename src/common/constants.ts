@@ -10,7 +10,7 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns'
 // -local前端连局域网
 // -dev前端连私有部署
 // -dev前端连SaaS
-export const DefaultPreset = '默认'
+export const DefaultPreset = '自定义的'
 export const DefaultPresetOptions = [
   // {
   //   type: 'group',
@@ -21,7 +21,16 @@ export const DefaultPresetOptions = [
   //   ]
   // }
   {
-    label: '默认',
+    label: '用户自定义',
+    value: '自定义的',
+    config: {
+      custom: true,
+      customONESApiHost: '',
+      customONESApiProjectBranch: '',
+    },
+  },
+  {
+    label: '默认(不篡改任何请求，走项目自己的默认配置)',
     value: '默认',
     config: {
       customONESApiHost: '',
@@ -29,7 +38,7 @@ export const DefaultPresetOptions = [
     },
   },
   {
-    label: '本地=>master',
+    label: 'master',
     value: '本地=>master',
     config: {
       customONESApiHost: '',
@@ -37,7 +46,7 @@ export const DefaultPresetOptions = [
     },
   },
   {
-    label: '本地=>私有部署',
+    label: '私有部署',
     value: '本地=>私有部署',
     config: {
       customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
@@ -45,29 +54,18 @@ export const DefaultPresetOptions = [
     },
   },
   {
-    label: '本地=>SaaS',
+    label: 'SaaS',
     value: '本地=>SaaS',
     config: {
       customONESApiHost: 'https://ones.ai/project/api/project/',
       customONESApiProjectBranch: '',
     },
   },
-  // { label: 'master=>私有部署', value: 'master=>私有部署', config: {} },
-  // { label: 'master=>SaaS', value: 'master=>SaaS', config: {} },
   {
-    label: '本地=>本地后端',
+    label: '本地后端(协议:IP:端口)',
     value: '本地=>本地后端',
     config: {
       customONESApiHost: 'http://ip:port/',
-      customONESApiProjectBranch: '',
-    },
-  },
-  {
-    label: '自定义的',
-    value: '自定义的',
-    config: {
-      custom: true,
-      customONESApiHost: '',
       customONESApiProjectBranch: '',
     },
   },

@@ -21,7 +21,7 @@
     <n-divider class=""></n-divider>
     <div class="layout-items-center mb-4">
       <n-input
-        v-model:value="filterKey"
+        v-model.trim:value="filterKey"
         placeholder="搜索配置项，支持清空"
         class="mr-4"
         clearable
