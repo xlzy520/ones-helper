@@ -29,22 +29,23 @@ export const $All = function(query: string) {
   return document.querySelectorAll(query)
 }
 
-export const injectScriptLink = function(src: string) {
+export const injectHead = (content) => {
   const head = $('head')
   if (head) {
-    const scriptTag = document.createElement('script')
-    scriptTag.src = src
-    head.appendChild(scriptTag)
+    head.appendChild(content)
   }
 }
 
+export const injectScriptLink = function(src: string) {
+  const scriptTag = document.createElement('script')
+  scriptTag.src = src
+  injectHead(scriptTag)
+}
+
 export const injectScript = function(scriptContent: string) {
-  const head = $('head')
-  if (head) {
-    const scriptTag = document.createElement('script')
-    scriptTag.innerHTML = scriptContent
-    head.appendChild(scriptTag)
-  }
+  const scriptTag = document.createElement('script')
+  scriptTag.innerHTML = scriptContent
+  injectHead(scriptTag)
 }
 
 export const isSaas = () => {
