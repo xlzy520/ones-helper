@@ -45,7 +45,7 @@
     <n-divider class=""></n-divider>
     <div class="layout-items-center mb-4">
       <n-input
-        v-model.trim:value="filterKey"
+        v-model:value="filterKey"
         placeholder="搜索配置项，支持清空"
         class="mr-4"
         clearable
@@ -194,10 +194,12 @@ const saveOnesConfig = () => {
 
   console.log(toRaw(unref(configFields)))
   saveData(onesConfig)
+  window.close()
 }
 
 const clearOnesConfig = () => {
   saveData({})
+  window.close()
 }
 
 onMounted(() => {

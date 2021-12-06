@@ -93,13 +93,11 @@
 
 <script setup lang="tsx">
 import {
-  useMessage, NForm, NInput, NSelect, NSwitch,
+  NForm, NInput, NSelect, NSwitch,
   NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm, NAlert, NTooltip,
 } from 'naive-ui'
 import { DefaultPresetOptions } from '~/common/constants'
 import { customApiService } from '~/service'
-
-const message = useMessage()
 
 interface Option {
   config: any
