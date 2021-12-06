@@ -1,5 +1,3 @@
-// import './index.scss'
-
 import { customApiService } from '../../service'
 import { showCustomApiInfo, syncCustomApiInfo } from './show_custom_api_info'
 import { CustomApiChange } from '~/common/message_type'
@@ -21,11 +19,6 @@ const checkIsMathUrl = async() => {
 }
 
 const addEventListeners = () => {
-  // window.addEventListener('hashchange', () => {
-  // syncCustomApiInfo()
-  // })
-  // console.log(window)
-
   browser.runtime.onMessage.addListener((message) => {
     const type = message ? message.type : null
     console.log(type)
