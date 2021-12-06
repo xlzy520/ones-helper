@@ -37,22 +37,13 @@ export async function getManifest() {
       'webRequest',
       'webRequestBlocking',
       'activeTab',
-      'https://github.com/BangWork/*',
-      'https://ones.ai/*',
-      'https://*.myones.net/*',
-      'http://dev.localhost:3000/*',
-      'http://dev.localhost:*',
-      'http://localhost:3000/*',
-      'http://localhost:*',
     ],
     content_scripts: [{
       matches: [
         'https://github.com/BangWork/*',
         'https://ones.ai/*',
         'https://*.myones.net/*',
-        'http://dev.localhost:3000/*',
         'http://dev.localhost:*',
-        'http://localhost:3000/*',
         'http://localhost:*',
         // 'https://*/*', 'https://*/*'
       ],
