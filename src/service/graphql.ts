@@ -4,8 +4,8 @@ interface GraphqlQuery {
 }
 
 const graphqlFetch = (query: GraphqlQuery) => {
-  return fetch('https://ones.ai/project/api/project/team/XBUM7Mss/items/graphql', {
-  // return fetch('https://ones.ai/project/api/project/team/RDjYMhKq/items/graphql', {
+  // return fetch('https://ones.ai/project/api/project/team/XBUM7Mss/items/graphql', {
+  return fetch('https://ones.ai/project/api/project/team/RDjYMhKq/items/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

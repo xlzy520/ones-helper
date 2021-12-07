@@ -57,16 +57,17 @@
           <n-date-picker v-model:value="recordFormData.start_time" type="datetime" class="w-full" />
         </n-form-item>
         <n-form-item label="投入时长" path="hours">
-          <n-input v-model:value="recordFormData.hours" placeholder="请输入输入数字">
+          <n-input-number v-model:value="recordFormData.hours" min="0.1" :step="0.5" placeholder="请输入输入数字">
             <template #suffix>
               小时
             </template>
-          </n-input>
+          </n-input-number>
         </n-form-item>
         <n-form-item label="描述" path="description">
           <n-input
             v-model:value="recordFormData.description"
             type="textarea"
+            clearable
             placeholder="在这期间我做了什么"
           />
         </n-form-item>
@@ -77,7 +78,7 @@
 
 <script setup lang="tsx">
 import {
-  useMessage, NButton, NTooltip, NDataTable, NForm, NFormItem, NInput, NModal, NDatePicker,
+  useMessage, NButton, NTooltip, NDataTable, NForm, NFormItem, NInput, NInputNumber, NModal, NDatePicker,
   NSelect, NPopconfirm,
 } from 'naive-ui'
 import { format, getMilliseconds } from 'date-fns'
@@ -112,7 +113,7 @@ const formRef = ref(null)
 const recordFormData = reactive({
   mode: 'simple',
   start_time: timestamp,
-  hours: '',
+  hours: 1,
   description: '',
   owner: '',
   task: '',
@@ -122,7 +123,16 @@ const recordFormData = reactive({
 const rules = {
   hours: {
     required: true,
-    message: '请输入实际投入时长',
+    validator: (rule, value) => {
+      return new Promise((resolve, reject) => {
+        if (!value) {
+          reject(Error('请输入实际投入时长')) // reject with error message
+        }
+        else {
+          resolve()
+        }
+      })
+    },
     trigger: ['input', 'blur'],
   },
 }
