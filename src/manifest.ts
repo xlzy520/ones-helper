@@ -43,8 +43,8 @@ export async function getManifest() {
         'https://github.com/BangWork/*',
         'https://ones.ai/*',
         'https://*.myones.net/*',
-        'http://dev.localhost:*',
-        'http://localhost:*',
+        'http://dev.localhost/*',
+        'http://localhost/*',
         // 'https://*/*', 'https://*/*'
       ],
       js: ['./dist/contentScripts/index.global.js'],
