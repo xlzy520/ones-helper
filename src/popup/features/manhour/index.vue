@@ -64,7 +64,11 @@
           </n-input>
         </n-form-item>
         <n-form-item label="描述" path="description">
-          <n-input v-model:value="recordFormData.description" placeholder="在这期间我做了什么" />
+          <n-input
+            v-model:value="recordFormData.description"
+            type="textarea"
+            placeholder="在这期间我做了什么"
+          />
         </n-form-item>
       </n-form>
     </n-modal>
