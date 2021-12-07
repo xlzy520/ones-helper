@@ -1,5 +1,6 @@
 import { $, copyToClipboard } from '~/common/utils'
 import { fetchCustomerList } from '~/service/graphql'
+import { Task } from '~/common/types'
 
 export const addTaskCopyButton = () => {
   const taskDetailHeader = $('.ui-task-detail-header')
@@ -23,13 +24,12 @@ export const searchCustomerList = (name: string, fromSelf = false) => {
   fetchCustomerList(name).then((res) => {
     const tasks = res.data.buckets[0].tasks
     if (tasks.length) {
-      const targetTask = tasks.find(v => v.status.name === '已完成')
+      const targetTask = tasks.find((v: Task) => v.status.name === '已完成')
       if (targetTask) {
         const baseUrl = location.origin + location.pathname + location.hash
         const signIndex = baseUrl.indexOf('?')
         const hasQuery = signIndex > -1
         const url = hasQuery ? baseUrl.substring(0, signIndex) : baseUrl
-        console.log(url)
         location.href = `${url}?relatedTaskDialog=${targetTask.uuid}&isHideDialog=0`
       }
     }
@@ -46,7 +46,6 @@ export const searchCustomerList = (name: string, fromSelf = false) => {
 
 export const addViewRelateImplementTask = () => {
   const taskDetailMain = $('.ui-task-detail__main')
-  console.log(taskDetailMain)
   if (taskDetailMain) {
     const fieldNames = taskDetailMain.querySelectorAll('.task-detail-module.list-module.task-detail-attribute .task-detail-attribute-field-name')
     if (fieldNames) {
