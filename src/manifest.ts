@@ -32,18 +32,24 @@ export async function getManifest() {
       128: './assets/favicon2020_x1024.png',
     },
     permissions: [
+      'cookies',
       'tabs',
       'storage',
       'webRequest',
       'webRequestBlocking',
       'activeTab',
+      'https://github.com/BangWork/*',
+      'https://ones.ai/*',
+      'https://*.myones.net/*',
+      'http://dev.localhost:*',
+      'http://localhost:*',
     ],
     content_scripts: [{
       matches: [
         'https://github.com/BangWork/*',
         'https://ones.ai/*',
         'https://*.myones.net/*',
-        'http://dev.localhost:*',
+        // 'http://dev.localhost:*',
         'http://localhost:*',
         // 'https://*/*', 'https://*/*'
       ],
