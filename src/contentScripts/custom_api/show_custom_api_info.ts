@@ -37,7 +37,6 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
 }
 
 export async function showCustomApiInfo(): Promise<void> {
-  console.log(333)
   const wrapperEl = document.createElement('div')
   wrapperEl.className = `${DOM_SCOPE}api-info-wrapper`
   wrapperEl.id = WRAPPER_EL_ID
