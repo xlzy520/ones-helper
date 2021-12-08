@@ -1,12 +1,13 @@
 <template>
-  <div class="">
-    <div class="mb-2 layout-items-center">
-      <div class="layout-items-center w-[200px]">
+  <div class="pb-4">
+    <div class="mb-2 layout-items-center ">
+      <div class="layout-items-center w-[260px]">
         <div class="whitespace-nowrap">
           所属迭代：
         </div>
         <n-select
           v-model:value="filter.filter.sprint"
+          class="w-[200px]"
           placeholder="所属迭代"
           clearable
           :options="filter.sprintOptions"
@@ -19,6 +20,7 @@
         <n-select
           v-model:value="filter.filter.status"
           placeholder="状态"
+          class="w-[200px]"
           clearable
           :options="filter.statusOptions"
         />
@@ -33,17 +35,20 @@
         />
       </div>
     </div>
-    <div class="h-[300px] overflow-auto">
-      <n-data-table :columns="columns" :data="filteredTableData" />
+    <div class="h-[300px] overflow-y-hidden">
+      <n-data-table :columns="columns" :data="filteredTableData" max-height="580" size="small" />
       <!--      <n-button type="info" @click="getData">-->
       <!--        获取工作项列表数据-->
       <!--      </n-button>-->
     </div>
     <n-modal
       v-model:show="recordModalShow"
+      :style="{width:'600px'}"
       preset="dialog"
-      title="登记工时"
       positive-text="确定"
+      :mask-closable="false"
+      :title="renderModalTitle"
+      :on-close="resetFormData"
       @positive-click="submitRecord"
     >
       <n-form
@@ -79,7 +84,7 @@
 <script setup lang="tsx">
 import {
   useMessage, NButton, NTooltip, NDataTable, NForm, NFormItem, NInput, NInputNumber, NModal, NDatePicker,
-  NSelect, NPopconfirm,
+  NSelect, NPopconfirm, NTag, NEllipsis,
 } from 'naive-ui'
 import { format, getMilliseconds } from 'date-fns'
 import { copyToClipboard } from '~/common/utils'
@@ -96,6 +101,9 @@ const filter = reactive({
   },
   sprintOptions: [],
   statusOptions: [],
+})
+
+const selectTableRow = reactive({
 })
 const clearFilterKey = () => {
   filter.filter.value = ''
@@ -139,6 +147,18 @@ const rules = {
 
 const tableData = ref([])
 
+const resetFormData = () => {
+  Object.assign(recordFormData, {
+    mode: 'simple',
+    start_time: timestamp,
+    hours: 1,
+    description: '',
+    owner: '',
+    task: '',
+    type: 'recorded',
+  })
+}
+
 const setOptions = (tableData: any) => {
   const sprintSet = new Set()
   const statusSet = new Set()
@@ -175,10 +195,18 @@ const submitRecord = () => {
         message.success('登记成功')
         recordModalShow.value = false
         getData()
+        resetFormData()
       })
     }
   })
   return validateStatus
+}
+
+const renderModalTitle = () => {
+  return <NEllipsis style="max-width: 460px;" tooltip={{ placement: 'bottom' }}>
+    <NTag type="info" size="small" round={true} bordered={false}>#{selectTableRow.number}</NTag>
+    <span className="text-sm pt-2"> {selectTableRow.name}</span>
+  </NEllipsis>
 }
 
 const columns = [
@@ -186,6 +214,7 @@ const columns = [
     title: 'ID',
     key: 'number',
     width: 80,
+    align: 'center',
     render(row: any) {
       const handleClick = () => {
         const text = `#${row.number}  ${row.name}`
@@ -193,7 +222,7 @@ const columns = [
         message.success('复制成功')
       }
       return (
-        <NTooltip trigger="hover" v-slots={{
+        <NTooltip trigger="hover" placement="right" v-slots={{
           trigger: () => {
             return <div className="task-number cursor-pointer" onClick={handleClick}>#{row.number}</div>
           },
@@ -207,6 +236,7 @@ const columns = [
     title: '标题',
     key: 'name',
     width: 285,
+    align: 'left',
     render(row: any) {
       const handlePositiveClick = () => {
         const projectUUID = row.project.uuid
@@ -216,7 +246,7 @@ const columns = [
       }
       const name = row.name
       return (
-        <NPopconfirm onPositiveClick={handlePositiveClick} v-slots={{
+        <NPopconfirm onPositiveClick={handlePositiveClick} placement="right" v-slots={{
           trigger: () => {
             return <div className="cursor-pointer summary">{name}</div>
           },
@@ -240,9 +270,10 @@ const columns = [
     title: '状态',
     key: 'status',
     width: 80,
+    align: 'center',
     render(row: any) {
       const name = row.status?.name
-      return <div>{name}</div>
+      return <NTag size="small">{name}</NTag>
     },
   },
   {
@@ -262,12 +293,15 @@ const columns = [
   {
     title: '操作',
     key: 'actions',
+    align: 'center',
     render: (row: any) => {
       const handleClick = () => {
         recordFormData.task = row.uuid
         recordModalShow.value = true
+        selectTableRow.name = row.name
+        selectTableRow.number = row.number
       }
-      return <NButton type="info" onClick={handleClick}>登记</NButton>
+      return <NButton type="info" onClick={handleClick} size="small">登记工时</NButton>
     },
   },
 ]
