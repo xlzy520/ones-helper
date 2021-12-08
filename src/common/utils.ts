@@ -54,7 +54,7 @@ export const isSaas = () => {
   return location.href.includes('https://ones.ai/')
 }
 
-export const isDev = () => {
+export const isDevDomain = () => {
   return location.href.includes('https://dev.myones.net')
 }
 
@@ -69,4 +69,8 @@ export const sendMessage = (message: any) => {
       browser.tabs.sendMessage(id, message)
     }
   })
+}
+
+export const isDev = () => {
+  return process.env.NODE_ENV !== 'production'
 }

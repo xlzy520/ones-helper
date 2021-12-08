@@ -35,11 +35,8 @@
         />
       </div>
     </div>
-    <div class="h-[300px] overflow-y-hidden">
-      <n-data-table :columns="columns" :data="filteredTableData" max-height="580" size="small" />
-      <!--      <n-button type="info" @click="getData">-->
-      <!--        获取工作项列表数据-->
-      <!--      </n-button>-->
+    <div class="overflow-y-hidden">
+      <n-data-table :columns="columns" :data="filteredTableData" max-height="480" size="small" />
     </div>
     <n-modal
       v-model:show="recordModalShow"
@@ -86,8 +83,8 @@ import {
   useMessage, NButton, NTooltip, NDataTable, NForm, NFormItem, NInput, NInputNumber, NModal, NDatePicker,
   NSelect, NPopconfirm, NTag, NEllipsis,
 } from 'naive-ui'
-import { format, getMilliseconds } from 'date-fns'
-import { copyToClipboard } from '~/common/utils'
+import { format } from 'date-fns'
+import { copyToClipboard, isDev } from '~/common/utils'
 
 import { fetchMyTaskList, recordManhours } from '~/service/graphql'
 
@@ -118,8 +115,9 @@ const recordModalShow = ref(false)
 const timestamp = new Date(format(new Date(), 'yyyy-MM-dd HH:00:00')).getTime()
 
 const formRef = ref(null)
+
 const recordFormData = reactive({
-  mode: 'simple',
+  mode: isDev() ? 'simple' : 'detailed',
   start_time: timestamp,
   hours: 1,
   description: '',
