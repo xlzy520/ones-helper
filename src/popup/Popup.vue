@@ -18,6 +18,9 @@
           <n-tab-pane name="其他" tab="其他">
             <other-action />
           </n-tab-pane>
+          <n-tab-pane name="插件更新" tab="插件更新">
+            <about-me />
+          </n-tab-pane>
         </n-tabs>
       </main>
     </n-message-provider>
@@ -31,6 +34,7 @@ import OnesConfig from '~/popup/features/onesConfig/index.vue'
 import TaskAction from '~/popup/features/taskAction/index.vue'
 import OtherAction from '~/popup/features/otherAction/index.vue'
 import ManHour from '~/popup/features/manhour/index.vue'
+import AboutMe from '~/popup/features/about/index.vue'
 
 const defaultTab = ref('自定义API')
 
