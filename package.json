@@ -1,7 +1,7 @@
 {
   "name": "ones-helper",
   "displayName": "ONES Helper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "ONES 内部效率插件",
   "private": true,
   "author": "ONES",
