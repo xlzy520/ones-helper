@@ -52,9 +52,9 @@
             </template>
             点击则配置立即生效
           </n-tooltip>
-          <n-tooltip placement="bottom" trigger="hover">
+          <n-tooltip v-if="!isCustom" placement="bottom" trigger="hover">
             <template #trigger>
-              <n-button v-if="!isCustom" class="ml-4 w-full" type="info" @click="onSaveAs">
+              <n-button class="ml-4 w-full" type="info" @click="onSaveAs">
                 另存为预设
               </n-button>
             </template>
@@ -62,12 +62,13 @@
           </n-tooltip>
 
           <n-popconfirm
+            v-if="isCustom"
             negative-text="取消"
             positive-text="确定"
             @positive-click="onDelete"
           >
             <template #trigger>
-              <n-button v-if="isCustom" class="ml-4 w-full" type="error">
+              <n-button class="ml-4 w-full" type="error">
                 删除
               </n-button>
             </template>
