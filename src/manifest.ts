@@ -12,7 +12,7 @@ export async function getManifest() {
     manifest_version: 2,
     name: pkg.displayName || pkg.name,
     version: pkg.version,
-    description: pkg.description,
+    description: pkg.description + (isDev ? '(开发版)' : ''),
     browser_action: {
       default_icon: './assets/favicon2020_x16.png',
       default_popup: './dist/popup/index.html',
