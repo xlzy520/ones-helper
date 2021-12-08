@@ -147,13 +147,10 @@ const tableData = ref([])
 
 const resetFormData = () => {
   Object.assign(recordFormData, {
-    mode: 'simple',
     start_time: timestamp,
     hours: 1,
     description: '',
-    owner: '',
     task: '',
-    type: 'recorded',
   })
 }
 
