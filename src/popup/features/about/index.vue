@@ -36,7 +36,7 @@ const message = useMessage()
 const newVersion = ref('')
 const currentVersion = ref('')
 const downloading = ref(false)
-const ghToken = 'token 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'
+const ghToken = 'token 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'
 
 const downloadBtnText = computed(() => {
   return downloading.value ? '下载中...' : '有新版本，立即更新插件'
