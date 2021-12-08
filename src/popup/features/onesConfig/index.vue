@@ -1,13 +1,7 @@
 <template>
   <div>
     <div class="layout-slide">
-      <!--      <n-select-->
-      <!--        v-model:value="domains.value"-->
-      <!--        filterable-->
-      <!--        :options="domains.options"-->
-      <!--        @update:value="changeDomain"-->
-      <!--      />-->
-      <div class="flex justify-end   w-full">
+      <div class="flex justify-end w-full">
         <n-popconfirm
           negative-text="取消"
           positive-text="确定"
@@ -94,11 +88,6 @@
         </n-card>
       </div>
     </div>
-    <!--    <div class="fixed right-4 top-50">-->
-    <!--      <n-button type="info" size="large" @click="saveOnesConfig">-->
-    <!--        保存-->
-    <!--      </n-button>-->
-    <!--    </div>-->
   </div>
 </template>
 
@@ -109,22 +98,11 @@ import {
 } from 'naive-ui'
 import { onesConfigService } from '~/service'
 import { getCurrentTab } from '~/common/tabs'
-import { CustomApiChange } from '~/common/message_type'
+import { sendMessage } from '~/common/utils'
 
 const filterKey = ref('')
 const clearFilterKey = () => {
   filterKey.value = ''
-}
-
-// const config = ref({})
-const domains = reactive({
-  value: '',
-  options: [],
-})
-const changeDomain = (value, option) => {
-  domains.value = value
-  // domains. = option.config
-  // console.log(toRaw(unref(selectedConfig)))
 }
 
 const configFields = ref([])
@@ -155,7 +133,7 @@ const typeMap = {
 const fetchData = () => {
   getCurrentTab().then(({ url }) => {
     onesConfigService.getOnesConfigApi(true).then((res) => {
-      console.log(res)
+      // console.log(res)
       const keys = Object.keys(res)
       const matchKey = keys.find(key => url.includes(key))
       if (matchKey) {
@@ -174,15 +152,10 @@ const fetchData = () => {
   })
 }
 
-const saveData = (onesConfig) => {
-  getCurrentTab().then((tab) => {
-    const { id } = tab
-    if (id) {
-      browser.tabs.sendMessage(id, {
-        type: 'onesConfig',
-        data: onesConfig,
-      })
-    }
+const saveData = (onesConfig: any) => {
+  sendMessage({
+    type: 'onesConfig',
+    data: onesConfig,
   })
 }
 

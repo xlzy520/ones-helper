@@ -1,3 +1,5 @@
+import { getCurrentTab } from '~/common/tabs'
+
 export const copyToClipboard = function(input: string) {
   const el = document.createElement('textarea')
   el.style.fontSize = '12pt'
@@ -29,7 +31,7 @@ export const $All = function(query: string) {
   return document.querySelectorAll(query)
 }
 
-export const injectHead = (content) => {
+export const injectHead = (content: HTMLElement) => {
   const head = $('head')
   if (head) {
     head.appendChild(content)
@@ -58,4 +60,13 @@ export const isDev = () => {
 
 export const isPrivate = () => {
   return location.href.includes('https://mars-dev.myones.net:')
+}
+
+export const sendMessage = (message: any) => {
+  getCurrentTab().then((tab) => {
+    const { id } = tab
+    if (id) {
+      browser.tabs.sendMessage(id, message)
+    }
+  })
 }
