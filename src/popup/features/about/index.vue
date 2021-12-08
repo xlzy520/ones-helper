@@ -36,7 +36,7 @@ const message = useMessage()
 const newVersion = ref('')
 const currentVersion = ref('')
 const downloading = ref(false)
-const ghToken = 'token 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'
+const ghTokens = ['ghp_rWBd8lZkL9AfMXTI', 'NqQlSoVXNcGDgM18H7RF']
 
 const downloadBtnText = computed(() => {
   return downloading.value ? '下载中...' : '有新版本，立即更新插件'
@@ -53,7 +53,7 @@ const getCurrentVersion = () => {
 const getLatestRelease = () => {
   fetch('https://api.github.com/repos/xlzy520/ones-helper/releases/latest', {
     headers: {
-      authorization: ghToken,
+      Authorization: `token ${ghTokens.join('')}`,
     },
   }).then(res => res.json()).then((res) => {
     console.log(res)
