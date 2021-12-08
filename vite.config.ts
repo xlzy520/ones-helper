@@ -84,7 +84,7 @@ export default defineConfig(({ command }) => ({
     },
   },
   build: {
-    outDir: r('extension/dist'),
+    outDir: r('ONESHelper/dist'),
     emptyOutDir: false,
     sourcemap: isDev ? 'inline' : false,
     // https://developer.chrome.com/docs/webstore/program_policies/#:~:text=Code%20Readability%20Requirements
