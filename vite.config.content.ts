@@ -16,7 +16,7 @@ export default defineConfig({
         ],
       }
       : undefined,
-    outDir: r('extension/dist/contentScripts'),
+    outDir: r('ONESHelper/dist/contentScripts'),
     cssCodeSplit: false,
     emptyOutDir: false,
     sourcemap: isDev ? 'inline' : false,
