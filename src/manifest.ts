@@ -33,11 +33,13 @@ export async function getManifest() {
     },
     permissions: [
       'cookies',
+      'downloads',
+      'downloads.open',
       'tabs',
       'storage',
       'webRequest',
-      'webRequestBlocking',
-      'activeTab',
+      // 'webRequestBlocking',
+      // 'activeTab',
       'https://ones.ai/*',
     ],
     content_scripts: [{
