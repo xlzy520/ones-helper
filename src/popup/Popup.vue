@@ -36,7 +36,7 @@ import OtherAction from '~/popup/features/otherAction/index.vue'
 import ManHour from '~/popup/features/manhour/index.vue'
 import AboutMe from '~/popup/features/about/index.vue'
 
-const defaultTab = ref('自定义API')
+const defaultTab = ref('API转发')
 
 // todo
 // 一键切换账号
