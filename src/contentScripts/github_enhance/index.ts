@@ -8,6 +8,11 @@ interface PROption {
 
 const data: PROption[] = [
   {
+    name: 'master <= preview2 ',
+    from: 'preview2',
+    to: 'master',
+  },
+  {
     name: 'preview1',
     from: 'preview1',
     to: 'preview1',
@@ -21,11 +26,6 @@ const data: PROption[] = [
     name: 'preview3',
     from: 'preview3',
     to: 'preview3',
-  },
-  {
-    name: 'master <= preview2 ',
-    from: 'preview2',
-    to: 'master',
   },
 ]
 
