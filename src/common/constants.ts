@@ -87,6 +87,8 @@ export const ONESConfig = {
   // PROJECT_ROOT: '',
   // WIKI_ROOT: '',
   // OFFICIAL_ROOT: '',
+  cloudType: 'none', // 'none'不支持, 'public'公有云, 'private'私有云
+  ENABLE_HONOR_LOGIN: 'false', // 是否开启荣耀特殊登录
   MOBILE_ROOT: 'https://dev.myones.net/mobile/hotfix_20211128',
   PURCHASE_ROOT: 'https://purchasedev.myones.net/P1037',
   wechatCorpId: 'wwa76530a1feeaaab1',

@@ -23,7 +23,7 @@ export function run(): void {
       saveOnesConfig(onesConfig)
     }
     else {
-      const onesConfig = res?.wechatBindSupport ? res : ONESConfig
+      const onesConfig = res?.wechatBindSupport ? { ...ONESConfig, ...res } : ONESConfig
       saveOnesConfig(onesConfig)
     }
   })
