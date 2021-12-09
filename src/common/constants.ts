@@ -80,6 +80,10 @@ export const DefaultPatterns: PatternConfig[] = [
     enable: true,
     pattern: 'http://dev.localhost:3000/*',
   },
+  {
+    enable: true,
+    pattern: 'http://dev.localhost/*',
+  },
 ]
 
 export const ONESConfig = {

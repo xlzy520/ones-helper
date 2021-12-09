@@ -55,7 +55,7 @@ export class HeaderCustomer {
   // }
 
   addCustomHeadersListener = (): void => {
-    const defaultS = ['https://dev.myones.net/*', 'http://dev.localhost:3000/*']
+    const defaultS = ['https://dev.myones.net/*', 'http://dev.localhost:3000/*', 'http://dev.localhost/*']
     const patterns = this.patterns.length === 0 ? defaultS : this.patterns
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.handleRequest,
