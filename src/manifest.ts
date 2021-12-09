@@ -40,7 +40,11 @@ export async function getManifest() {
       'webRequest',
       'webRequestBlocking',
       // 'activeTab',
+      'https://github.com/BangWork/*',
       'https://ones.ai/*',
+      'https://*.myones.net/*',
+      'http://dev.localhost/*',
+      'http://localhost/*',
     ],
     content_scripts: [{
       matches: [
