@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-4">
+  <div class="pb-4 overflow-y-hidden">
     <div class="mb-2 layout-items-center ">
       <div class="layout-items-center w-[260px]">
         <div class="whitespace-nowrap">
@@ -35,8 +35,8 @@
         />
       </div>
     </div>
-    <div class="overflow-y-hidden">
-      <n-data-table :columns="columns" :data="filteredTableData" max-height="480" size="small" />
+    <div>
+      <n-data-table :columns="columns" :data="filteredTableData" max-height="400" size="small" />
     </div>
     <n-modal
       v-model:show="recordModalShow"
