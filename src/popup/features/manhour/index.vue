@@ -236,7 +236,7 @@ const columns = [
       const handlePositiveClick = () => {
         const projectUUID = row.project.uuid
         const issueTypeUUID = row.issueType.uuid
-        const url = `https://ones.ai/project/#/team/XBUM7Mss/project/${projectUUID}/issue_type/${issueTypeUUID}/task/${row.uuid}`
+        const url = `https://ones.ai/project/#/team/RDjYMhKq/project/${projectUUID}/issue_type/${issueTypeUUID}/task/${row.uuid}`
         window.open(url, '_blank')
       }
       const name = row.name

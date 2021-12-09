@@ -38,7 +38,7 @@ export async function getManifest() {
       'tabs',
       'storage',
       'webRequest',
-      // 'webRequestBlocking',
+      'webRequestBlocking',
       // 'activeTab',
       'https://ones.ai/*',
     ],
