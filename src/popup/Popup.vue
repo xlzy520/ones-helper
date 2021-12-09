@@ -3,7 +3,7 @@
     <n-message-provider>
       <main class="w-[800px] h-[360px] px-4">
         <n-tabs :default-value="defaultTab" type="line">
-          <n-tab-pane name="自定义API" tab="自定义API">
+          <n-tab-pane name="API转发" tab="API转发">
             <custom-api />
           </n-tab-pane>
           <n-tab-pane name="OnesConfig" tab="OnesConfig">
