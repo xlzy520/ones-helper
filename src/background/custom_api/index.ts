@@ -59,13 +59,4 @@ export function customApi(): void {
   const headerCustomer = new HeaderCustomer()
   syncApiSetting(headerCustomer)
   syncPatterns(headerCustomer)
-
-  browser.runtime.onMessage.addListener((request) => {
-    const { type } = request
-    if (type === 'och_customApiChange') {
-      syncApiSetting(headerCustomer)
-      syncPatterns(headerCustomer)
-    }
-    console.log('接收消息：', request)
-  })
 }

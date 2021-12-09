@@ -5,7 +5,7 @@
         <div class="mr-4">
           Github PR分支选择优化
         </div>
-        <n-switch v-model:value="taskConfig.data.branchSelectEnhance" class="mr-4" />
+        <n-switch v-model:value="otherConfig.data.branchSelectEnhance" class="mr-4" />
         <n-tooltip trigger="hover">
           <template #trigger>
             <question-icon />
@@ -13,6 +13,23 @@
           优化preview分支选择，由于preview搜索到的分支很多，不好直接选择
         </n-tooltip>
       </div>
+      <!--      由于tabGroups只支持manifest V3，所以暂时不做这个自动分组功能-->
+
+      <!--      <div class="layout-items-center py-2 switch-row">-->
+      <!--        <div class="mr-4">-->
+      <!--          是否开启自动分组：-->
+      <!--        </div>-->
+      <!--        <n-switch v-model:value="otherConfig.data.enableAutoGroup" class="mr-4" />-->
+      <!--        <n-tooltip trigger="hover">-->
+      <!--          <template #trigger>-->
+      <!--            <question-icon />-->
+      <!--          </template>-->
+      <!--          根据域名自动对浏览器标签页进行分组-->
+      <!--        </n-tooltip>-->
+      <!--        <n-button type="primary" @click="groupTabs ">-->
+      <!--          👏 一键分组所有Tabs-->
+      <!--        </n-button>-->
+      <!--      </div>-->
     </div>
     <!--    <div class="layout-around">-->
     <!--      <n-button type="primary" @click="copyAll">-->
@@ -31,20 +48,26 @@ import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 
 const message = useMessage()
-const taskConfig = reactive({
+const otherConfig = reactive({
   data: {
     branchSelectEnhance: true,
+    // enableAutoGroup: true,
   },
 })
 
-watch(taskConfig, () => {
-  onesConfigService.saveOtherConfig(toRaw(taskConfig.data))
+watch(otherConfig, () => {
+  onesConfigService.saveOtherConfig(toRaw(otherConfig.data))
 })
 
 const getOtherConfig = () => {
   onesConfigService.getOtherConfig().then((res) => {
-    console.log(res)
-    taskConfig.data = res
+    otherConfig.data = { ...otherConfig.data, ...res }
+  })
+}
+
+const groupTabs = () => {
+  browser.runtime.sendMessage({
+    type: 'groupRightNow',
   })
 }
 

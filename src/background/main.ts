@@ -1,8 +1,7 @@
 import { sendMessage, onMessage } from 'webext-bridge'
 import { Tabs } from 'webextension-polyfill'
 import { customApi } from './custom_api'
-
-customApi()
+// import { groupAllTabs } from './background/groupTabs'
 
 // only on dev mode
 if (import.meta.hot) {
@@ -11,6 +10,20 @@ if (import.meta.hot) {
   // load latest content script
   import('./contentScriptHMR')
 }
+
+customApi()
+
+browser.runtime.onMessage.addListener((request) => {
+  const { type } = request
+  if (type === 'och_customApiChange') {
+    customApi()
+  }
+  // 由于tabGroups只支持manifest V3，所以暂时不做这个功能
+  // else if (type === 'groupRightNow') {
+  //   groupAllTabs()
+  // }
+  console.log('接收消息：', request)
+})
 
 browser.runtime.onInstalled.addListener((): void => {
   // eslint-disable-next-line no-console
