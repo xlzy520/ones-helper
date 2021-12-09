@@ -1,6 +1,36 @@
 import { $, $All } from '~/common/utils'
 
-const getButton = (name: string) => {
+interface PROption {
+  name: string
+  from: string
+  to: string
+}
+
+const data: PROption[] = [
+  {
+    name: 'preview1',
+    from: 'preview1',
+    to: 'preview1',
+  },
+  {
+    name: 'preview2',
+    from: 'preview2',
+    to: 'preview2',
+  },
+  {
+    name: 'preview3',
+    from: 'preview3',
+    to: 'preview3',
+  },
+  {
+    name: 'master <= preview2 ',
+    from: 'preview2',
+    to: 'master',
+  },
+]
+
+const getButton = (option: PROption) => {
+  const { name, from, to } = option
   const button = document.createElement('a')
   const text = document.createTextNode(name)
   button.className = 'btn btn-sm btn-primary mr-2 ones-helper'
@@ -8,7 +38,7 @@ const getButton = (name: string) => {
   const pathname = location.pathname
   const index = pathname.indexOf('compare/')
   const prePathName = pathname.substring(0, index)
-  button.href = `${prePathName}compare/${name}...${name}`
+  button.href = `${prePathName}compare/${to}...${from}`
   return button
 }
 
@@ -21,19 +51,14 @@ const addCompareButtons = () => {
   if (comparePanel) {
     const pair = $All('.range-cross-repo-pair')
     const last = pair[1]
-    last.appendChild(getButton('preview1'))
-    last.appendChild(getButton('preview2'))
-    last.appendChild(getButton('preview3'))
+    data.forEach((item: PROption) => {
+      last.appendChild(getButton(item))
+    })
   }
 }
 
 export const branchSelectEnhance = () => {
   if (location.href.includes('https://github.com/BangWork/')) {
     addCompareButtons()
-    window.addEventListener('click', () => {
-      setTimeout(() => {
-        addCompareButtons()
-      }, 1000)
-    })
   }
 }

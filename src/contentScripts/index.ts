@@ -26,10 +26,6 @@ import { $, isSaas, injectHead } from '~/common/utils'
   runOtherScript()
 
   onesConfigService.getOtherConfig().then((res) => {
-    if (res.branchSelectEnhance) {
-      branchSelectEnhance()
-    }
-
     setInterval(() => {
       if (isSaas()) {
         if (res.copy && !$('.ones-helper.copy-task')) {
@@ -38,6 +34,9 @@ import { $, isSaas, injectHead } from '~/common/utils'
         if (res.enableRelatedImplementVersion && !$('.ones-helper.search-task')) {
           addViewRelateImplementTask()
         }
+      }
+      if (res.branchSelectEnhance) {
+        branchSelectEnhance()
       }
     }, 3000)
   })
