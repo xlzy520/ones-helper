@@ -36,7 +36,13 @@
       </div>
     </div>
     <div>
-      <n-data-table :columns="columns" :data="filteredTableData" max-height="400" size="small" />
+      <n-data-table
+        :columns="columns"
+        :data="filteredTableData"
+        :loading="loading"
+        max-height="400"
+        size="small"
+      />
     </div>
     <n-modal
       v-model:show="recordModalShow"
@@ -144,6 +150,7 @@ const rules = {
 }
 
 const tableData = ref([])
+const loading = ref(false)
 
 const resetFormData = () => {
   Object.assign(recordFormData, {
@@ -170,10 +177,13 @@ const setOptions = (tableData: any) => {
 }
 
 const getData = () => {
+  loading.value = true
   fetchMyTaskList().then((data) => {
     console.log(data)
     tableData.value = data
     setOptions(data)
+  }).finally(() => {
+    loading.value = false
   })
 }
 
