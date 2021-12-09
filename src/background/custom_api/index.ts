@@ -1,6 +1,7 @@
 import { HeaderCustomer, HeaderCustomerOptions, Headers } from '../utils/header_customer'
 import { customApiService } from '../../service'
 import { PROJECT_BRANCH_KEY, ONES_HOST_KEY, DefaultPresetOptions, DefaultPreset } from '~/common/constants'
+import { PatternConfig } from '~/service/custom_api'
 
 function syncApiSetting(headerCustomer: HeaderCustomer) {
   browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
@@ -8,7 +9,7 @@ function syncApiSetting(headerCustomer: HeaderCustomer) {
       const headers: Headers = []
       // 兼容火狐，第一次拿到customApiData的时候是undefined
       const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData
-      const selectedConfig = presetOptions.find(v => v.value === preset).config
+      const selectedConfig = presetOptions.find((v: any) => v.value === preset).config
       const customHOST = selectedConfig[ONES_HOST_KEY]
       const isProjectApi = details.url.includes('/api/project')
       if (customHOST) {
@@ -45,10 +46,10 @@ async function syncPatterns(headerCustomer: HeaderCustomer) {
   const customApiData = await customApiService.getCustomApi()
   const { customApiPatterns } = customApiData
   const patterns: string[] = customApiPatterns
-    .filter((patternConfig) => {
+    .filter((patternConfig: PatternConfig) => {
       return patternConfig.enable
     })
-    .map((patternConfig) => {
+    .map((patternConfig: PatternConfig) => {
       return patternConfig.pattern
     })
   headerCustomer.setPatterns(patterns || [])
@@ -59,12 +60,12 @@ export function customApi(): void {
   syncApiSetting(headerCustomer)
   syncPatterns(headerCustomer)
 
-  browser.storage.onChanged.addListener(() => {
-    syncApiSetting(headerCustomer)
-    syncPatterns(headerCustomer)
+  browser.runtime.onMessage.addListener((request) => {
+    const { type } = request
+    if (type === 'och_customApiChange') {
+      syncApiSetting(headerCustomer)
+      syncPatterns(headerCustomer)
+    }
+    console.log('接收消息：', request)
   })
-
-  // browser.runtime.onMessage.addListener((request) => {
-  //   console.log('接收消息：', request)
-  // })
 }

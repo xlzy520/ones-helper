@@ -1,7 +1,7 @@
-export type Headers = browser.webRequest.HttpHeader[]
+export type Headers = browser.WebRequest.HttpHeaders
 
 export interface HeaderCustomerOptions {
-  headersBuilder: (details: browser.webRequest.WebRequestDetails) => Headers
+  headersBuilder: (details: browser.WebRequest.OnBeforeSendHeadersDetailsType) => Headers
 }
 
 export class HeaderCustomer {
@@ -15,7 +15,7 @@ export class HeaderCustomer {
     this.addCustomHeadersListener()
   }
 
-  buildHeaders = (details: browser.webRequest.WebRequestDetails): Headers => {
+  buildHeaders = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType): Headers => {
     return this.options.headersBuilder ? this.options.headersBuilder(details) : []
   }
 
@@ -23,9 +23,9 @@ export class HeaderCustomer {
     this.options.headersBuilder = headersBuilder
   }
 
-  getPatterns = (): string[] => {
-    return this.patterns
-  }
+  // getPatterns = (): string[] => {
+  //   return this.patterns
+  // }
 
   setPatterns = (patterns: string[]): void => {
     this.patterns = patterns
@@ -42,17 +42,17 @@ export class HeaderCustomer {
     return { requestHeaders: details.requestHeaders }
   }
 
-  handleBeRequest = (
-    details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
-  ): browser.WebRequest.BlockingResponse => {
-    const paramsStr = String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes))
-    const params = JSON.parse(paramsStr)
-    console.log(params)
-    if (details.requestHeaders)
-      details.requestHeaders.push(...this.buildHeaders(details))
-
-    return { requestHeaders: details.requestHeaders }
-  }
+  // handleBeRequest = (
+  //   details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
+  // ): browser.WebRequest.BlockingResponse => {
+  //   const paramsStr = String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes))
+  //   const params = JSON.parse(paramsStr)
+  //   console.log(params)
+  //   if (details.requestHeaders)
+  //     details.requestHeaders.push(...this.buildHeaders(details))
+  //
+  //   return { requestHeaders: details.requestHeaders }
+  // }
 
   addCustomHeadersListener = (): void => {
     const defaultS = ['https://dev.myones.net/*', 'http://dev.localhost:3000/*']
@@ -64,13 +64,6 @@ export class HeaderCustomer {
       },
       ['blocking', 'requestHeaders'],
     )
-    // browser.webRequest.onBeforeRequest.addListener(
-    //   this.handleRequest,
-    //   {
-    //     urls: patterns,
-    //   },
-    //   ['blocking', 'requestBody'],
-    // )
   }
 
   removeCustomHeadersListener = (): void => {
