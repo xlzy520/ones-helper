@@ -3,6 +3,8 @@ import { customApiService } from '../../service'
 import { PROJECT_BRANCH_KEY, ONES_HOST_KEY, DefaultPresetOptions, DefaultPreset } from '~/common/constants'
 import { PatternConfig } from '~/service/custom_api'
 
+const headerCustomer = new HeaderCustomer()
+
 function syncApiSetting(headerCustomer: HeaderCustomer) {
   browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
     const headerBuilder: HeaderCustomerOptions['headersBuilder'] = (details) => {
@@ -56,7 +58,6 @@ async function syncPatterns(headerCustomer: HeaderCustomer) {
 }
 
 export function customApi(): void {
-  const headerCustomer = new HeaderCustomer()
   syncApiSetting(headerCustomer)
   syncPatterns(headerCustomer)
 }

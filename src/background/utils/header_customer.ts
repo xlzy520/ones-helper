@@ -35,7 +35,6 @@ export class HeaderCustomer {
   handleRequest = (
     details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
   ): browser.WebRequest.BlockingResponse => {
-    console.log(details)
     if (details.requestHeaders)
       details.requestHeaders.push(...this.buildHeaders(details))
 
