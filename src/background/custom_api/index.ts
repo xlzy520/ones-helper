@@ -15,13 +15,26 @@ function syncApiSetting(headerCustomer: HeaderCustomer) {
       const customHOST = selectedConfig[ONES_HOST_KEY]
       const isProjectApi = details.url.includes('/api/project')
       if (customHOST) {
-        let value = customHOST
-        if (!isProjectApi)
-          value = customHOST.replace('api/project/', 'api/wiki/')
-        headers.push({
-          name: 'x-ones-api-host',
-          value,
-        })
+        if (customHOST.includes('localhost')) {
+          headers.push({
+            name: 'Ones-User-ID',
+            value: 'Pqmud3zh',
+          })
+          headers.push({
+            name: 'Ones-Auth-Token',
+            value: '2nCuzEL5SmjrC5UK1KdCKBxigZGzTY2ClWRQm1TqMSFHUuZ0RFGErJbRVzxKGQ4c',
+          })
+        }
+        else {
+          let value = customHOST
+          if (!isProjectApi) {
+            value = customHOST.replace('api/project/', 'api/wiki/')
+          }
+          headers.push({
+            name: 'x-ones-api-host',
+            value,
+          })
+        }
       }
       else {
         const projectBranch = selectedConfig[PROJECT_BRANCH_KEY]

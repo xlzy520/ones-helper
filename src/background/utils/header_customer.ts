@@ -34,27 +34,52 @@ export class HeaderCustomer {
 
   handleRequest = (
     details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
-  ): browser.WebRequest.BlockingResponse => {
-    if (details.requestHeaders)
+  ): browser.WebRequest.BlockingResponseOrPromise => {
+    if (details.type === 'xmlhttprequest') {
+      console.log(details)
+    }
+    if (details.requestHeaders) {
       details.requestHeaders.push(...this.buildHeaders(details))
+    }
 
     return { requestHeaders: details.requestHeaders }
   }
 
-  // handleBeRequest = (
-  //   details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
-  // ): browser.WebRequest.BlockingResponse => {
-  //   const paramsStr = String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes))
-  //   const params = JSON.parse(paramsStr)
-  //   console.log(params)
-  //   if (details.requestHeaders)
-  //     details.requestHeaders.push(...this.buildHeaders(details))
-  //
-  //   return { requestHeaders: details.requestHeaders }
-  // }
+  handleResponseHeaders = (
+    details: browser.WebRequest.OnHeadersReceivedDetailsType,
+  ): browser.WebRequest.BlockingResponseOrPromise => {
+    if (details.type === 'main_frame') {
+      return {}
+    }
+
+    const { responseHeaders = [] } = details
+    responseHeaders.push({
+      name: 'Access-Control-Allow-Origin',
+      value: '*',
+    })
+    responseHeaders.push({
+      name: 'Access-Control-Allow-Methods',
+      value: 'GET, PUT, POST, DELETE, HEAD, OPTIONS, PATCH, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK',
+    })
+    responseHeaders.push({ name: 'Access-Control-Allow-Credentials', value: 'true' })
+
+    responseHeaders.push({ name: 'Access-Control-Allow-Headers', value: '*' })
+
+    responseHeaders.push({
+      name: 'Access-Control-Expose-Headers',
+      value: '*',
+    })
+
+    return { responseHeaders }
+  }
 
   addCustomHeadersListener = (): void => {
-    const defaultS = ['https://dev.myones.net/*', 'http://dev.localhost:3000/*', 'http://dev.localhost/*']
+    const defaultS = [
+      'https://dev.myones.net/*',
+      'http://dev.localhost:3000/*',
+      'http://dev.localhost/*',
+      'http://localhost/*',
+    ]
     const patterns = this.patterns.length === 0 ? defaultS : this.patterns
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.handleRequest,
@@ -63,6 +88,13 @@ export class HeaderCustomer {
       },
       ['blocking', 'requestHeaders'],
     )
+
+    browser.webRequest.onHeadersReceived.addListener(
+      this.handleResponseHeaders,
+      {
+        urls: patterns,
+      },
+      ['blocking', 'responseHeaders', 'extraHeaders'])
   }
 
   removeCustomHeadersListener = (): void => {
