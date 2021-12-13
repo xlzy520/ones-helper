@@ -45,6 +45,8 @@ export async function getManifest() {
       'https://*.myones.net/*',
       'http://dev.localhost/*',
       'http://localhost/*',
+      'http://192.168.1.45/*',
+      'http://192.168.1.210/*',
     ],
     content_scripts: [{
       matches: [
@@ -53,6 +55,7 @@ export async function getManifest() {
         'https://*.myones.net/*',
         'http://dev.localhost/*',
         'http://localhost/*',
+        // '<all_urls>',
         // 'https://*/*', 'https://*/*'
       ],
       js: ['./dist/contentScripts/index.global.js'],

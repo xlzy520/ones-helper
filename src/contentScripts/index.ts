@@ -5,7 +5,8 @@ import { branchSelectEnhance } from './github_enhance/index'
 import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, injectHead } from '~/common/utils'
+import { $, isSaas, injectHead, injectScript, isDevDomain } from '~/common/utils'
+import ajaxProxy from '~/contentScripts/other_script/ajax_proxy'
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
@@ -15,11 +16,19 @@ import { $, isSaas, injectHead } from '~/common/utils'
   styleEl.innerHTML = styles
   injectHead(styleEl)
 
-  // mount component to context window
+  // API转发
   customApiService.getCustomApi().then((customApiData) => {
     console.log(customApiData)
+    const config = customApiData.presetOptions.find((v: any) => v.value === customApiData.preset).config
     if (customApiData.showCustomApi) {
       showCustomApi()
+    }
+    const { customONESApiHost } = config
+    if (customONESApiHost.includes('http://localhost')) {
+      if (isDevDomain()) {
+        injectScript(`${ajaxProxy};run('${customONESApiHost}')`)
+        // injectScript(`${ajaxProxy};run('${customONESApiHost}')`)
+      }
     }
   })
 

@@ -6,7 +6,8 @@ import { PatternConfig } from '~/service/custom_api'
 const headerCustomer = new HeaderCustomer()
 
 function syncApiSetting(headerCustomer: HeaderCustomer) {
-  browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
+  browser.storage.local.get(['customApiData', 'userInfo']).then(({ customApiData = {}, userInfo }) => {
+    console.log(userInfo)
     const headerBuilder: HeaderCustomerOptions['headersBuilder'] = (details) => {
       const headers: Headers = []
       // 兼容火狐，第一次拿到customApiData的时候是undefined
@@ -14,16 +15,17 @@ function syncApiSetting(headerCustomer: HeaderCustomer) {
       const selectedConfig = presetOptions.find((v: any) => v.value === preset).config
       const customHOST = selectedConfig[ONES_HOST_KEY]
       const isProjectApi = details.url.includes('/api/project')
+      console.log(details)
       if (customHOST) {
-        if (customHOST.includes('localhost')) {
-          headers.push({
-            name: 'Ones-User-ID',
-            value: 'Pqmud3zh',
-          })
-          headers.push({
-            name: 'Ones-Auth-Token',
-            value: '2nCuzEL5SmjrC5UK1KdCKBxigZGzTY2ClWRQm1TqMSFHUuZ0RFGErJbRVzxKGQ4c',
-          })
+        if (customHOST.includes('localhost') || customHOST.includes('192.168')) {
+          // headers.push({
+          //   name: 'Ones-User-ID',
+          //   value: 'B9ei3VVV',
+          // })
+          // headers.push({
+          //   name: 'Ones-Auth-Token',
+          //   value: 'y9w61wPTwRKg3LB8yRay83Mx7tuqsuK4cxRAnIoR1UfVBpwl6Q9uBOHlgwViIfJ5',
+          // })
         }
         else {
           let value = customHOST

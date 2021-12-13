@@ -1,15 +1,9 @@
-import ajaxProxy from './ajax_proxy'
 import { onesConfigService } from '~/service'
 import { copyToClipboard, $All, injectScript, isSaas, isPrivate } from '~/common/utils'
 import { ONESConfig } from '~/common/constants'
 
 export function run(): void {
   // logic here
-
-  setTimeout(() => {
-    console.log('加载了', '===========打印的 ------ ')
-    injectScript(`${ajaxProxy};run$1()`)
-  }, 3000)
 
   const saveOnesConfig = (onesConfig: any) => {
     const dataStr = JSON.stringify(onesConfig)

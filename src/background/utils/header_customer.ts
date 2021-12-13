@@ -7,6 +7,8 @@ export interface HeaderCustomerOptions {
 export class HeaderCustomer {
   private patterns: string[] = []
 
+  private authHeaders: Headers = []
+
   options: HeaderCustomerOptions = {
     headersBuilder: () => [],
   }
@@ -35,13 +37,14 @@ export class HeaderCustomer {
   handleRequest = (
     details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
   ): browser.WebRequest.BlockingResponseOrPromise => {
-    if (details.type === 'xmlhttprequest') {
-      console.log(details)
+    const { type } = details
+    if (type === 'xmlhttprequest') {
+      // console.log(details)
+      if (details.requestHeaders) {
+        details.requestHeaders.push(...this.buildHeaders(details))
+        details.requestHeaders.push(...this.authHeaders)
+      }
     }
-    if (details.requestHeaders) {
-      details.requestHeaders.push(...this.buildHeaders(details))
-    }
-
     return { requestHeaders: details.requestHeaders }
   }
 
@@ -49,13 +52,21 @@ export class HeaderCustomer {
     details: browser.WebRequest.OnHeadersReceivedDetailsType,
   ): browser.WebRequest.BlockingResponseOrPromise => {
     if (details.type === 'main_frame') {
-      return {}
+      return
     }
 
-    const { responseHeaders = [] } = details
+    const { responseHeaders = [], initiator, originUrl, url } = details
+    if (url.endsWith('/auth/login')) {
+      const keys = ['Ones-User-Id', 'Ones-Auth-Token']
+      const results = responseHeaders.filter((v: any) => keys.includes(v.name))
+      if (results.length) {
+        this.authHeaders = results
+      }
+    }
+    const o = new URL(initiator || originUrl)
     responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
-      value: '*',
+      value: o.origin || '*',
     })
     responseHeaders.push({
       name: 'Access-Control-Allow-Methods',
@@ -78,13 +89,16 @@ export class HeaderCustomer {
       'https://dev.myones.net/*',
       'http://dev.localhost:3000/*',
       'http://dev.localhost/*',
+      'http://192.168.1.45:9001/*',
+      'http://192.168.1.210:9001/*',
       'http://localhost/*',
     ]
     const patterns = this.patterns.length === 0 ? defaultS : this.patterns
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.handleRequest,
       {
-        urls: patterns,
+        urls: defaultS,
+        types: ['xmlhttprequest'],
       },
       ['blocking', 'requestHeaders'],
     )
@@ -92,7 +106,8 @@ export class HeaderCustomer {
     browser.webRequest.onHeadersReceived.addListener(
       this.handleResponseHeaders,
       {
-        urls: patterns,
+        urls: defaultS,
+        types: ['xmlhttprequest'],
       },
       ['blocking', 'responseHeaders', 'extraHeaders'])
   }

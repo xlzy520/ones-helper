@@ -12,20 +12,30 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns'
 // -dev前端连SaaS
 export const DefaultPreset = '自定义的'
 export const DefaultPresetOptions = [
-  // {
-  //   type: 'group',
-  //   label: 'Rubber Soul',
-  //   key: 'Rubber Soul',
-  //   children: [
-  //
-  //   ]
-  // }
   {
-    label: '用户自定义',
-    value: '自定义的',
+    label: '用户自定义(master)',
+    value: '用户自定义(master)',
     config: {
       custom: true,
       customONESApiHost: '',
+      customONESApiProjectBranch: 'master',
+    },
+  },
+  {
+    label: '用户自定义(SaaS)',
+    value: '用户自定义(SaaS)',
+    config: {
+      custom: true,
+      customONESApiHost: 'https://ones.ai/project/api/project/',
+      customONESApiProjectBranch: '',
+    },
+  },
+  {
+    label: '用户自定义(私有部署)',
+    value: '用户自定义(私有部署)',
+    config: {
+      custom: true,
+      customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
       customONESApiProjectBranch: '',
     },
   },
@@ -62,10 +72,19 @@ export const DefaultPresetOptions = [
     },
   },
   {
-    label: '本地后端(协议:IP:端口)',
+    label: '预发布环境',
+    value: '本地=>预发布环境',
+    config: {
+      customONESApiHost: 'https://onesai.myones.net/project/api/project/',
+      customONESApiProjectBranch: '',
+    },
+  },
+  {
+    label: '本地后端(后端开发专用，只允许修改端口，必须使用localhost)',
     value: '本地=>本地后端',
     config: {
-      customONESApiHost: 'http://ip:port/',
+      custom: true,
+      customONESApiHost: 'http://localhost:9001/',
       customONESApiProjectBranch: '',
     },
   },

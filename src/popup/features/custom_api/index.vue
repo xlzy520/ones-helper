@@ -7,7 +7,7 @@
       :label-width="135"
     >
       <n-grid>
-        <n-form-item-grid-item :span="22" label="配置预设" path="preset">
+        <n-form-item-grid-item :span="22" label="配置" path="preset">
           <n-select
             v-model:value="formValue.preset"
             filterable
@@ -16,7 +16,12 @@
             @update:value="handleUpdatePresetValue"
           />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="22" label="API Host" path="customONESApiHost">
+        <n-form-item-grid-item
+          v-if="selectedConfig.customONESApiHost"
+          :span="22"
+          label="API Host"
+          path="customONESApiHost"
+        >
           <n-input
             v-model:value="selectedConfig.customONESApiHost"
             :disabled="!isCustom"
@@ -24,7 +29,12 @@
             clearable
           />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="22" label="API Branch" path="customONESApiProjectBranch">
+        <n-form-item-grid-item
+          v-if="selectedConfig.customONESApiProjectBranch"
+          :span="22"
+          label="API Branch"
+          path="customONESApiProjectBranch"
+        >
           <n-input
             v-model:value="selectedConfig.customONESApiProjectBranch"
             :disabled="!isCustom"
@@ -55,7 +65,7 @@
           <n-tooltip v-if="!isCustom" placement="bottom" trigger="hover">
             <template #trigger>
               <n-button class="ml-4 w-full" type="info" @click="onSaveAs">
-                另存为预设
+                另存为
               </n-button>
             </template>
             点击另存为则基于选中的配置自定义
