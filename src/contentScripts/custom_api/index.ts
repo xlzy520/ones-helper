@@ -1,5 +1,5 @@
 import { customApiService } from '../../service'
-import { showCustomApiInfo, syncCustomApiInfo } from './show_custom_api_info'
+import { hideCustomApiInfo, showCustomApiInfo, syncCustomApiInfo } from './show_custom_api_info'
 import { CustomApiChange } from '~/common/message_type'
 import { CUSTOM_API_PATTERNS } from '~/common/constants'
 import { patternToRegExp } from '~/common/url_pattern'
@@ -19,17 +19,22 @@ const checkIsMathUrl = async() => {
 }
 
 const addEventListeners = () => {
-  browser.runtime.onMessage.addListener((message) => {
-    const type = message ? message.type : null
-    console.log(type)
-    if (type === CustomApiChange)
+  browser.runtime.onMessage.addListener(({ type, customApiData }) => {
+    // console.log(type)
+    if (type === CustomApiChange) {
       syncCustomApiInfo()
+      if (customApiData.showCustomApi) {
+        showCustomApiInfo()
+      }
+      else {
+        hideCustomApiInfo()
+      }
+    }
   })
 }
 
 export async function showCustomApi(): Promise<void> {
   const isMatchUrl = await checkIsMathUrl()
-  console.log(isMatchUrl)
   if (!isMatchUrl)
     return
 

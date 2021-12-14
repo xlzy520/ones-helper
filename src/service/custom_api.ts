@@ -48,9 +48,11 @@ export function saveCustomApi(customApiData: any): Promise<void> {
       if (id) {
         browser.tabs.sendMessage(id, {
           type: CustomApiChange,
+          customApiData,
         })
         browser.runtime.sendMessage({
           type: CustomApiChange,
+          customApiData,
         })
       }
     })

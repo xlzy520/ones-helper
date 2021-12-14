@@ -37,6 +37,10 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
 }
 
 export async function showCustomApiInfo(): Promise<void> {
+  const oldElement = document.querySelector(`#${WRAPPER_EL_ID}`)
+  if (oldElement) {
+    return
+  }
   const wrapperEl = document.createElement('div')
   wrapperEl.className = `${DOM_SCOPE}api-info-wrapper`
   wrapperEl.id = WRAPPER_EL_ID
@@ -51,5 +55,12 @@ export async function syncCustomApiInfo(): Promise<void> {
     const optionElList = await getInfoOptionElList()
     wrapperEl.innerHTML = ''
     wrapperEl.append(...optionElList)
+  }
+}
+
+export async function hideCustomApiInfo(): Promise<void> {
+  const wrapperEl = document.querySelector(`#${WRAPPER_EL_ID}`)
+  if (wrapperEl) {
+    document.body.removeChild(wrapperEl)
   }
 }

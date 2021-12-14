@@ -17,7 +17,7 @@
           />
         </n-form-item-grid-item>
         <n-form-item-grid-item
-          v-if="selectedConfig.customONESApiHost"
+          v-if="selectedConfig.isHost"
           :span="22"
           label="API Host"
           path="customONESApiHost"
@@ -30,7 +30,7 @@
           />
         </n-form-item-grid-item>
         <n-form-item-grid-item
-          v-if="selectedConfig.customONESApiProjectBranch"
+          v-if="selectedConfig.isBranch"
           :span="22"
           label="API Branch"
           path="customONESApiProjectBranch"

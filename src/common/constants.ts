@@ -13,12 +13,13 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns'
 export const DefaultPreset = '自定义的'
 export const DefaultPresetOptions = [
   {
-    label: '用户自定义(master)',
-    value: '用户自定义(master)',
+    label: '用户自定义(dev)',
+    value: '用户自定义(dev)',
     config: {
       custom: true,
       customONESApiHost: '',
       customONESApiProjectBranch: 'master',
+      isBranch: true,
     },
   },
   {
@@ -28,6 +29,7 @@ export const DefaultPresetOptions = [
       custom: true,
       customONESApiHost: 'https://ones.ai/project/api/project/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
   {
@@ -37,6 +39,7 @@ export const DefaultPresetOptions = [
       custom: true,
       customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
   {
@@ -53,6 +56,7 @@ export const DefaultPresetOptions = [
     config: {
       customONESApiHost: '',
       customONESApiProjectBranch: 'master',
+      isBranch: true,
     },
   },
   {
@@ -61,6 +65,7 @@ export const DefaultPresetOptions = [
     config: {
       customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
   {
@@ -69,6 +74,7 @@ export const DefaultPresetOptions = [
     config: {
       customONESApiHost: 'https://ones.ai/project/api/project/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
   {
@@ -77,6 +83,7 @@ export const DefaultPresetOptions = [
     config: {
       customONESApiHost: 'https://onesai.myones.net/project/api/project/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
   {
@@ -86,11 +93,16 @@ export const DefaultPresetOptions = [
       custom: true,
       customONESApiHost: 'http://localhost:9001/',
       customONESApiProjectBranch: '',
+      isHost: true,
     },
   },
 ]
 
 export const DefaultPatterns: PatternConfig[] = [
+  {
+    enable: true,
+    pattern: 'http://localhost/*',
+  },
   {
     enable: true,
     pattern: 'https://dev.myones.net/*',
