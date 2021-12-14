@@ -78,7 +78,7 @@
             @positive-click="onDelete"
           >
             <template #trigger>
-              <n-button class="ml-4 w-full" type="error">
+              <n-button class="ml-4 flex-1" type="error">
                 删除
               </n-button>
             </template>
