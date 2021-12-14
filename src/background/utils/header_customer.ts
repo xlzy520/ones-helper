@@ -37,25 +37,22 @@ export class HeaderCustomer {
   handleRequest = (
     details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
   ): browser.WebRequest.BlockingResponseOrPromise => {
-    const { type } = details
-    if (type === 'xmlhttprequest') {
-      // console.log(details)
-      if (details.requestHeaders) {
-        details.requestHeaders.push(...this.buildHeaders(details))
-        details.requestHeaders.push(...this.authHeaders)
-      }
+    // console.log(details)
+    if (details.requestHeaders) {
+      details.requestHeaders.push(...this.buildHeaders(details))
+      details.requestHeaders.push(...this.authHeaders)
     }
     return { requestHeaders: details.requestHeaders }
   }
 
   handleResponseHeaders = (
     details: browser.WebRequest.OnHeadersReceivedDetailsType,
-  ): browser.WebRequest.BlockingResponseOrPromise => {
+  ): browser.WebRequest.BlockingResponseOrPromise|void => {
     if (details.type === 'main_frame') {
       return
     }
 
-    const { responseHeaders = [], initiator, originUrl, url } = details
+    const { responseHeaders = [], url } = details
     if (url.endsWith('/auth/login')) {
       const keys = ['Ones-User-Id', 'Ones-Auth-Token']
       const results = responseHeaders.filter((v: any) => keys.includes(v.name))
@@ -63,10 +60,10 @@ export class HeaderCustomer {
         this.authHeaders = results
       }
     }
-    const o = new URL(initiator || originUrl)
+    const urlObject = new URL(url)
     responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
-      value: o.origin || '*',
+      value: urlObject.origin || '*',
     })
     responseHeaders.push({
       name: 'Access-Control-Allow-Methods',
@@ -98,7 +95,7 @@ export class HeaderCustomer {
       this.handleRequest,
       {
         urls: patterns,
-        types: ['xmlhttprequest'],
+        types: ['xmlhttprequest', 'stylesheet', 'script'],
       },
       ['blocking', 'requestHeaders'],
     )
