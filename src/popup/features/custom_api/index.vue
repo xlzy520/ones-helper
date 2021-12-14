@@ -56,7 +56,7 @@
         <n-form-item-grid-item :span="22" label=" ">
           <n-tooltip placement="bottom" trigger="hover">
             <template #trigger>
-              <n-button class="ml-4 w-full" type="info" @click="onSubmitClick">
+              <n-button class="ml-4 flex-1" type="info" @click="onSubmitClick">
                 保存
               </n-button>
             </template>
@@ -64,7 +64,7 @@
           </n-tooltip>
           <n-tooltip v-if="!isCustom" placement="bottom" trigger="hover">
             <template #trigger>
-              <n-button class="ml-4 w-full" type="info" @click="onSaveAs">
+              <n-button class="ml-4 flex-1" type="info" @click="onSaveAs">
                 另存为
               </n-button>
             </template>
