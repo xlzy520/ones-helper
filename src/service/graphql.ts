@@ -35,18 +35,27 @@ export const fetchCustomerList = (name: string) => {
   return graphqlFetch(query)
 }
 
-export const fetchMyTaskList = () => {
+export interface TaskCondition {
+  statusCategory: string
+  value: string
+  status: string
+  sprint: string
+}
+
+export const fetchMyTaskList = ({ statusCategory, value, status, sprint }: TaskCondition) => {
   const query = {
     query: `{
-      buckets(groupBy: {tasks: {}}, pagination: {limit: 30, after: "", preciseCount: true}) {
+      buckets(groupBy: {tasks: {}}, pagination: {limit: 50, after: "", preciseCount: true}) {
     tasks(filterGroup: $filterGroup, orderBy: $orderBy, includeAncestors: {pathField: "path"}, orderByPath: "path", limit: 100) {
           name
           uuid
           status {
             name
+            uuid
           }
           sprint {
            name
+           uuid
           }
           totalManhour
           number
@@ -76,9 +85,18 @@ export const fetchMyTaskList = () => {
       filterGroup: [{
         // eslint-disable-next-line no-template-curly-in-string
         assign_in: ['${currentUser}'],
-        statusCategory_in: ['in_progress', 'done'],
+        statusCategory_in: [statusCategory],
       }],
     },
+  }
+  if (value) {
+    query.variables.filterGroup[0].name_match = value
+  }
+  if (status) {
+    query.variables.filterGroup[0].status_in = [status]
+  }
+  if (sprint) {
+    query.variables.filterGroup[0].sprint_in = [sprint]
   }
   return graphqlFetch(query).then((res) => {
     return res.data.buckets[0].tasks

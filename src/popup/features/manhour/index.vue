@@ -1,33 +1,49 @@
 <template>
   <div class="pb-4 overflow-y-hidden">
-    <div class="mb-2 layout-items-center ">
-      <div class="layout-items-center w-[260px]">
+    <div class="mb-2 layout-slide ">
+      <div class="layout-items-center w-[240px]">
+        <div class="whitespace-nowrap">
+          状态类型：
+        </div>
+        <n-select
+          v-model:value="filter.statusCategory"
+          placeholder="状态"
+          class="w-[200px]"
+          :options="filterOptions.statusCategoryOptions"
+        />
+      </div>
+      <div class="layout-items-center w-[270px]">
         <div class="whitespace-nowrap">
           所属迭代：
         </div>
         <n-select
-          v-model:value="filter.filter.sprint"
+          v-model:value="filter.sprint"
           class="w-[200px]"
           placeholder="所属迭代"
           clearable
-          :options="filter.sprintOptions"
+          :options="filterOptions.sprintOptions"
         />
       </div>
-      <div class="layout-items-center w-[200px] ml-2">
+      <div class="layout-items-center w-[240px]">
         <div class="whitespace-nowrap">
           状态：
         </div>
         <n-select
-          v-model:value="filter.filter.status"
+          v-model:value="filter.status"
           placeholder="状态"
           class="w-[200px]"
           clearable
-          :options="filter.statusOptions"
+          :options="filterOptions.statusOptions"
         />
       </div>
-      <div class="ml-2">
+    </div>
+    <div class="mb-2 layout-slide ">
+      <div class="layout-items-center">
+        <div class="whitespace-nowrap">
+          标题：
+        </div>
         <n-input
-          v-model:value="filter.filter.value"
+          v-model:value="filter.value"
           placeholder="搜索关键字，支持清空"
           class="mr-4"
           clearable
@@ -90,6 +106,7 @@ import {
   NSelect, NPopconfirm, NTag, NEllipsis,
 } from 'naive-ui'
 import { format } from 'date-fns'
+import { useDebounceFn } from '@vueuse/core'
 import { copyToClipboard, isDev } from '~/common/utils'
 
 import { fetchMyTaskList, recordManhours } from '~/service/graphql'
@@ -97,24 +114,26 @@ import { fetchMyTaskList, recordManhours } from '~/service/graphql'
 const message = useMessage()
 
 const filter = reactive({
-  filter: {
-    sprint: null,
-    status: null,
-    value: '',
-  },
+  sprint: null,
+  status: null,
+  statusCategory: 'in_progress',
+  value: '',
+})
+
+const filterOptions = reactive({
   sprintOptions: [],
   statusOptions: [],
+  statusCategoryOptions: [
+    { label: '进行中', value: 'in_progress' },
+    { label: '已完成', value: 'done' },
+  ],
 })
 
 const selectTableRow = reactive({
 })
 const clearFilterKey = () => {
-  filter.filter.value = ''
+  filter.value = ''
 }
-
-watch(filter.filter, () => {
-
-})
 
 const recordModalShow = ref(false)
 
@@ -123,7 +142,7 @@ const timestamp = new Date(format(new Date(), 'yyyy-MM-dd HH:00:00')).getTime()
 const formRef = ref(null)
 
 const recordFormData = reactive({
-  mode: isDev() ? 'simple' : 'detailed',
+  mode: 'detailed',
   start_time: timestamp,
   hours: 1,
   description: '',
@@ -162,30 +181,36 @@ const resetFormData = () => {
 }
 
 const setOptions = (tableData: any) => {
-  const sprintSet = new Set()
-  const statusSet = new Set()
+  const sprintSet = new Map()
+  const statusSet = new Map()
   tableData.forEach((data: any) => {
     if (data.sprint) {
-      sprintSet.add(data.sprint.name)
+      const { uuid, name } = data.sprint
+      sprintSet.set(uuid, name)
     }
     if (data.status) {
-      statusSet.add(data.status.name)
+      const { uuid, name } = data.status
+      statusSet.set(uuid, name)
     }
   })
-  filter.sprintOptions = Array.from(sprintSet).map(value => ({ label: value, value }))
-  filter.statusOptions = Array.from(statusSet).map(value => ({ label: value, value }))
+  filterOptions.sprintOptions = Array.from(sprintSet).map(value => ({ label: value[1], value: value[0] }))
+  filterOptions.statusOptions = Array.from(statusSet).map(value => ({ label: value[1], value: value[0] }))
 }
 
-const getData = () => {
+const getData = useDebounceFn(() => {
   loading.value = true
-  fetchMyTaskList().then((data) => {
+  fetchMyTaskList(filter).then((data) => {
     console.log(data)
     tableData.value = data
     setOptions(data)
   }).finally(() => {
     loading.value = false
   })
-}
+}, 500)
+
+watch(filter, () => {
+  getData()
+})
 
 const submitRecord = () => {
   console.log(recordFormData)
@@ -312,7 +337,8 @@ const columns = [
 ]
 
 const filteredTableData = computed(() => {
-  const { value, sprint, status } = filter.filter
+  return tableData.value
+  const { value, sprint, status } = filter
   const lowCaseFilterKey = value.toLowerCase()
   return tableData.value.filter((data: any) => {
     const name = data.name
