@@ -97,7 +97,7 @@ export class HeaderCustomer {
     browser.webRequest.onBeforeSendHeaders.addListener(
       this.handleRequest,
       {
-        urls: defaultS,
+        urls: patterns,
         types: ['xmlhttprequest'],
       },
       ['blocking', 'requestHeaders'],
@@ -106,7 +106,7 @@ export class HeaderCustomer {
     browser.webRequest.onHeadersReceived.addListener(
       this.handleResponseHeaders,
       {
-        urls: defaultS,
+        urls: patterns,
         types: ['xmlhttprequest'],
       },
       ['blocking', 'responseHeaders', 'extraHeaders'])
