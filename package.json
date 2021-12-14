@@ -22,7 +22,8 @@
     "start:chromium": "web-ext run --source-dir ./extension --target=chromium",
     "start:firefox": "web-ext run --source-dir ./extension --target=firefox-desktop",
     "clear": "rimraf ONESHelper/dist ONESHelper/manifest.json ONESHelper.*",
-    "lint": "eslint 'src/**/*.{json,ts,js,vue}'"
+    "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
+    "publish:patch": "npm version patch && git push"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.8.0",
