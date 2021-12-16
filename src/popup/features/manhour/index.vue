@@ -219,6 +219,7 @@ const submitRecord = () => {
       const data = toRaw(recordFormData)
       const payload = {
         ...data,
+        start_time: data.start_time / 1000,
         hours: Number(data.hours) * 100000,
       }
       recordManhours(payload).then((res) => {
