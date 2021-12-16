@@ -5,15 +5,21 @@
         <div>下载新版本后，需要 <b style="color:#db2777">删除之前的文件夹</b>，然后将新的文件夹 <b style="color:#db2777">重命名</b>， 也就是删除括号及括号里面的内容</div>
         <div>例如：默认解压之后是<b style="color:#22c55e">ONES Helper</b>，下载解压后新的文件夹名为 <b style="color:#22c55e">ONES Helper 2</b>，需要将后面的 <b style="color:#22c55e"> 2 </b>删除 </div>
       </n-alert>
-      <div class="layout-items-center py-2 switch-row">
-        <div class="mr-4">
-          当前插件版本：
-          <n-tag type="success">
-            {{ currentVersion }}
-          </n-tag>
+      <div class="layout-slide py-2 switch-row">
+        <div class="layout-items-center">
+          <div class="mr-4">
+            当前插件版本：
+            <n-tag type="success">
+              {{ currentVersion }}
+            </n-tag>
+          </div>
+          <n-button v-if="newVersion" type="primary" :loading="downloading" @click="upgrade">
+            {{ downloadBtnText }}
+          </n-button>
         </div>
-        <n-button v-if="newVersion" type="primary" :loading="downloading" @click="upgrade">
-          {{ downloadBtnText }}
+
+        <n-button v-if="newVersion" class="" type="info" @click="reload">
+          提示有误，我已更新，重启插件
         </n-button>
       </div>
     </div>
@@ -85,6 +91,10 @@ const upgrade = () => {
     })
     console.log(res)
   })
+}
+
+const reload = () => {
+  browser.runtime.reload()
 }
 
 onMounted(() => {
