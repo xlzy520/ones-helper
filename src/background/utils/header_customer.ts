@@ -52,7 +52,7 @@ export class HeaderCustomer {
       return
     }
 
-    const { responseHeaders = [], url } = details
+    const { responseHeaders = [], initiator, originUrl, url } = details
     if (url.endsWith('/auth/login')) {
       const keys = ['Ones-User-Id', 'Ones-Auth-Token']
       const results = responseHeaders.filter((v: any) => keys.includes(v.name))
@@ -60,7 +60,7 @@ export class HeaderCustomer {
         this.authHeaders = results
       }
     }
-    const urlObject = new URL(url)
+    const urlObject = new URL(initiator || originUrl)
     responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
       value: urlObject.origin || '*',
