@@ -13,6 +13,7 @@ export async function getManifest() {
     name: pkg.displayName || pkg.name,
     version: pkg.version,
     description: pkg.description + (isDev ? '(开发版)' : ''),
+    homepage_url: 'https://github.com/xlzy520/ones-helper',
     browser_action: {
       default_icon: './assets/favicon2020_x16.png',
       default_popup: './dist/popup/index.html',
