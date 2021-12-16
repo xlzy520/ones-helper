@@ -23,7 +23,7 @@
     "start:firefox": "web-ext run --source-dir ./extension --target=firefox-desktop",
     "clear": "rimraf ONESHelper/dist ONESHelper/manifest.json ONESHelper.*",
     "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
-    "publish:patch": "npm version patch && git push --tags"
+    "publish:patch": "npm version patch && git push origin main --tags"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.8.0",
