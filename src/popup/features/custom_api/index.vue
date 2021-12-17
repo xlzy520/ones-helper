@@ -107,17 +107,13 @@ import {
   NForm, NInput, NSelect, NSwitch,
   NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm, NAlert, NTooltip,
 } from 'naive-ui'
+import { Ref } from 'vue-demi'
 import { DefaultPresetOptions } from '~/common/constants'
 import { customApiService } from '~/service'
+import { PresetOption, PresetOptionConfig } from '~/service/custom_api'
 
-interface Option {
-  config: any
-  label: string
-  value: string
-}
-
-const renderLabel = (option: Option) => {
-  const { custom } = option.config || {}
+const renderLabel = (option: PresetOption) => {
+  const { custom } = option.config
   const tagName = custom ? '自定义请求头指向' : '内置请求头指向'
   const tagType = custom ? 'info' : ''
   return (
@@ -128,10 +124,11 @@ const renderLabel = (option: Option) => {
   )
 }
 
-const selectedConfig = ref({
+const selectedConfig: Ref<PresetOptionConfig> = ref({
   customONESApiHost: '',
   customONESApiProjectBranch: '',
   custom: false,
+  isBranch: false,
 })
 
 const formValue = reactive({
@@ -143,13 +140,13 @@ const formValue = reactive({
 
 const isCustom = computed(() => selectedConfig.value.custom)
 
-const setFormValue = (data, handlePreset = true) => {
+const setFormValue = (data) => {
   const { preset, presetOptions, customApiPatterns, showCustomApi } = data
   formValue.presetOptions = presetOptions
   formValue.preset = preset
   formValue.customApiPatterns = customApiPatterns
   formValue.showCustomApi = showCustomApi
-  selectedConfig.value = presetOptions.find((v: Option) => v.value === preset).config
+  selectedConfig.value = presetOptions.find((v: PresetOption) => v.value === preset).config
 }
 
 const syncFormData = async() => {
@@ -157,7 +154,7 @@ const syncFormData = async() => {
   setFormValue(customApiData)
 }
 
-const handleUpdatePresetValue = (value: string, option: Option) => {
+const handleUpdatePresetValue = (value: string, option: PresetOption) => {
   formValue.preset = value
   selectedConfig.value = option.config
   customApiService.saveCustomApi(toRaw(formValue))

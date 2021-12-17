@@ -3,8 +3,6 @@ import { getCurrentTab } from '~/common/tabs'
 import {
   DefaultPatterns,
   DefaultPresetOptions,
-  ONES_HOST_KEY,
-  PROJECT_BRANCH_KEY,
   CUSTOM_API_PATTERNS,
 } from '~/common/constants'
 
@@ -13,21 +11,27 @@ export interface PatternConfig {
   pattern: string
 }
 
-export interface BranchData {
-  [ONES_HOST_KEY]: string|null
-  [PROJECT_BRANCH_KEY]: string|null
-  [CUSTOM_API_PATTERNS]: PatternConfig[]
+export interface PresetOptionConfig {
+  custom: boolean
+  customONESApiHost: string
+  customONESApiProjectBranch: string
+  isBranch: boolean
+}
+
+export interface PresetOption {
+  config: PresetOptionConfig
+  label: string
+  value: string
 }
 
 export interface CustomApiData {
-  [ONES_HOST_KEY]: string|null
-  [PROJECT_BRANCH_KEY]: string|null
-  [CUSTOM_API_PATTERNS]: PatternConfig[]
+  presetOptions: PresetOption[]
+  preset: string
+  customApiPatterns: PatternConfig[]
 }
 
 export function getCustomApi(): Promise<any> {
   return new Promise((resolve) => {
-    // [ONES_HOST_KEY, PROJECT_BRANCH_KEY, CUSTOM_API_PATTERNS, 'preset', 'presetOptions']
     browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
       const result = {
         ...customApiData,
@@ -41,7 +45,6 @@ export function getCustomApi(): Promise<any> {
 }
 
 export function saveCustomApi(customApiData: any): Promise<void> {
-// export function saveCustomApi(branchData: Partial<BranchData>): Promise<void> {
   return browser.storage.local.set({ customApiData }).then(() => {
     getCurrentTab().then((tab) => {
       const { id } = tab
