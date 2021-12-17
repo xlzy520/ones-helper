@@ -6,8 +6,7 @@ import { PatternConfig } from '~/service/custom_api'
 const headerCustomer = new HeaderCustomer()
 
 function syncApiSetting(headerCustomer: HeaderCustomer) {
-  browser.storage.local.get(['customApiData', 'userInfo']).then(({ customApiData = {}, userInfo }) => {
-    console.log(userInfo)
+  browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
     const headerBuilder: HeaderCustomerOptions['headersBuilder'] = (details) => {
       const headers: Headers = []
       // 兼容火狐，第一次拿到customApiData的时候是undefined

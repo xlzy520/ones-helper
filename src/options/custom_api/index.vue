@@ -3,7 +3,7 @@
     <n-page-header title="API 匹配规则" class="p-5" :back-icon="false" />
     <div class="custom-api-main">
       <div
-        v-for="(item, index) in customApiConfig.patterns"
+        v-for="(item, index) in customApiData.customApiPatterns"
         :key="index"
         class="layout-items-center mb-4"
       >
@@ -23,36 +23,31 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import {
   useMessage, NCheckbox, NPageHeader, NInput, NButton,
 } from 'naive-ui'
-import { CUSTOM_API_PATTERNS } from '~/common/constants'
+import { Ref } from 'vue-demi'
 import { customApiService } from '~/service'
-import { BranchData, PatternConfig } from '~/service/custom_api'
+import { CustomApiData, PatternConfig } from '~/service/custom_api'
 import IconClose from '~icons/icon-park-outline/close'
-// import IconAccountBox from '~icons/mdi/account-box'
 
 const message = useMessage()
 
-interface CustomApiConfig {
-  patterns: PatternConfig[]
-}
-
-const customApiConfig: CustomApiConfig = reactive({
-  patterns: [],
+const customApiData: Ref<CustomApiData> = ref({
+  customApiPatterns: [],
+  preset: '',
+  presetOptions: [],
 })
 
 const syncFormData = async() => {
   const result = await customApiService.getCustomApi()
   console.log(result)
-  customApiConfig.patterns = result[CUSTOM_API_PATTERNS]
+  customApiData.value = result
 }
 
 const savePattern = () => {
-  customApiService.saveCustomApi({
-    [CUSTOM_API_PATTERNS]: toRaw(unref(customApiConfig.patterns)),
-  } as BranchData).then((res) => {
+  customApiService.saveCustomApi(toRaw(customApiData.value)).then((res) => {
     message.success('保存成功', {
       duration: 1000,
     })
@@ -60,14 +55,14 @@ const savePattern = () => {
 }
 
 const addPattern = () => {
-  customApiConfig.patterns.push({
+  customApiData.value.customApiPatterns.push({
     enable: true,
     pattern: 'http://',
   })
 }
 
 const removePattern = (index: number) => {
-  customApiConfig.patterns.splice(index, 1)
+  customApiData.value.customApiPatterns.splice(index, 1)
 }
 
 onMounted(() => {
