@@ -50,7 +50,9 @@ export const sharedConfig: UserConfig = {
     }),
 
     // https://github.com/antfu/unplugin-icons
-    Icons(),
+    Icons({
+      autoInstall: true,
+    }),
 
     // rewrite assets to use relative path
     {
