@@ -10,9 +10,7 @@ export function getOnesConfigApi(getAll = false): Promise<any> {
   })
 }
 
-export function saveOnesConfigApi(onesConfigData: any, clear = false): Promise<void> {
-  if (clear)
-    return browser.storage.local.set({ })
+export function saveOnesConfigApi(onesConfigData: any): Promise<void> {
   return getOnesConfigApi(true).then((preOnesConfigData) => {
     const newOnesConfigData = { ...preOnesConfigData, ...onesConfigData }
     return browser.storage.local.set({ onesConfigData: newOnesConfigData })

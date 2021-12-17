@@ -13,12 +13,13 @@
               {{ currentVersion }}
             </n-tag>
           </div>
-          <n-button v-if="newVersion" type="primary" :loading="downloading" @click="upgrade">
-            {{ downloadBtnText }}
-          </n-button>
         </div>
-
-        <n-button v-if="newVersion" class="" type="info" @click="reload">
+      </div>
+      <div class="layout-slide py-2 switch-row">
+        <n-button v-if="true" type="primary" :loading="downloading" @click="upgrade">
+          {{ downloadBtnText }}
+        </n-button>
+        <n-button v-if="true" class="" type="info" @click="reload">
           提示有误，我已更新，重启插件
         </n-button>
       </div>

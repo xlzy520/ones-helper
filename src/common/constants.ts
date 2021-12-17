@@ -10,7 +10,7 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns'
 // -local前端连局域网
 // -dev前端连私有部署
 // -dev前端连SaaS
-export const DefaultPreset = '自定义的'
+export const DefaultPreset = '用户自定义(dev)'
 export const DefaultPresetOptions = [
   {
     label: '用户自定义(dev)',
@@ -202,3 +202,24 @@ export const ONESConfig = {
   enable_automation: 'true',
   enable_automation_free_tag: 'true',
 }
+
+export const featuresList = [
+  {
+    name: 'API转发', show: true, component: 'CustomApi',
+  },
+  {
+    name: 'OnesConfig', show: true, component: 'ones-config',
+  },
+  {
+    name: '工时', show: true, component: 'man-hour',
+  },
+  {
+    name: '工作项', show: true, component: 'task-action',
+  },
+  {
+    name: '其他', show: true, component: 'other-action',
+  },
+  {
+    name: '插件更新', show: true, component: 'about-me',
+  },
+]

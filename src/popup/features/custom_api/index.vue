@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formValue"
       label-placement="left"
-      :label-width="135"
+      :label-width="75"
     >
       <n-grid>
         <n-form-item-grid-item :span="22" label="配置" path="preset">
@@ -41,7 +41,7 @@
             :placeholder="isCustom?'输入分支名':'点击另存为创建自定义配置'"
           />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="22" label="是否在页面展示提示" path="showCustomApi">
+        <n-form-item-grid-item :span="22" label="提示" path="showCustomApi">
           <n-tooltip placement="right" trigger="hover">
             <template #trigger>
               <n-switch v-model:value="formValue.showCustomApi" class="" />
@@ -113,6 +113,9 @@ import { customApiService } from '~/service'
 import { PresetOption, PresetOptionConfig } from '~/service/custom_api'
 
 const renderLabel = (option: PresetOption) => {
+  if (!option.config) {
+    return
+  }
   const { custom } = option.config
   const tagName = custom ? '自定义请求头指向' : '内置请求头指向'
   const tagType = custom ? 'info' : ''

@@ -3,7 +3,7 @@ import { getCurrentTab } from '~/common/tabs'
 import {
   DefaultPatterns,
   DefaultPresetOptions,
-  CUSTOM_API_PATTERNS,
+  CUSTOM_API_PATTERNS, DefaultPreset,
 } from '~/common/constants'
 
 export interface PatternConfig {
@@ -35,7 +35,7 @@ export function getCustomApi(): Promise<any> {
     browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
       const result = {
         ...customApiData,
-        preset: customApiData.preset || '默认',
+        preset: customApiData.preset || DefaultPreset,
         [CUSTOM_API_PATTERNS]: customApiData[CUSTOM_API_PATTERNS] || DefaultPatterns,
         presetOptions: customApiData.presetOptions || DefaultPresetOptions,
       }
