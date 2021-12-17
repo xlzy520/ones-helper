@@ -60,10 +60,15 @@ export class HeaderCustomer {
         this.authHeaders = results
       }
     }
-    const urlObject = new URL(initiator || originUrl)
+    let corsOriginValue = '*'
+    const link = initiator || originUrl
+    if (link) {
+      const urlObject = new URL(link)
+      corsOriginValue = urlObject.origin
+    }
     responseHeaders.push({
       name: 'Access-Control-Allow-Origin',
-      value: urlObject.origin || '*',
+      value: corsOriginValue,
     })
     responseHeaders.push({
       name: 'Access-Control-Allow-Methods',
