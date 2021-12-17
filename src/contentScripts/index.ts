@@ -5,7 +5,7 @@ import { branchSelectEnhance } from './github_enhance/index'
 import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, injectHead, injectScript, isDevDomain } from '~/common/utils'
+import { $, isSaas, isPrivate, injectHead, injectScript, isDevDomain } from '~/common/utils'
 import ajaxProxy from '~/contentScripts/other_script/ajax_proxy'
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
@@ -14,7 +14,15 @@ import ajaxProxy from '~/contentScripts/other_script/ajax_proxy'
 
   const styleEl = document.createElement('style')
   styleEl.innerHTML = styles
+  const isFEOnesDev = !(isPrivate() || isSaas())
   injectHead(styleEl)
+
+  // 开发环境注入特殊脚本获取环境变量
+  if (isFEOnesDev) {
+    if (!$('#buildOnesProcessEnv')) {
+      injectScript('buildOnesProcessEnvCopy=window.buildOnesProcessEnv', 'buildOnesProcessEnv')
+    }
+  }
 
   // API转发
   customApiService.getCustomApi().then((customApiData) => {

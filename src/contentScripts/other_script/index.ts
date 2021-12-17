@@ -1,5 +1,5 @@
 import { onesConfigService } from '~/service'
-import { copyToClipboard, $All, injectScript, isSaas, isPrivate } from '~/common/utils'
+import { copyToClipboard, $, $All, injectScript, isSaas, isPrivate } from '~/common/utils'
 import { ONESConfig } from '~/common/constants'
 
 export function run(): void {
@@ -23,7 +23,14 @@ export function run(): void {
       saveOnesConfig(onesConfig)
     }
     else {
-      const onesConfig = res?.wechatBindSupport ? { ...ONESConfig, ...res } : ONESConfig
+      let onesConfigDev = {}
+      if ($('#buildOnesProcessEnv')) {
+        const onesConfigScript = ($('#buildOnesProcessEnv') as Element).innerHTML
+        // eslint-disable-next-line no-eval
+        onesConfigDev = eval(onesConfigScript)
+      }
+      console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
+      const onesConfig = res?.wechatBindSupport ? { ...ONESConfig, ...onesConfigDev, ...res } : ONESConfig
       saveOnesConfig(onesConfig)
     }
   })

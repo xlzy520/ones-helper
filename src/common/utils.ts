@@ -1,6 +1,6 @@
 import { getCurrentTab } from '~/common/tabs'
 
-export const copyToClipboard = function(input: string) {
+export const copyToClipboard = function (input: string) {
   const el = document.createElement('textarea')
   el.style.fontSize = '12pt'
   el.style.border = '0'
@@ -18,16 +18,16 @@ export const copyToClipboard = function(input: string) {
   try {
     success = document.execCommand('copy', true)
   }
-  catch (err) {}
+  catch (err) { }
 
   document.body.removeChild(el)
   return success
 }
 
-export const $ = function(query: string) {
+export const $ = function (query: string) {
   return document.querySelector(query)
 }
-export const $All = function(query: string) {
+export const $All = function (query: string) {
   return document.querySelectorAll(query)
 }
 
@@ -38,14 +38,15 @@ export const injectHead = (content: HTMLElement) => {
   }
 }
 
-export const injectScriptLink = function(src: string) {
+export const injectScriptLink = function (src: string) {
   const scriptTag = document.createElement('script')
   scriptTag.src = src
   injectHead(scriptTag)
 }
 
-export const injectScript = function(scriptContent: string) {
+export const injectScript = function (scriptContent: string, id = '') {
   const scriptTag = document.createElement('script')
+  scriptTag.setAttribute('id', id)
   scriptTag.innerHTML = scriptContent
   injectHead(scriptTag)
 }
