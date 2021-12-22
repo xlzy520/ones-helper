@@ -6,38 +6,39 @@ import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import { customApiService, onesConfigService } from '~/service'
 import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal } from '~/common/utils'
-import ajaxProxy from '~/contentScripts/other_script/ajax_proxy'
-import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv';
+import proxyAJAX from '~/contentScripts/other_script/proxyAJAX'
+import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv'
+import proxyWebsocket from '~/contentScripts/other_script/proxyWebsocket'
+import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
-  console.info('[vitesse-webext] Hello world from content script')
+  console.info('[ONES Helper] Hello world from content script')
+
+  const isFEOnesDev = isDevDomain() || isLocal()
 
   const styleEl = document.createElement('style')
   styleEl.innerHTML = styles
-  const isFEOnesDev = isDevDomain() || isLocal()
   injectHead(styleEl)
 
   // 开发环境注入特殊脚本获取环境变量
   if (isFEOnesDev) {
     if (!$('#buildOnesProcessEnv')) {
-      console.log(`${getBuildOnesProcessEnv}`)
       injectScript(`${getBuildOnesProcessEnv};getBuildOnesProcessEnv()`, 'buildOnesProcessEnv')
     }
   }
 
   // API转发
   customApiService.getCustomApi().then((customApiData) => {
-    console.log(customApiData)
-    const config = customApiData.presetOptions.find((v: any) => v.value === customApiData.preset).config
+    const config: PresetOptionConfig = customApiData.presetOptions.find((v: PresetOption) => v.value === customApiData.preset).config
     if (customApiData.showCustomApi) {
       showCustomApi()
     }
-    const { customONESApiHost } = config
+    const { customONESApiHost, customONESApiProjectBranch } = config
+    injectScript(`${proxyWebsocket};proxyWebsocket('${customONESApiProjectBranch}')`)
     if (customONESApiHost.includes('http://localhost')) {
       if (isDevDomain()) {
-        injectScript(`${ajaxProxy};run('${customONESApiHost}')`)
-        // injectScript(`${ajaxProxy};run('${customONESApiHost}')`)
+        injectScript(`${proxyAJAX};run('${customONESApiHost}')`)
       }
     }
   })
