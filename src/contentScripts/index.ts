@@ -5,7 +5,7 @@ import { branchSelectEnhance } from './github_enhance/index'
 import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, isPrivate, injectHead, injectScript, isDevDomain } from '~/common/utils'
+import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal } from '~/common/utils'
 import ajaxProxy from '~/contentScripts/other_script/ajax_proxy'
 import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv';
 
@@ -15,7 +15,7 @@ import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesPr
 
   const styleEl = document.createElement('style')
   styleEl.innerHTML = styles
-  const isFEOnesDev = !(isPrivate() || isSaas())
+  const isFEOnesDev = isDevDomain() || isLocal()
   injectHead(styleEl)
 
   // 开发环境注入特殊脚本获取环境变量

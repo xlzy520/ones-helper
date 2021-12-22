@@ -59,6 +59,10 @@ export const isDevDomain = () => {
   return location.href.includes('https://dev.myones.net')
 }
 
+export const isLocal = () => {
+  return location.origin.includes('localhost')
+}
+
 export const isPrivate = () => {
   return location.href.includes('https://mars-dev.myones.net:')
 }

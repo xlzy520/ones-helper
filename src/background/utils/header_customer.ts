@@ -1,8 +1,31 @@
+import { useDebounceFn } from '@vueuse/core'
+
 export type Headers = browser.WebRequest.HttpHeaders
 
 export interface HeaderCustomerOptions {
   headersBuilder: (details: browser.WebRequest.OnBeforeSendHeadersDetailsType) => Headers
 }
+
+const getAccessToken = (str = '') => {
+  if (str.includes('access_token=')) {
+    const tokenStr = str.split('&')[0]
+    return tokenStr.split('=')[1]
+  }
+  return ''
+}
+
+const setGithubAccessToken = useDebounceFn((code) => {
+  const getAccessTokenUrl = 'https://github.com/login/oauth/access_token?client_id=86195e808441e12f0de9&client_secret=b7c885a910febde53135e674db6a41c34053e0ac&code='
+  fetch(getAccessTokenUrl + code).then(res => res.text()).then((res) => {
+    console.log(res)
+    const token = getAccessToken(res)
+    if (token) {
+      browser.storage.local.set({
+        githubAccessToken: token,
+      })
+    }
+  })
+}, 2000)
 
 export class HeaderCustomer {
   private patterns: string[] = []
@@ -38,7 +61,17 @@ export class HeaderCustomer {
     details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
   ): browser.WebRequest.BlockingResponseOrPromise => {
     // console.log(details)
-    if (details.requestHeaders) {
+    if (details.type === 'main_frame') {
+      const { url } = details
+      // GitHub授权，配置写死了http://localhost:9030/githubAuth
+      if (url.includes('http://localhost:9030/githubAuth?code=')) {
+        const urlObj = new URL(url)
+        const code = urlObj.searchParams.get('code')
+        setGithubAccessToken(code)
+      }
+      console.log(details)
+    }
+    else if (details.requestHeaders) {
       details.requestHeaders.push(...this.buildHeaders(details))
       details.requestHeaders.push(...this.authHeaders)
     }
@@ -100,7 +133,7 @@ export class HeaderCustomer {
       this.handleRequest,
       {
         urls: patterns,
-        types: ['xmlhttprequest', 'stylesheet', 'script'],
+        types: ['xmlhttprequest', 'stylesheet', 'script', 'main_frame'],
       },
       ['blocking', 'requestHeaders'],
     )
