@@ -24,8 +24,8 @@ export function run(): void {
     }
     else {
       let onesConfigDev = {}
-      if ($('#buildOnesProcessEnv')) {
-        const onesConfigScript = ($('#buildOnesProcessEnv') as Element).innerHTML
+      if ($('#realBuildOnesProcessEnv')) {
+        const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML
         // eslint-disable-next-line no-eval
         onesConfigDev = eval(onesConfigScript)
       }
