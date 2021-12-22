@@ -41,7 +41,7 @@ let previousTabId = 0
 
 // communication example: send previous tab title from background page
 // see shim.d.ts for type declaration
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
+browser.tabs.onActivated.addListener(async({ tabId }) => {
   if (!previousTabId) {
     previousTabId = tabId
     return
@@ -62,7 +62,7 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
 })
 
-onMessage('get-current-tab', async () => {
+onMessage('get-current-tab', async() => {
   try {
     const tab = await browser.tabs.get(previousTabId)
     return {
@@ -76,6 +76,6 @@ onMessage('get-current-tab', async () => {
   }
 })
 
-chrome.omnibox.setDefaultSuggestion({
+browser.omnibox.setDefaultSuggestion({
   description: '玩法待有缘人去实现，比如支持部分功能矩阵的单词快速跳转，或者问题订单的跳转（#3333）等',
 })
