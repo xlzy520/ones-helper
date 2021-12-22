@@ -1,4 +1,5 @@
 import { useDebounceFn } from '@vueuse/core'
+import { isFirefox } from '~/env'
 
 export type Headers = browser.WebRequest.HttpHeaders
 
@@ -138,13 +139,17 @@ export class HeaderCustomer {
       ['blocking', 'requestHeaders'],
     )
 
+    const extraInfoSpec: browser.WebRequest.OnHeadersReceivedOptions[] = ['blocking', 'responseHeaders']
+    if (!isFirefox) {
+      extraInfoSpec.push('extraHeaders')
+    }
     browser.webRequest.onHeadersReceived.addListener(
       this.handleResponseHeaders,
       {
         urls: patterns,
         types: ['xmlhttprequest'],
       },
-      ['blocking', 'responseHeaders', 'extraHeaders'])
+      extraInfoSpec)
   }
 
   removeCustomHeadersListener = (): void => {
