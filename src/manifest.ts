@@ -40,6 +40,7 @@ export async function getManifest() {
       'storage',
       'webRequest',
       'webRequestBlocking',
+      'contextMenus',
       // 'activeTab',
       'https://github.com/BangWork/*',
       'https://ones.ai/*',
@@ -65,6 +66,7 @@ export async function getManifest() {
     web_accessible_resources: [
       './dist/contentScripts/style.css',
     ],
+    omnibox: { keyword: 'ones' },
   }
 
   if (isDev) {
