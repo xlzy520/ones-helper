@@ -8,4 +8,5 @@ declare module '*.vue' {
 declare interface Window {
   onesConfig: Record<string, unknown>
   buildOnesProcessEnv: Record<string, unknown>
+  dragMoveListener: (evt: Event) => void
 }

@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import '../styles'
-// @ts-ignore
 import App from './Popup.vue'
 import CustomApi from '~/popup/features/custom_api/index.vue'
 import OnesConfig from '~/popup/features/onesConfig/index.vue'

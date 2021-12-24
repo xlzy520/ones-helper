@@ -55,11 +55,15 @@
     "vue-demi": "^0.11.4",
     "web-ext": "^6.3.0",
     "webext-bridge": "^4.1.1",
-    "webextension-polyfill": "^0.8.0"
+    "webextension-polyfill": "^0.8.0",
+    "@interactjs/types": "^1.10.11"
   },
   "dependencies": {
     "@vitejs/plugin-vue-jsx": "^1.2.0",
     "naive-ui": "^2.19.3",
-    "sass": "^1.42.1"
+    "sass": "^1.42.1",
+    "interactjs": "^1.2.0",
+    "date-fns": "^2.27.0",
+    "lodash": "^4.17.21"
   }
 }
