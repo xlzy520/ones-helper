@@ -1,10 +1,12 @@
 <template>
   <n-message-provider>
-    <n-tabs size="large" :default-value="defaultTab" type="card">
-      <n-tab-pane v-for="item in settingOptions" :key="item.name" :name="item.name" :tab="item.name">
-        <component :is="item.component"></component>
-      </n-tab-pane>
-    </n-tabs>
+    <div class="container m-auto mt-2">
+      <n-tabs size="large" :default-value="defaultTab" type="card">
+        <n-tab-pane v-for="item in settingOptions" :key="item.name" :name="item.name" :tab="item.name">
+          <component :is="item.component"></component>
+        </n-tab-pane>
+      </n-tabs>
+    </div>
   </n-message-provider>
 </template>
 
