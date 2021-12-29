@@ -51,6 +51,14 @@
         />
       </div>
     </div>
+    <div class="mb-2 layout-slide ">
+      <div class="layout-items-center">
+        <n-button type="primary" @click="copyAll">
+          一键复制
+        </n-button>
+      </div>
+    </div>
+
     <div>
       <n-data-table
         :columns="columns"
@@ -211,6 +219,18 @@ const getData = useDebounceFn(() => {
 watch(filter, () => {
   getData()
 })
+
+const copyAll = () => {
+  // const baseUrl = 'https://ones.ai/project/#/team/RDjYMhKq/task/'
+  const copyItems = tableData.value.map((task: any) => {
+    const { number, name, uuid } = task
+    return `#${number} ${name}\n`
+  })
+  const result = copyItems.join('\r\n')
+  console.log(result)
+  copyToClipboard(result)
+  message.success('全部工作项复制成功')
+}
 
 const submitRecord = () => {
   console.log(recordFormData)
