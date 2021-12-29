@@ -1,5 +1,5 @@
-import { DefaultPreset, DefaultPresetOptions, ONES_HOST_KEY, PROJECT_BRANCH_KEY } from '~/common/constants'
 import interact from 'interactjs'
+import { DefaultPreset, DefaultPresetOptions, ONES_HOST_KEY, PROJECT_BRANCH_KEY } from '~/common/constants'
 const DOM_SCOPE = 'och__'
 const WRAPPER_EL_ID = 'och__custom-api-info'
 export const UniClassName = `${DOM_SCOPE}api-info-wrapper`
@@ -13,7 +13,7 @@ function createOptionEl({ name, value }: { name: string; value: string }) {
 
 function getInfoOptionElList(): Promise<HTMLElement[]> {
   return new Promise((resolve) => {
-    browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
+    browser.storage.local.get('customApiData').then(({ customApiData = {} as any }) => {
       // browser.storage.local.get([ONES_HOST_KEY, PROJECT_BRANCH_KEY]).then((data) => {
       // 兼容火狐，第一次拿到customApiData的时候是undefined
       const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData
@@ -38,13 +38,13 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
 }
 
 function dragMoveListener(event: Event) {
-  var target = event.target
+  const target: HTMLElement = event.target
   // keep the dragged position in the data-x/data-y attributes
-  var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-  var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+  const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+  const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
 
   // translate the element
-  target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+  target.style.transform = `translate(${x}px, ${y}px)`
 
   // update the posiion attributes
   target.setAttribute('data-x', x)
@@ -52,8 +52,6 @@ function dragMoveListener(event: Event) {
 }
 
 window.dragMoveListener = dragMoveListener
-
-
 
 function divDrag(elmClass: string) {
   const elm = document.querySelector(`.${elmClass}`)
@@ -65,8 +63,8 @@ function divDrag(elmClass: string) {
       modifiers: [
         interact.modifiers.restrictRect({
           restriction: 'parent',
-          endOnly: true
-        })
+          endOnly: true,
+        }),
       ],
       // enable autoScroll
       autoScroll: true,
@@ -77,22 +75,21 @@ function divDrag(elmClass: string) {
 
         // call this function on every dragend event
         end(event) {
-          var textEl = event.target.querySelector('p')
+          const textEl = event.target.querySelector('p')
 
-          textEl && (textEl.textContent =
-            'moved a distance of ' +
-            (Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
-              Math.pow(event.pageY - event.y0, 2) | 0))
-              .toFixed(2) + 'px')
-        }
-      }
+          textEl && (textEl.textContent
+            = `moved a distance of ${
+              (Math.sqrt(Math.pow(event.pageX - event.x0, 2)
+              + Math.pow(event.pageY - event.y0, 2) | 0))
+                .toFixed(2)}px`)
+        },
+      },
     })
-
   }
 }
 
 export async function showCustomApiInfo(): Promise<void> {
-  console.log(3123123);
+  console.log(3123123)
   const oldElement = document.querySelector(`#${WRAPPER_EL_ID}`)
   if (oldElement) {
     divDrag(UniClassName)

@@ -1,10 +1,11 @@
 import { useDebounceFn } from '@vueuse/core'
+import Browser from 'webextension-polyfill'
 import { isFirefox } from '~/env'
 
-export type Headers = browser.WebRequest.HttpHeaders
+export type Headers = Browser.WebRequest.HttpHeaders
 
 export interface HeaderCustomerOptions {
-  headersBuilder: (details: browser.WebRequest.OnBeforeSendHeadersDetailsType) => Headers
+  headersBuilder: (details: Browser.WebRequest.OnBeforeSendHeadersDetailsType) => Headers
 }
 
 const getAccessToken = (str = '') => {
@@ -41,7 +42,7 @@ export class HeaderCustomer {
     this.addCustomHeadersListener()
   }
 
-  buildHeaders = (details: browser.WebRequest.OnBeforeSendHeadersDetailsType): Headers => {
+  buildHeaders = (details: Browser.WebRequest.OnBeforeSendHeadersDetailsType): Headers => {
     return this.options.headersBuilder ? this.options.headersBuilder(details) : []
   }
 
@@ -59,8 +60,8 @@ export class HeaderCustomer {
   }
 
   handleRequest = (
-    details: browser.WebRequest.OnBeforeSendHeadersDetailsType,
-  ): browser.WebRequest.BlockingResponseOrPromise => {
+    details: Browser.WebRequest.OnBeforeSendHeadersDetailsType,
+  ): Browser.WebRequest.BlockingResponseOrPromise => {
     // console.log(details)
     if (details.type === 'main_frame') {
       const { url } = details
@@ -80,8 +81,8 @@ export class HeaderCustomer {
   }
 
   handleResponseHeaders = (
-    details: browser.WebRequest.OnHeadersReceivedDetailsType,
-  ): browser.WebRequest.BlockingResponseOrPromise|void => {
+    details: Browser.WebRequest.OnHeadersReceivedDetailsType,
+  ): Browser.WebRequest.BlockingResponseOrPromise|void => {
     if (details.type === 'main_frame') {
       return
     }
@@ -139,7 +140,7 @@ export class HeaderCustomer {
       ['blocking', 'requestHeaders'],
     )
 
-    const extraInfoSpec: browser.WebRequest.OnHeadersReceivedOptions[] = ['blocking', 'responseHeaders']
+    const extraInfoSpec: Browser.WebRequest.OnHeadersReceivedOptions[] = ['blocking', 'responseHeaders']
     if (!isFirefox) {
       extraInfoSpec.push('extraHeaders')
     }

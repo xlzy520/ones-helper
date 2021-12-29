@@ -1,6 +1,6 @@
 
 export function getOnesConfigApi(getAll = false): Promise<any> {
-  return browser.storage.local.get('onesConfigData').then((res) => {
+  return browser.storage.local.get('onesConfigData').then((res: any) => {
     const data = res.onesConfigData || {}
     if (getAll)
       return data
@@ -19,7 +19,7 @@ export function saveOnesConfigApi(onesConfigData: any): Promise<void> {
 
 // 一些开关的配置
 export function getOtherConfig(): Promise<any> {
-  return browser.storage.local.get('otherConfigData').then((res) => {
+  return browser.storage.local.get('otherConfigData').then((res: any) => {
     return res.otherConfigData || {}
   })
 }
