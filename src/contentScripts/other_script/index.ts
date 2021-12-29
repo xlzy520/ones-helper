@@ -1,5 +1,5 @@
 import { onesConfigService } from '~/service'
-import { copyToClipboard, $, $All, injectScript, isSaas, isPrivate } from '~/common/utils'
+import { $, $All, copyToClipboard, injectScript, isPrivate, isSaas } from '~/common/utils'
 import { ONESConfig } from '~/common/constants'
 
 export function run(): void {
@@ -18,8 +18,11 @@ export function run(): void {
     if (isPrivate() || isSaas()) {
       const onesConfigScript = $All('script')[1]
       // eslint-disable-next-line no-eval
-      const innerOnesConfig = eval(onesConfigScript.innerHTML)
-      const onesConfig = res?.wechatBindSupport ? res : innerOnesConfig
+      let onesConfig = eval(onesConfigScript.innerHTML)
+      // 如果用户点击了保存，那就用修改后的，如果没有修改，永远用页面自己的
+      if (res.isUpdate) {
+        onesConfig = res
+      }
       saveOnesConfig(onesConfig)
     }
     else {
@@ -66,7 +69,7 @@ export function run(): void {
     }
   }
 
-  browser.runtime.onMessage.addListener((request) => {
+  browser.runtime.onMessage.addListener((request: any) => {
     const { type, data } = request
     if (type === 'onesConfig') {
       saveOnesConfig(data)

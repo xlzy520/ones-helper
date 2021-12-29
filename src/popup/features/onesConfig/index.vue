@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="layout-slide">
-      <div class="flex justify-end w-full">
+      <div class="flex w-full">
         <n-popconfirm
           negative-text="取消"
           positive-text="确定"
@@ -99,6 +99,7 @@ import {
 import { onesConfigService } from '~/service'
 import { getCurrentTab } from '~/common/tabs'
 import { sendMessage } from '~/common/utils'
+import { onesConfig } from '~/common/types'
 
 const filterKey = ref('')
 const clearFilterKey = () => {
@@ -160,12 +161,13 @@ const saveData = (onesConfig: any) => {
 }
 
 const saveOnesConfig = () => {
-  const onesConfig = {}
+  const onesConfig: onesConfig = {}
   configFields.value.forEach((item) => {
     onesConfig[item.key] = item.value
   })
 
   console.log(toRaw(unref(configFields)))
+  onesConfig.isUpdate = true // 标记为用户修改保存过
   saveData(onesConfig)
   window.close()
 }
