@@ -20,3 +20,8 @@ export interface Task {
   uuid: string
   _fStamp: number
 }
+
+export interface onesConfig {
+  isUpdate?: boolean
+  [key: string]: string | boolean| undefined
+}

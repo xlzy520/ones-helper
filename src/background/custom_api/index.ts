@@ -1,41 +1,29 @@
 import { HeaderCustomer, HeaderCustomerOptions, Headers } from '../utils/header_customer'
 import { customApiService } from '../../service'
 import { PROJECT_BRANCH_KEY, ONES_HOST_KEY, DefaultPresetOptions, DefaultPreset } from '~/common/constants'
-import { PatternConfig } from '~/service/custom_api'
+import { PatternConfig, PresetOption } from '~/service/custom_api'
 
 const headerCustomer = new HeaderCustomer()
 
 function syncApiSetting(headerCustomer: HeaderCustomer) {
-  browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
+  browser.storage.local.get('customApiData').then(({ customApiData = {} as any }) => {
     const headerBuilder: HeaderCustomerOptions['headersBuilder'] = (details) => {
       const headers: Headers = []
       // 兼容火狐，第一次拿到customApiData的时候是undefined
-      const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData
+      const { preset = DefaultPreset, presetOptions = DefaultPresetOptions as PresetOption[] } = customApiData
       const selectedConfig = presetOptions.find((v: any) => v.value === preset).config
       const customHOST = selectedConfig[ONES_HOST_KEY]
       const isProjectApi = details.url.includes('/api/project')
-      console.log(details)
+      // console.log(details)
       if (customHOST) {
-        if (customHOST.includes('localhost') || customHOST.includes('192.168')) {
-          // headers.push({
-          //   name: 'Ones-User-ID',
-          //   value: 'B9ei3VVV',
-          // })
-          // headers.push({
-          //   name: 'Ones-Auth-Token',
-          //   value: 'y9w61wPTwRKg3LB8yRay83Mx7tuqsuK4cxRAnIoR1UfVBpwl6Q9uBOHlgwViIfJ5',
-          // })
+        let value = customHOST
+        if (!isProjectApi) {
+          value = customHOST.replace('api/project/', 'api/wiki/')
         }
-        else {
-          let value = customHOST
-          if (!isProjectApi) {
-            value = customHOST.replace('api/project/', 'api/wiki/')
-          }
-          headers.push({
-            name: 'x-ones-api-host',
-            value,
-          })
-        }
+        headers.push({
+          name: 'x-ones-api-host',
+          value,
+        })
       }
       else {
         const projectBranch = selectedConfig[PROJECT_BRANCH_KEY]
