@@ -1,5 +1,3 @@
-import get from 'lodash/get'
-
 export function getCurrentTab(): Promise<browser.Tabs.Tab> {
   return new Promise<browser.Tabs.Tab>((resolve, reject) => {
     browser.tabs.query(
@@ -8,7 +6,7 @@ export function getCurrentTab(): Promise<browser.Tabs.Tab> {
         currentWindow: true,
       },
     ).then((tabs) => {
-      const tab = get(tabs, [0])
+      const tab = tabs[0]
       if (tab)
         resolve(tab)
       else
