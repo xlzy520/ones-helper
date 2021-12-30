@@ -23,7 +23,7 @@
     </div>
     <div class="">
       <div class="py-1">
-        选择要创建分支的项目(基于主分支)
+        选择要触发构建的项目(开发环境)
       </div>
       <n-checkbox-group v-model:value="checkedProjects">
         <n-checkbox
