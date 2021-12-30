@@ -67,6 +67,10 @@ export const isPrivate = () => {
   return location.href.includes('https://mars-dev.myones.net:')
 }
 
+export const isCD = () => {
+  return location.href.includes('https://cd.myones.net')
+}
+
 export const sendMessage = (message: any) => {
   getCurrentTab().then((tab) => {
     const { id } = tab

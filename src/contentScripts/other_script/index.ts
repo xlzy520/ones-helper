@@ -1,5 +1,5 @@
 import { onesConfigService } from '~/service'
-import { $, $All, copyToClipboard, injectScript, isPrivate, isSaas } from '~/common/utils'
+import { $, $All, copyToClipboard, injectScript, isPrivate, isSaas, isCD } from '~/common/utils'
 import { ONESConfig } from '~/common/constants'
 
 export function run(): void {
@@ -37,6 +37,17 @@ export function run(): void {
       saveOnesConfig(onesConfig)
     }
   })
+
+  // Jenkins
+  if (isCD()) {
+    const scripts = document.querySelectorAll('script:not([src])')
+    const targetScript = scripts[1]
+    const crumb = targetScript.innerHTML.substring(29, 93)
+    browser.runtime.sendMessage({
+      type: 'jenkins-crumb',
+      data: crumb,
+    })
+  }
 
   const handleCopyAllTasks = (data: any) => {
     const href = location.href

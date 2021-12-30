@@ -105,11 +105,13 @@
         <div class="py-1">
           默认项目列表
         </div>
-        <span
+        <n-tag
           v-for="project in projectList"
           :key="project.repo"
           class="mr-2"
-        >{{ project.repo }}</span>
+        >
+          {{ project.repo }}
+        </n-tag>
       </div>
       <div class="layout-slide">
         <div class="layout-items-center">
@@ -140,19 +142,18 @@
         </n-button>
       </div>
     </div>
+    <jenkins />
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  useMessage, NInput, NTag, NButton, NAlert, NSwitch, NTooltip,
-  NCheckboxGroup, NCheckbox, NRadioGroup, NRadio, NModal,
-} from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
 import { projectList } from '~/common/constants'
 import { copyToClipboard } from '~/common/utils'
+import Jenkins from '~/popup/features/otherAction/Jenkins.vue'
 
 const message = useMessage()
 const otherConfig = reactive({
@@ -172,7 +173,7 @@ const projectMapping = projectList.reduce((pre, cur) => {
   pre[cur.repo] = cur
   return pre
 }, {})
-const branchName = ref('test')
+const branchName = ref('')
 
 const clearBranchName = () => {
   branchName.value = ''
@@ -227,6 +228,32 @@ const getAllCommitHashAndCopy = () => {
   })
 }
 
+const JenkinsBuildBranch = ref('')
+const clearJenkinsBuildBranch = () => {
+  JenkinsBuildBranch.value = ''
+}
+
+const dispatchBuild = () => {
+  fetch('https://cd.myones.net/job/development/job/ones-project-web/job/S5075/build?delay=0sec', {
+    method: 'POST',
+    headers: {
+      'jenkins-crumb': '2ed5473409fb2165d4eb72ab9cbd7ab73c355689b3655e660007129694a68c7c',
+    },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json()
+    }
+    else {
+      return Promise.reject(new Error('登录失效，1秒后获取凭证信息...'))
+    }
+  }).then((res) => {
+    message.success('触发')
+    console.log(123, res)
+  }).catch((err) => {
+    message.error(err.message)
+  })
+}
+
 watch(otherConfig, () => {
   onesConfigService.saveOtherConfig(toRaw(otherConfig.data))
 })
@@ -241,7 +268,7 @@ const auth = () => {
   if (code.value) {
     return
   }
-  window.open('https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=86195e808441e12f0de9')
+  window.open('https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=dcb6fb9f42ca21dba6ba')
 }
 
 const clearAuth = () => {
@@ -252,6 +279,7 @@ onMounted(() => {
   getOtherConfig()
   getGithubOAuthToken().then((res) => {
     if (res) {
+      console.log(res)
       code.value = res
     }
   })
