@@ -3,7 +3,6 @@ lockfileVersion: 5.3
 specifiers:
   '@antfu/eslint-config': ^0.9.0
   '@ffflorian/jszip-cli': ^3.1.5
-  '@iconify-json/ic': ^1.0.7
   '@iconify-json/icon-park-outline': ^1.0.1
   '@interactjs/types': ^1.10.11
   '@types/fs-extra': ^9.0.12
@@ -47,7 +46,6 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': 0.9.0_eslint@7.32.0+typescript@4.5.4
   '@ffflorian/jszip-cli': 3.1.6
-  '@iconify-json/ic': 1.0.7
   '@iconify-json/icon-park-outline': 1.0.2
   '@interactjs/types': 1.10.11
   '@types/fs-extra': 9.0.13
@@ -622,12 +620,6 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@iconify-json/ic/1.0.7:
-    resolution: {integrity: sha512-Cz2u1h+L/aMmeyKrcYVUY0SZdntvYK4cD5XrdT+XnyESh6IwzJ9hyNaIBGL6fnz5KCL7AfmFMlBhs0bilhrwXQ==, tarball: '@iconify-json/ic/download/@iconify-json/ic-1.0.7.tgz'}
-    dependencies:
-      '@iconify/types': 1.0.12
-    dev: true
-
   /@iconify-json/icon-park-outline/1.0.2:
     resolution: {integrity: sha512-2g+TAqeP2mXR6oaQehFHYwbqXQMT23ksWRD3Ez9q4xpvGUSU++UR7d6Hxaj9F9QG4H31OZLnNmTeSsfPEmeHPw==}
     dependencies:
@@ -645,7 +637,7 @@ packages:
     dev: true
 
   /@interactjs/types/1.10.11:
-    resolution: {integrity: sha512-YRsVFWjL8Gkkvlx3qnjeaxW4fnibSJ9791g8BA7Pv5ANByI64WmtR1vU7A2rXcrOn8XvyCEfY0ss1s8NhZP+MA==}
+    resolution: {integrity: sha1-Kb4l1QP5x4Qt8GL6PNpbBEpHzyo=, tarball: '@interactjs/types/download/@interactjs/types-1.10.11.tgz'}
 
   /@jest/types/27.4.2:
     resolution: {integrity: sha512-j35yw0PMTPpZsUoOBiuHzr1zTYoad1cVIE0ajEjcrJONxxrko/IRGKkXx3os0Nsi4Hu3+5VmDbVfq5WhG/pWAg==}
@@ -3425,7 +3417,7 @@ packages:
     dev: true
 
   /interactjs/1.10.11:
-    resolution: {integrity: sha512-VPUWsGAOPmrZe1YF7Fq/4AIBBZ+3FikZRS8bpzT6VsAfUuhxl/CKJY73IAiZHd3fz9p174CXErn0Qs81XEFICA==}
+    resolution: {integrity: sha1-C56r438fgv/2jiL6rVEmm48gOOo=, tarball: interactjs/download/interactjs-1.10.11.tgz}
     dependencies:
       '@interactjs/types': 1.10.11
     dev: false
