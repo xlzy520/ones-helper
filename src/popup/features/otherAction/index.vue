@@ -1,9 +1,9 @@
 <template>
-  <div class="">
+  <div class="pb-4">
     <div class="layout-slide pb-2 switch-row">
       <div v-if="code" class="layout-items-center">
         <n-tag type="success">
-          Github已授权
+          Github Oauth已授权
         </n-tag>
         <n-tooltip trigger="hover">
           <template #trigger>
@@ -18,14 +18,7 @@
       <n-tag v-if="code" type="info">
         {{ privateCode }}
       </n-tag>
-      <!--          <n-button type="primary" @click="copyAll">-->
-      <!--            复制当前页面显示的工作项(带链接)-->
-      <!--          </n-button>-->
-      <!--          <n-button type="info" @click="copyAll(false)">-->
-      <!--            复制当前页面显示的工作项(不带链接)-->
-      <!--          </n-button>-->
     </div>
-
     <div class="layout-items-center py-2 switch-row">
       <div class="mr-4">
         Github PR分支选择优化
@@ -99,36 +92,67 @@
         </div>
       </div>
     </div>
-
-    <!--      由于tabGroups只支持manifest V3，所以暂时不做这个自动分组功能-->
-
-    <!--      <div class="layout-items-center py-2 switch-row">-->
-    <!--        <div class="mr-4">-->
-    <!--          是否开启自动分组：-->
-    <!--        </div>-->
-    <!--        <n-switch v-model:value="otherConfig.data.enableAutoGroup" class="mr-4" />-->
-    <!--        <n-tooltip trigger="hover">-->
-    <!--          <template #trigger>-->
-    <!--            <question-icon />-->
-    <!--          </template>-->
-    <!--          根据域名自动对浏览器标签页进行分组-->
-    <!--        </n-tooltip>-->
-    <!--        <n-button type="primary" @click="groupTabs ">-->
-    <!--          👏 一键分组所有Tabs-->
-    <!--        </n-button>-->
-    <!--      </div>-->
+    <div class="py-2">
+      <div class="layout-items-center">
+        <div class="font-bold">
+          一键获取项目Hash值
+        </div>
+        <n-tag type="info" class="ml-2">
+          前端版
+        </n-tag>
+      </div>
+      <div class="">
+        <div class="py-1">
+          默认项目列表
+        </div>
+        <span
+          v-for="project in projectList"
+          :key="project.repo"
+          class="mr-2"
+        >{{ project.repo }}</span>
+      </div>
+      <div class="layout-slide">
+        <div class="layout-items-center">
+          <div class="py-1">
+            选择查询分支：
+          </div>
+          <n-radio-group v-model:value="commitHash.branch" name="radiogroup">
+            <n-space>
+              <n-radio
+                v-for="branch in commitHash.branchOptions"
+                :key="branch.value"
+                :value="branch.value"
+              >
+                {{ branch.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+          <!--          <n-select-->
+          <!--            v-model:value="commitHash.branch"-->
+          <!--            class="w-[200px]"-->
+          <!--            placeholder="选择分支"-->
+          <!--            clearable-->
+          <!--            :options="commitHash.branchOptions"-->
+          <!--          />-->
+        </div>
+        <n-button type="primary" ghost @click="getAllCommitHashAndCopy">
+          ✨ 确定
+        </n-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  useMessage, NInput, NTag, NButton, NAlert, NSwitch, NTooltip, NPopconfirm,
-  NCheckboxGroup, NCheckbox, NModal,
+  useMessage, NInput, NTag, NButton, NAlert, NSwitch, NTooltip,
+  NCheckboxGroup, NCheckbox, NRadioGroup, NRadio, NModal,
 } from 'naive-ui'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
 import { projectList } from '~/common/constants'
+import { copyToClipboard } from '~/common/utils'
 
 const message = useMessage()
 const otherConfig = reactive({
@@ -143,7 +167,6 @@ const privateCode = computed(() => {
   return code.value.substring(0, 16)
 })
 
-// const projects = ref(projectList)
 const checkedProjects = ref(projectList.map(v => v.repo))
 const projectMapping = projectList.reduce((pre, cur) => {
   pre[cur.repo] = cur
@@ -178,6 +201,30 @@ const createBranches = () => {
       })
     })
   })
+  nextTick(() => {
+    clearBranchName()
+  })
+}
+
+const commitHash = reactive({
+  branch: 'preview2',
+  branchOptions: [
+    { label: 'preview2', value: 'preview2' },
+    { label: 'master', value: 'master' },
+  ],
+})
+const getAllCommitHashAndCopy = () => {
+  const apis = projectList.map((project) => {
+    return fetchBranchSHA({ ...project, head: commitHash.branch })
+  })
+  Promise.all(apis).then((res) => {
+    console.log(res)
+    const text = projectList.map((project, index) => {
+      return `${project.repo}(${commitHash.branch}): ${res[index]}`
+    })
+    copyToClipboard(text.join('\r\n'))
+    message.success('复制成功')
+  })
 }
 
 watch(otherConfig, () => {
@@ -187,12 +234,6 @@ watch(otherConfig, () => {
 const getOtherConfig = () => {
   onesConfigService.getOtherConfig().then((res) => {
     otherConfig.data = { ...otherConfig.data, ...res }
-  })
-}
-
-const groupTabs = () => {
-  browser.runtime.sendMessage({
-    type: 'groupRightNow',
   })
 }
 

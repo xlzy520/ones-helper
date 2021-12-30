@@ -226,10 +226,19 @@ export const featuresList = [
 
 export const projectList = [
   {
-    repo: 'github-api-test-repo',
-    url: 'https://github.com/xlzy520/github-api-test-repo',
-    owner: 'xlzy520',
-    defaultBranch: 'main',
+    repo: 'ones-project-web',
+    owner: 'BangWork',
+    defaultBranch: 'master',
+  },
+  {
+    repo: 'ones-ai-web-common',
+    owner: 'BangWork',
+    defaultBranch: 'master',
+  },
+  {
+    repo: 'wiki-web',
+    owner: 'BangWork',
+    defaultBranch: 'master',
   },
   // {
   //   repo: 'free-sms-aliyun',
