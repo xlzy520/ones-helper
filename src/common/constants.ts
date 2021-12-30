@@ -217,7 +217,7 @@ export const featuresList = [
     name: '工作项', show: true, component: 'task-action',
   },
   {
-    name: '其他', show: true, component: 'other-action',
+    name: 'Github', show: true, component: 'other-action',
   },
   {
     name: '插件更新', show: true, component: 'about-me',
@@ -236,7 +236,7 @@ export const projectList = [
     defaultBranch: 'master',
   },
   {
-    repo: 'wiki-web',
+    repo: 'wiki-web123',
     owner: 'BangWork',
     defaultBranch: 'master',
   },
