@@ -236,7 +236,7 @@ export const projectList = [
     defaultBranch: 'master',
   },
   {
-    repo: 'wiki-web123',
+    repo: 'wiki-web',
     owner: 'BangWork',
     defaultBranch: 'master',
   },
