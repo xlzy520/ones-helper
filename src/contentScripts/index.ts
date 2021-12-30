@@ -35,6 +35,7 @@ import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
       showCustomApi()
     }
     const { customONESApiHost, customONESApiProjectBranch } = config
+    console.log(customONESApiHost)
     injectScript(`${proxyWebsocket};proxyWebsocket('${customONESApiProjectBranch}')`)
     if (customONESApiHost.includes('http://localhost')) {
       if (isDevDomain()) {

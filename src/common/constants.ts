@@ -223,3 +223,18 @@ export const featuresList = [
     name: '插件更新', show: true, component: 'about-me',
   },
 ]
+
+export const projectList = [
+  {
+    repo: 'github-api-test-repo',
+    url: 'https://github.com/xlzy520/github-api-test-repo',
+    owner: 'xlzy520',
+    defaultBranch: 'main',
+  },
+  // {
+  //   repo: 'free-sms-aliyun',
+  //   url: 'https://github.com/xlzy520/free-sms-aliyun',
+  //   owner: 'xlzy520',
+  //   defaultBranch: 'master',
+  // },
+]

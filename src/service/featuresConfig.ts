@@ -1,7 +1,7 @@
 import { featuresList } from '~/common/constants'
 
 export function getFeaturesConfig(): Promise<any> {
-  return browser.storage.local.get('featuresConfig').then((res) => {
+  return browser.storage.local.get('featuresConfig').then((res: any) => {
     return res.featuresConfig || featuresList
   })
 }

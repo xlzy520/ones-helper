@@ -25,3 +25,11 @@ export interface onesConfig {
   isUpdate?: boolean
   [key: string]: string | boolean| undefined
 }
+
+export interface GithubBranchParam {
+  owner: string
+  repo: string
+  head: string
+  ref: string
+  sha: string
+}
