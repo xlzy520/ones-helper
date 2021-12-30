@@ -223,10 +223,12 @@ const getAllCommitHashAndCopy = () => {
   const apis = projectList.map((project) => {
     return fetchBranchSHA({ ...project, head: commitHash.branch })
   })
-  Promise.all(apis).then((res) => {
-    console.log(res)
+  Promise.allSettled(apis).then((res) => {
     const text = projectList.map((project, index) => {
-      return `${project.repo}(${commitHash.branch}): ${res[index]}`
+      if (res[index].value) {
+        return `${project.repo}(${commitHash.branch}): ${res[index].value}`
+      }
+      return `${project.repo}(${commitHash.branch}): 无权限`
     })
     copyToClipboard(text.join('\r\n'))
     message.success('复制成功')
