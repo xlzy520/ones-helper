@@ -1,6 +1,7 @@
 import { useDebounceFn } from '@vueuse/core'
 import Browser from 'webextension-polyfill'
 import { isFirefox } from '~/env'
+import { GithubOAuthClientID, GithubOAuthClientSecrets } from '~/common/constants'
 
 export type Headers = Browser.WebRequest.HttpHeaders
 
@@ -17,7 +18,7 @@ const getAccessToken = (str = '') => {
 }
 
 const setGithubAccessToken = useDebounceFn((code) => {
-  const getAccessTokenUrl = 'https://github.com/login/oauth/access_token?client_id=86195e808441e12f0de9&client_secret=b7c885a910febde53135e674db6a41c34053e0ac&code='
+  const getAccessTokenUrl = `https://github.com/login/oauth/access_token?client_id=${GithubOAuthClientID}&client_secret=${GithubOAuthClientSecrets}&code=`
   fetch(getAccessTokenUrl + code).then(res => res.text()).then((res) => {
     console.log(res)
     const token = getAccessToken(res)

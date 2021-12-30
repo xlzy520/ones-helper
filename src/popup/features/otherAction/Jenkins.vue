@@ -65,7 +65,7 @@ const mainProjects = projectList.filter(v => v.repo !== 'ones-ai-web-common').ma
 
 const checkedProjects = ref(mainProjects)
 
-const JenkinsBuildBranch = ref('S5074')
+const JenkinsBuildBranch = ref('')
 const clearJenkinsBuildBranch = () => {
   JenkinsBuildBranch.value = ''
 }

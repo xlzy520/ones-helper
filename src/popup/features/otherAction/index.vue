@@ -12,9 +12,17 @@
           清除授权
         </n-tooltip>
       </div>
-      <n-button v-else type="primary" @click="auth">
-        授权GitHub
-      </n-button>
+      <n-popconfirm
+        v-else
+        @positive-click="auth"
+      >
+        <template #trigger>
+          <n-button type="primary">
+            授权GitHub
+          </n-button>
+        </template>
+        请注意！跳转之后的链接显示 <b class="text-red-500 px-2">无法访问此网站</b> 是正常的，重新打开插件即可
+      </n-popconfirm>
       <n-tag v-if="code" type="info">
         {{ privateCode }}
       </n-tag>
@@ -138,7 +146,7 @@
           <!--          />-->
         </div>
         <n-button type="primary" ghost @click="getAllCommitHashAndCopy">
-          ✨ 确定
+          ✨ 复制全部Hash
         </n-button>
       </div>
     </div>
@@ -201,9 +209,6 @@ const createBranches = () => {
         message.error(err)
       })
     })
-  })
-  nextTick(() => {
-    clearBranchName()
   })
 }
 
@@ -272,7 +277,9 @@ const auth = () => {
 }
 
 const clearAuth = () => {
-  browser.storage.local.remove('githubAccessToken')
+  browser.storage.local.remove('githubAccessToken').then((res) => {
+    message.success('清除授权成功')
+  })
 }
 
 onMounted(() => {

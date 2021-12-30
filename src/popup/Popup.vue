@@ -20,7 +20,7 @@
 import { NMessageProvider, NTabs, NTabPane, NConfigProvider, zhCN, dateZhCN } from 'naive-ui'
 import { featuresConfigService } from '~/service'
 
-const defaultTab = ref('其他')
+const defaultTab = ref('API转发')
 
 const filterFeatures = ref([])
 
