@@ -103,10 +103,6 @@
 </template>
 
 <script setup lang="tsx">
-import {
-  NForm, NInput, NSelect, NSwitch,
-  NButton, NGrid, NFormItemGridItem, NModal, NTag, NPopconfirm, NAlert, NTooltip,
-} from 'naive-ui'
 import { Ref } from 'vue-demi'
 import { DefaultPresetOptions } from '~/common/constants'
 import { customApiService } from '~/service'
@@ -121,7 +117,7 @@ const renderLabel = (option: PresetOption) => {
   const tagType = custom ? 'info' : ''
   return (
     <div>
-      <NTag size="small" type={tagType}>{tagName}</NTag>
+      <n-tag size="small" type={tagType}>{tagName}</n-tag>
       <span className="ml-4">{option.label}</span>
     </div>
   )

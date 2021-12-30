@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="tsx">
-import { useMessage, NTag, NButton, NAlert, NSwitch, NTooltip } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 
 const message = useMessage()
 
@@ -105,7 +105,5 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.switch-row {
-  border-bottom: 1px solid #eee;
-}
+
 </style>

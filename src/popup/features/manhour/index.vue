@@ -109,10 +109,7 @@
 </template>
 
 <script setup lang="tsx">
-import {
-  useMessage, NButton, NTooltip, NDataTable, NForm, NFormItem, NInput, NInputNumber, NModal, NDatePicker,
-  NSelect, NPopconfirm, NTag, NEllipsis,
-} from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import { format } from 'date-fns'
 import { useDebounceFn } from '@vueuse/core'
 import { copyToClipboard, isDev } from '~/common/utils'

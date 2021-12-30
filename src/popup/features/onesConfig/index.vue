@@ -93,8 +93,7 @@
 
 <script setup lang="ts">
 import {
-  useMessage, NSwitch, NInput, NSelect, NRadioGroup, NRadio, NSpace,
-  NButton, NTag, NPopconfirm, NDivider, NGrid, NGridItem, NCard, NAlert,
+  useMessage,
 } from 'naive-ui'
 import { onesConfigService } from '~/service'
 import { getCurrentTab } from '~/common/tabs'

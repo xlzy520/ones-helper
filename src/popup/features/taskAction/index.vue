@@ -38,9 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  useMessage, NButton, NSwitch, NTooltip,
-} from 'naive-ui'
 import QuestionIcon from '~/components/question-icon.vue'
 
 import { getCurrentTab } from '~/common/tabs'
@@ -83,7 +80,5 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.switch-row{
-  border-bottom: 1px solid #eee;
-}
+
 </style>
