@@ -1,27 +1,50 @@
 import { getCurrentTab } from '~/common/tabs'
 
-export const copyToClipboard = function(input: string) {
-  const el = document.createElement('textarea')
-  el.style.fontSize = '12pt'
-  el.style.border = '0'
-  el.style.padding = '0'
-  el.style.margin = '0'
-  el.style.position = 'absolute'
-  el.style.left = '-9999px'
-  el.setAttribute('readonly', '')
-  el.value = input
+export function copyToClipboard(input: string, { target = document.body } = {}) {
+  const element = document.createElement('textarea')
+  const previouslyFocusedElement = document.activeElement
 
-  document.body.appendChild(el)
-  el.select()
+  element.value = input
 
-  let success = false
+  // Prevent keyboard from showing on mobile
+  element.setAttribute('readonly', '')
+
+  element.style.contain = 'strict'
+  element.style.position = 'absolute'
+  element.style.left = '-9999px'
+  element.style.fontSize = '12pt' // Prevent zooming on iOS
+
+  const selection = document.getSelection()
+  const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0)
+
+  target.append(element)
+  element.select()
+
+  // Explicit selection workaround for iOS
+  element.selectionStart = 0
+  element.selectionEnd = input.length
+
+  let isSuccess = false
   try {
-    success = document.execCommand('copy', true)
+    isSuccess = document.execCommand('copy')
   }
-  catch (err) { }
+  catch {}
 
-  document.body.removeChild(el)
-  return success
+  element.remove()
+
+  if (originalRange) {
+    selection.removeAllRanges()
+    selection.addRange(originalRange)
+  }
+
+  // Get the focus back on the previously focused element, if any
+  if (previouslyFocusedElement && previouslyFocusedElement.focus) {
+    previouslyFocusedElement.focus()
+  }
+
+  window.$message.success(isSuccess ? '复制成功' : '复制失败')
+
+  return isSuccess
 }
 
 export const $ = function(query: string) {
