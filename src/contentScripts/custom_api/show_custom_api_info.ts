@@ -89,7 +89,6 @@ function divDrag(elmClass: string) {
 }
 
 export async function showCustomApiInfo(): Promise<void> {
-  console.log(3123123)
   const oldElement = document.querySelector(`#${WRAPPER_EL_ID}`)
   if (oldElement) {
     divDrag(UniClassName)
