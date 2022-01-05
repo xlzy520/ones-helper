@@ -232,16 +232,31 @@ export const projectList = [
     repo: 'ones-project-web',
     owner: 'BangWork',
     defaultBranch: 'master',
+    type: 'fe',
   },
   {
     repo: 'ones-ai-web-common',
     owner: 'BangWork',
     defaultBranch: 'master',
+    type: 'fe',
   },
   {
     repo: 'wiki-web',
     owner: 'BangWork',
     defaultBranch: 'master',
+    type: 'fe',
+  },
+  {
+    repo: 'bang-api',
+    owner: 'BangWork',
+    defaultBranch: 'master',
+    type: 'be',
+  },
+  {
+    repo: 'wiki-api',
+    owner: 'BangWork',
+    defaultBranch: 'master',
+    type: 'be',
   },
   // {
   //   repo: 'free-sms-aliyun',
