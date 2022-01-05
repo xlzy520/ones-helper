@@ -39,7 +39,11 @@
         优化preview分支选择，由于preview搜索到的分支很多，不好直接选择
       </n-tooltip>
     </div>
-    <div class="p-2" :style="needGithubTokenStyle">
+    <n-divider title-placement="left">
+      一键辅助功能
+    </n-divider>
+
+    <div :class="needGithubTokenClass">
       <n-alert v-if="!code" title="请点击上方Github授权" type="default">
         <p>该区域功能依赖Github Token授权信息，授权后即可使用！</p>
       </n-alert>
@@ -155,12 +159,16 @@
         </div>
       </div>
     </div>
+    <n-divider title-placement="left">
+      Jenkins辅助
+    </n-divider>
+
     <jenkins />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useMessage, NTooltip, NAlert } from 'naive-ui'
+import { useMessage, NTooltip, NAlert, NDivider } from 'naive-ui'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
@@ -181,8 +189,8 @@ const privateCode = computed(() => {
   return code.value.substring(0, 16)
 })
 
-const needGithubTokenStyle = computed(() => {
-  return !code.value ? { 'pointer-events': 'none', 'background-color': 'rgba(0,0,0,0.05)', 'cursor': 'not-allowed', 'user-select': 'none' } : {}
+const needGithubTokenClass = computed(() => {
+  return !code.value ? ['cursor-not-allowed', 'p-2'] : ['p-2']
 })
 
 const checkedProjects = ref(projectList.map(v => v.repo))
