@@ -220,6 +220,9 @@ export const featuresList = [
     name: 'Github', show: true, component: 'other-action',
   },
   {
+    name: 'Jenkins', show: true, component: 'jenkins',
+  },
+  {
     name: '插件更新', show: true, component: 'about-me',
   },
 ]
