@@ -15,6 +15,9 @@ export function copyToClipboard(input: string, { target = document.body } = {}) 
   element.style.fontSize = '12pt' // Prevent zooming on iOS
 
   const selection = document.getSelection()
+  if (!selection) {
+    return
+  }
   const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0)
 
   target.append(element)
@@ -38,11 +41,15 @@ export function copyToClipboard(input: string, { target = document.body } = {}) 
   }
 
   // Get the focus back on the previously focused element, if any
-  if (previouslyFocusedElement && previouslyFocusedElement.focus) {
+  // @ts-ignore
+  if (previouslyFocusedElement?.focus) {
+    // @ts-ignore
     previouslyFocusedElement.focus()
   }
 
-  window.$message.success(isSuccess ? '复制成功' : '复制失败')
+  if (window.$message) {
+    window.$message.success(isSuccess ? '复制成功' : '复制失败')
+  }
 
   return isSuccess
 }

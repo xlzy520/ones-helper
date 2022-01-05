@@ -1,15 +1,17 @@
-import styles from './style.css'
+import styles from './style.scss'
 
 import { showCustomApi } from './custom_api/index'
 import { branchSelectEnhance } from './github_enhance/index'
 import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
+import $message from './antdMessage/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal } from '~/common/utils'
+import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal, $All } from '~/common/utils'
 import proxyAJAX from '~/contentScripts/other_script/proxyAJAX'
 import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv'
 import proxyWebsocket from '~/contentScripts/other_script/proxyWebsocket'
-import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
+import { PresetOption, PresetOptionConfig } from '~/service/custom_api'
+import { handleKanban } from '~/contentScripts/task_action/kanban';
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
@@ -21,11 +23,17 @@ import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
   styleEl.innerHTML = styles
   injectHead(styleEl)
 
+  $message.success(123)
+
   // 开发环境注入特殊脚本获取环境变量
   if (isFEOnesDev) {
     if (!$('#buildOnesProcessEnv')) {
       injectScript(`${getBuildOnesProcessEnv};getBuildOnesProcessEnv()`, 'buildOnesProcessEnv')
     }
+  }
+
+  if (location.href.includes('http://localhost:9030/githubAuth?code=')) {
+    $message.success('获取code成功，再次打开插件即可')
   }
 
   // API转发
@@ -35,7 +43,6 @@ import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
       showCustomApi()
     }
     const { customONESApiHost, customONESApiProjectBranch } = config
-    console.log(customONESApiHost)
     injectScript(`${proxyWebsocket};proxyWebsocket('${customONESApiProjectBranch}')`)
     if (customONESApiHost.includes('http://localhost')) {
       if (isDevDomain()) {
@@ -49,6 +56,7 @@ import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
   onesConfigService.getOtherConfig().then((res) => {
     setInterval(() => {
       if (isSaas()) {
+        // console.log(document.body, window.document.querySelector('body')?.kanbanState)
         if (res.copy && !$('.ones-helper.copy-task')) {
           addTaskCopyButton()
         }
@@ -59,6 +67,8 @@ import { PresetOption, PresetOptionConfig } from '~/service/custom_api';
       if (res.branchSelectEnhance) {
         branchSelectEnhance()
       }
+
+      handleKanban()
     }, 3000)
   })
 })()

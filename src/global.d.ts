@@ -9,4 +9,5 @@ declare interface Window {
   onesConfig: Record<string, unknown>
   buildOnesProcessEnv: Record<string, unknown>
   dragMoveListener: (evt: Event) => void
+  $message: Record<string, (text: string) => void>
 }
