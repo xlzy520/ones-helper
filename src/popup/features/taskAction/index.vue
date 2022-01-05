@@ -25,6 +25,18 @@
           某些情况下复制不需要带上链接
         </n-tooltip>
       </div>
+      <div class="layout-items-center py-2 switch-row">
+        <div class="mr-4 w-[180px]">
+          快速响应工单看板限制
+        </div>
+        <n-switch v-model:value="taskConfig.data.kanban" class="mr-4" />
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <question-icon />
+          </template>
+          对部分状态的工单数量进行限制，只允许一个紧急单不占用名额
+        </n-tooltip>
+      </div>
     </div>
     <!--    <div class="layout-around">-->
     <!--      <n-button type="primary" @click="copyAll">-->
@@ -47,6 +59,7 @@ const taskConfig = reactive({
   data: {
     enableRelatedImplementVersion: false,
     copy: true,
+    kanban: true,
   },
 })
 
