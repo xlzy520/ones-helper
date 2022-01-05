@@ -1,53 +1,76 @@
 <template>
-  <div class="py-2">
-    <div class="layout-slide">
-      <div class="layout-items-center">
-        <div class="font-bold">
-          Jenkins立即触发构建(dev)
+  <div class="">
+    <div class="py-2">
+      <div class="layout-slide">
+        <div class="layout-items-center">
+          <div class="font-bold">
+            Jenkins立即触发构建(dev)
+          </div>
+          <n-tag type="info" class="ml-2">
+            前端版
+          </n-tag>
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <question-icon class="ml-2" />
+            </template>
+            场景：本次改动只修改了common，没有自动触发构建
+          </n-tooltip>
         </div>
-        <n-tag type="info" class="ml-2">
-          前端版
-        </n-tag>
-        <n-tooltip trigger="hover">
-          <template #trigger>
-            <question-icon class="ml-2" />
-          </template>
-          场景：本次改动只修改了common，没有自动触发构建
-        </n-tooltip>
+        <div v-if="jenkinsCrumb" class="">
+          <n-tag type="info">
+            Jenkins凭证：{{ jenkinsCrumb.substring(0, 16).padEnd(20, '*') }}
+          </n-tag>
+        </div>
       </div>
-      <div v-if="jenkinsCrumb" class="">
-        <n-tag type="info">
-          Jenkins凭证：{{ jenkinsCrumb.substring(0, 16).padEnd(20, '*') }}
-        </n-tag>
+      <div class="">
+        <div class="py-1">
+          选择要触发构建的项目(开发环境)
+        </div>
+        <n-checkbox-group v-model:value="checkedProjects">
+          <n-checkbox
+            v-for="project in mainProjects"
+            :key="project"
+            checked
+            :value="project"
+            :label="project"
+            class="mr-2"
+          ></n-checkbox>
+        </n-checkbox-group>
       </div>
-    </div>
-    <div class="">
-      <div class="py-1">
-        选择要触发构建的项目(开发环境)
-      </div>
-      <n-checkbox-group v-model:value="checkedProjects">
-        <n-checkbox
-          v-for="project in mainProjects"
-          :key="project"
-          checked
-          :value="project"
-          :label="project"
-          class="mr-2"
-        ></n-checkbox>
-      </n-checkbox-group>
-    </div>
 
-    <div class="layout-slide pt-2">
-      <n-input
-        v-model:value="JenkinsBuildBranch"
-        placeholder="分支名称"
-        class="mr-4"
-        clearable
-        @clear="clearJenkinsBuildBranch"
-      />
-      <n-button type="success" ghost :disabled="!canDispatch" @click="dispatchBuild">
-        立即触发
-      </n-button>
+      <div class="layout-slide pt-2">
+        <n-input
+          v-model:value="JenkinsBuildBranch"
+          placeholder="分支名称"
+          class="mr-4"
+          clearable
+          @clear="clearJenkinsBuildBranch"
+        />
+        <n-button type="success" ghost :disabled="!canDispatch" @click="dispatchBuild">
+          立即触发
+        </n-button>
+      </div>
+    </div>
+    <div class="py-2">
+      <div class="layout-slide">
+        <div class="layout-items-center">
+          <div class="font-bold">
+            Jenkins立即触发构建(dev)
+          </div>
+          <n-tag type="info" class="ml-2">
+            前端版
+          </n-tag>
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <question-icon class="ml-2" />
+            </template>
+            场景：本次改动只修改了common，没有自动触发构建
+          </n-tooltip>
+        </div>
+        <n-button type="success" ghost :disabled="!jenkinsCrumb" @click="scan">
+          🔍️ 立刻 Scan 仓库
+        </n-button>
+      </div>
     </div>
   </div>
 </template>
@@ -61,7 +84,7 @@ const message = useMessage()
 
 const jenkinsCrumb = ref('')
 
-const mainProjects = projectList.filter(v => v.repo !== 'ones-ai-web-common').map(v => v.repo)
+const mainProjects = projectList.filter(v => v.repo !== 'ones-ai-web-common' && v.type === 'fe').map(v => v.repo)
 
 const checkedProjects = ref(mainProjects)
 
@@ -123,6 +146,10 @@ const dispatchBuild = () => {
       getLatestJenkinsCrumb()
     }
   })
+}
+
+const scan = () => {
+  console.log(222)
 }
 
 onMounted(() => {

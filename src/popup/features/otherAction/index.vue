@@ -42,6 +42,21 @@
     <n-divider title-placement="left">
       一键辅助功能
     </n-divider>
+    <div class="layout-items-center py-2 switch-row">
+      <div class="mr-4">
+        我的角色是
+      </div>
+      <n-radio-group :value="role" name="radiogroup" :on-update:value="saveRole">
+        <n-space>
+          <n-radio value="fe">
+            前端
+          </n-radio>
+          <n-radio value="be">
+            后端
+          </n-radio>
+        </n-space>
+      </n-radio-group>
+    </div>
 
     <div :class="needGithubTokenClass">
       <n-alert v-if="!code" title="请点击上方Github授权" type="default">
@@ -52,9 +67,9 @@
           <div class="font-bold">
             一键创建分支
           </div>
-          <n-tag type="info" class="ml-2">
-            前端版
-          </n-tag>
+          <!--          <n-tag type="info" class="ml-2">-->
+          <!--            前端版-->
+          <!--          </n-tag>-->
         </div>
         <div class="">
           <div class="py-1">
@@ -62,7 +77,7 @@
           </div>
           <n-checkbox-group v-model:value="checkedProjects">
             <n-checkbox
-              v-for="project in projectList"
+              v-for="project in filterProjectList"
               :key="project.repo"
               checked
               :value="project.repo"
@@ -113,16 +128,16 @@
           <div class="font-bold">
             一键获取项目分支Commit Hash值
           </div>
-          <n-tag type="info" class="ml-2">
-            前端版
-          </n-tag>
+          <!--          <n-tag type="info" class="ml-2">-->
+          <!--            前端版-->
+          <!--          </n-tag>-->
         </div>
         <div class="">
           <div class="py-1">
             默认项目列表
           </div>
           <n-tag
-            v-for="project in projectList"
+            v-for="project in filterProjectList"
             :key="project.repo"
             class="mr-2"
           >
@@ -159,22 +174,17 @@
         </div>
       </div>
     </div>
-    <n-divider title-placement="left">
-      Jenkins辅助
-    </n-divider>
-
-    <jenkins />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useMessage, NTooltip, NAlert, NDivider } from 'naive-ui'
+import Browser from 'webextension-polyfill'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
 import { projectList } from '~/common/constants'
 import { copyToClipboard } from '~/common/utils'
-import Jenkins from '~/popup/features/otherAction/Jenkins.vue'
 
 const message = useMessage()
 const otherConfig = reactive({
@@ -193,6 +203,15 @@ const needGithubTokenClass = computed(() => {
   return !code.value ? ['cursor-not-allowed', 'p-2'] : ['p-2']
 })
 
+const role = ref('fe')
+const saveRole = (val) => {
+  role.value = val
+  Browser.storage.local.set({ role: role.value })
+}
+
+const filterProjectList = computed(() => {
+  return projectList.filter(project => project.type === role.value)
+})
 const checkedProjects = ref(projectList.map(v => v.repo))
 const projectMapping = projectList.reduce((pre, cur) => {
   pre[cur.repo] = cur
@@ -240,18 +259,30 @@ const commitHash = reactive({
 const copyHashLoading = ref(false)
 const getAllCommitHashAndCopy = () => {
   copyHashLoading.value = true
-  const apis = projectList.map((project) => {
+  const apis = filterProjectList.value.map((project) => {
     return fetchBranchSHA({ ...project, head: commitHash.branch })
   })
   Promise.allSettled(apis).then((res) => {
-    const text = projectList.map((project, index) => {
+    let noPermissionCout = 0
+    const text = filterProjectList.value.map((project, index) => {
       if (res[index].value) {
         return `${project.repo}(${commitHash.branch}): ${res[index].value}`
       }
+      noPermissionCout += 1
       return `${project.repo}(${commitHash.branch}): 无权限`
     })
     copyToClipboard(text.join('\r\n'))
-    message.success('复制成功')
+    if (noPermissionCout) {
+      if (noPermissionCout === text.length) {
+        message.error('复制失败, 全部无权限')
+      }
+      else {
+        message.success(`复制成功, 有${noPermissionCout}个无权限`)
+      }
+    }
+    else {
+      message.success('复制成功')
+    }
     copyHashLoading.value = false
   }).catch((err) => {
     if (err) {
@@ -310,6 +341,9 @@ const clearAuth = () => {
 }
 
 onMounted(() => {
+  Browser.storage.local.get('role').then((res) => {
+    role.value = res.role
+  })
   getOtherConfig()
   getGithubOAuthToken().then((res) => {
     if (res) {

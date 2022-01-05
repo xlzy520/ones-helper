@@ -13,6 +13,7 @@ import OnesConfig from '~/popup/features/onesConfig/index.vue'
 import TaskAction from '~/popup/features/taskAction/index.vue'
 import OtherAction from '~/popup/features/otherAction/index.vue'
 import ManHour from '~/popup/features/manhour/index.vue'
+import Jenkins from '~/popup/features/jenkins/index.vue'
 import AboutMe from '~/popup/features/about/index.vue'
 
 const app = createApp(App)
@@ -22,6 +23,7 @@ app.component('OnesConfig', OnesConfig)
 app.component('TaskAction', TaskAction)
 app.component('OtherAction', OtherAction)
 app.component('ManHour', ManHour)
+app.component('Jenkins', Jenkins)
 app.component('AboutMe', AboutMe)
 
 const naive = create({
