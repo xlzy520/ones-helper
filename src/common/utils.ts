@@ -101,6 +101,10 @@ export const isCD = () => {
   return location.href.includes('https://cd.myones.net')
 }
 
+export const isInLimitedKanban = () => {
+  return location.href.includes('https://ones.ai/project/#/team/RDjYMhKq/project/GL3ysesFPdnAQNIU/')
+}
+
 export const sendMessage = (message: any) => {
   getCurrentTab().then((tab) => {
     const { id } = tab

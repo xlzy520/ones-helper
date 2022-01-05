@@ -6,7 +6,7 @@ import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import $message from './antdMessage/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal, $All } from '~/common/utils'
+import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal, $All, isInLimitedKanban } from '~/common/utils'
 import proxyAJAX from '~/contentScripts/other_script/proxyAJAX'
 import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv'
 import proxyWebsocket from '~/contentScripts/other_script/proxyWebsocket'
@@ -68,7 +68,9 @@ import { handleKanban } from '~/contentScripts/task_action/kanban';
         branchSelectEnhance()
       }
 
-      handleKanban()
+      if (isInLimitedKanban()) {
+        handleKanban()
+      }
     }, 3000)
   })
 })()
