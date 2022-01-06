@@ -1,6 +1,7 @@
+import $message from '../contentScripts/antdMessage/index'
 import { getCurrentTab } from '~/common/tabs'
 
-export function copyToClipboard(input: string, { target = document.body } = {}) {
+export function copyToClipboard(input: string, needMessage = true) {
   const element = document.createElement('textarea')
   const previouslyFocusedElement = document.activeElement
 
@@ -20,7 +21,7 @@ export function copyToClipboard(input: string, { target = document.body } = {}) 
   }
   const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0)
 
-  target.append(element)
+  document.body.append(element)
   element.select()
 
   // Explicit selection workaround for iOS
@@ -47,8 +48,9 @@ export function copyToClipboard(input: string, { target = document.body } = {}) 
     previouslyFocusedElement.focus()
   }
 
-  if (window.$message) {
-    window.$message.success(isSuccess ? '复制成功' : '复制失败')
+  const message = $message
+  if (needMessage && message) {
+    message.success(isSuccess ? '复制成功' : '复制失败')
   }
 
   return isSuccess
