@@ -5,12 +5,12 @@
         <n-tag type="success">
           Github Oauth已授权
         </n-tag>
-        <n-tooltip trigger="hover">
+        <n-popconfirm @positive-click="clearAuth">
           <template #trigger>
-            <icon-park-outline-close class="ml-2 cursor-pointer" @click="clearAuth" />
+            <icon-park-outline-close class="ml-2 cursor-pointer" />
           </template>
-          清除授权
-        </n-tooltip>
+          确定清除授权吗？
+        </n-popconfirm>
       </div>
       <n-popconfirm
         v-else
@@ -58,7 +58,7 @@
       </n-radio-group>
     </div>
 
-    <div :class="needGithubTokenClass">
+    <div class="p-2">
       <n-alert v-if="!code" title="请点击上方Github授权" type="default">
         <p>该区域功能依赖Github Token授权信息，授权后即可使用！</p>
       </n-alert>
@@ -174,12 +174,13 @@
         </div>
       </div>
     </div>
+    <div v-if="!code" class="disabled-area"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useMessage, NTooltip, NAlert, NDivider } from 'naive-ui'
-import Browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
@@ -204,9 +205,9 @@ const needGithubTokenClass = computed(() => {
 })
 
 const role = ref('fe')
-const saveRole = (val) => {
+const saveRole = (val: string) => {
   role.value = val
-  Browser.storage.local.set({ role: role.value })
+  browser.storage.local.set({ role: role.value })
 }
 
 const filterProjectList = computed(() => {
@@ -271,7 +272,7 @@ const getAllCommitHashAndCopy = () => {
       noPermissionCout += 1
       return `${project.repo}(${commitHash.branch}): 无权限`
     })
-    copyToClipboard(text.join('\r\n'))
+    copyToClipboard(text.join('\r\n'), false)
     if (noPermissionCout) {
       if (noPermissionCout === text.length) {
         message.error('复制失败, 全部无权限')
@@ -331,18 +332,23 @@ const auth = () => {
   if (code.value) {
     return
   }
-  window.open('https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=dcb6fb9f42ca21dba6ba')
+  browser.tabs.create({
+    url: 'https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=dcb6fb9f42ca21dba6ba',
+    active: true,
+  })
 }
 
 const clearAuth = () => {
   browser.storage.local.remove('githubAccessToken').then((res) => {
     message.success('清除授权成功')
+    code.value = ''
   })
 }
 
 onMounted(() => {
-  Browser.storage.local.get('role').then((res) => {
-    role.value = res.role
+  browser.storage.local.get('role').then((res) => {
+    console.log(res)
+    role.value = res.role || 'fe'
   })
   getOtherConfig()
   getGithubOAuthToken().then((res) => {
@@ -355,5 +361,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-
+.disabled-area{
+  cursor: not-allowed;
+  position: absolute;
+  width: 768px;
+  height: 406px;
+  top: 180px;
+  z-index: 99999999;
+  background: #eee;
+  opacity: .5;
+}
 </style>
