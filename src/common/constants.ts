@@ -217,7 +217,7 @@ export const featuresList = [
     name: '工作项', show: true, component: 'task-action',
   },
   {
-    name: 'Github', show: true, component: 'other-action',
+    name: 'Github', show: true, component: 'github',
   },
   {
     name: 'Jenkins', show: true, component: 'jenkins',
