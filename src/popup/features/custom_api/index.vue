@@ -88,7 +88,20 @@
       </n-grid>
     </n-form>
     <n-alert title="温馨提示" type="info">
-      这里快速配置接口请求跳转的域，开发或者线上
+      {{ isLocal? '由于options请求问题，需要在本地nginx配置如下代码': '这里快速配置接口请求跳转的域，开发或者线上' }}
+      <pre v-if="isLocal">
+server {
+  listen      9002;
+  server_name localhost;
+
+  # reverse proxy
+  location / {
+    if ($request_method = 'OPTIONS') {
+    return 200;
+    }
+    proxy_pass http://localhost:9001;
+  }
+}</pre>
     </n-alert>
     <n-modal
       v-model:show="newPreset.showModal"
@@ -135,6 +148,9 @@ const formValue = reactive({
   showCustomApi: true,
   customApiPatterns: null,
   presetOptions: DefaultPresetOptions,
+})
+const isLocal = computed(() => {
+  return formValue.preset.includes('本地后端')
 })
 
 const isCustom = computed(() => selectedConfig.value.custom)
