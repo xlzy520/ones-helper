@@ -110,7 +110,7 @@
             >
               确定要在以下项目：
               <div class="">
-                <div v-for="item in checkedProjects" :key="item" class="py-1 font-bold">
+                <div v-for="item in checkedProjectsByRole" :key="item" class="py-1 font-bold">
                   {{ item }}
                 </div>
               </div>
@@ -218,6 +218,9 @@ const projectMapping = projectList.reduce((pre, cur) => {
   pre[cur.repo] = cur
   return pre
 }, {})
+const checkedProjectsByRole = computed(() => {
+  return checkedProjects.value.filter(project => projectMapping[project].type === role.value)
+})
 const branchName = ref('')
 
 const clearBranchName = () => {
