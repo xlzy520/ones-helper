@@ -1,5 +1,5 @@
 import { sendMessage, onMessage } from 'webext-bridge'
-import { Tabs } from 'webextension-polyfill'
+import Browser, { Tabs } from 'webextension-polyfill'
 import { customApi } from './custom_api'
 import { isSaas } from '~/common/utils'
 // import { groupAllTabs } from './background/groupTabs'
@@ -22,8 +22,59 @@ runCustomApi()
 
 browser.runtime.onMessage.addListener((request) => {
   const { type } = request
+  console.log(type)
   if (type === 'och_customApiChange') {
     runCustomApi()
+  }
+  else if (type === 'privateDeploy') {
+    console.log(999)
+    Browser.tabs.create({
+      url: 'https://marsdev-ci.myones.net/view/BUILD_PACKAGE/job/build-image/build?delay=0sec',
+      active: false,
+    }).then((res) => {
+      console.log(res)
+      // Browser.runtime.sendMessage({
+      //   type: '7777',
+      // })
+      const listener = (tabId, changeInfo) => {
+        console.log(tabId, changeInfo)
+        if (tabId === res.id) {
+          if (changeInfo.status === 'complete') {
+            Browser.tabs.update(res.id, {
+              active: true,
+            })
+            Browser.tabs.onUpdated.removeListener(listener)
+            alert('构建私有部署镜像已经打开了, 请配置')
+          }
+        }
+      }
+      Browser.tabs.onUpdated.addListener(listener)
+    })
+  }
+  else if (type === 'buildInstallPak') {
+    Browser.tabs.create({
+      url: 'https://marsdev-ci.myones.net/view/BUILD_PACKAGE/job/build-image/build?delay=0sec',
+      active: false,
+    }).then((res) => {
+      const listener = (tabId, changeInfo) => {
+        console.log(tabId, changeInfo)
+        if (tabId === res.id) {
+          if (changeInfo.status === 'complete') {
+            Browser.tabs.update(res.id, {
+              active: true,
+            })
+
+            Browser.tabs.onUpdated.removeListener(listener)
+            Browser.tabs.executeScript(tabId, {
+              code: `  const button = document.querySelector('#yui-gen1-button')
+            button.click()`,
+            })
+            alert('构建私有部署镜像已经打开了, 请配置')
+          }
+        }
+      }
+      Browser.tabs.onUpdated.addListener(listener)
+    })
   }
   // 由于tabGroups只支持manifest V3，所以暂时不做这个功能
   // else if (type === 'groupRightNow') {
