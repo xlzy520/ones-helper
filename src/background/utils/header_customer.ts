@@ -26,6 +26,7 @@ const setGithubAccessToken = useDebounceFn((code) => {
       browser.storage.local.set({
         githubAccessToken: token,
       })
+      alert('获取code成功，请重新打开ONES Helper即可')
     }
   })
 }, 2000)
