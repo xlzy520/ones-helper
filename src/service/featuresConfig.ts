@@ -2,8 +2,8 @@ import { featuresList } from '~/common/constants'
 
 export function getFeaturesConfig(): Promise<any> {
   return browser.storage.local.get('featuresConfig').then((res: any) => {
-    if (res.featuresConfig.length !== featuresList.length) {
-      return Object.assign(featuresList, res.featuresConfig)
+    if (res.featuresConfig?.length !== featuresList.length) {
+      return featuresList
     }
     return res.featuresConfig || featuresList
   })
