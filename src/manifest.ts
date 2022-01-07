@@ -28,9 +28,9 @@ export async function getManifest() {
       persistent: true,
     },
     icons: {
-      16: './assets/favicon2020_x16.png',
-      48: './assets/favicon2020_x1024.png',
-      128: './assets/favicon2020_x1024.png',
+      16: './assets/favicon16.png',
+      48: './assets/favicon128.png',
+      128: './assets/favicon128.png',
     },
     permissions: [
       'cookies',
