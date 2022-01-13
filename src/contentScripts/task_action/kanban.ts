@@ -1,3 +1,6 @@
+import { useThrottleFn } from '@vueuse/core'
+import { isEqual } from 'lodash-es'
+import $message from '../antdMessage/index'
 import { $, $All } from '~/common/utils'
 
 let kanbanData = []
@@ -32,7 +35,7 @@ const getKanbanData = () => {
   if (cacheData.length) {
     kanbanData = cacheData
   }
-  console.log(kanbanData)
+  // console.log(kanbanData)
 }
 
 const handleTaskDetailDialog = () => {
@@ -41,7 +44,6 @@ const handleTaskDetailDialog = () => {
     if (!interval) {
       interval = setInterval(() => {
         const list = document.querySelectorAll('.transition-select-picker-list .transition-select-picker-cell .transition-select-text')
-        console.log(list)
         list.forEach((v, index) => {
           const target = kanbanData.find(d => d.title.includes(v.textContent))
           if (target) {
@@ -72,6 +74,57 @@ const handleTaskDetailDialog = () => {
     interval = null
   }
 }
+
+const kanbanQuery = {
+  with_boards: true,
+  boards: [{ name: '待处理客情单 Top 5', uuid: 'ZCPh1KWB', status_uuids: ['VKr1ju8h'] }, {
+    name: '分诊中（4）',
+    uuid: 'IJeKBPTm',
+    status_uuids: ['4NAvu5Ly'],
+  }, { name: '分诊完成', uuid: 'omEnExGI', status_uuids: ['Tqtoda88'] }, {
+    name: '确认中（4）',
+    uuid: 'RcGr9pTs',
+    status_uuids: ['Rt9S5QaP', '7VD6FJga'],
+  }, { name: '处理中（3）', uuid: 'Anc4XcmV', status_uuids: ['D1gi1FT5'] }, {
+    name: '处理完成',
+    uuid: '9xAaYX8Z',
+    status_uuids: ['DtWy2th2'],
+  }, { name: '测试中（3）', uuid: 'KkPJZgfl', status_uuids: ['FYzpbn4R', 'Q31rhCqT'] }, {
+    name: '测试通过（12）',
+    uuid: 'q7c5WCfT',
+    status_uuids: ['JGPxA2FE'],
+  }, { name: '待客户确认', uuid: 'YwoIY9Ld', status_uuids: ['SRrEGrTV', 'M6c2Muyw', '3ryJG6HC'] }],
+  query: { must: [{ must: [{ in: { 'field_values.field006': ['GL3ysesFPdnAQNIU'] } }, { in: { 'field_values.field007': ['7sxvwZMY'] } }] }, { should: [{ must: [{ in: { 'field_values.Qr51Lf6j': ['v7GCUFcW'] } }, { in: { 'field_values.PjHEiH3d': ['DLMM2DJD', 'AdJfghtB', 'Jrw6nJ4s', 'DY42MTx4', 'XQY7VZLK'] } }, { not_in: { 'field_values.field005': ['4xw63FVp'] } }] }, { must: [{ in: { 'field_values.RtoHFr5S': ['Mg4APznQ'] } }, { in: { 'field_values.PjHEiH3d': ['DLMM2DJD', 'AdJfghtB', 'Jrw6nJ4s', 'DY42MTx4'] } }, { not_in: { 'field_values.field005': ['4xw63FVp'] } }] }, { must: [{ in: { 'field_values.EeZFYyrW': ['$*department:LNErQe94'] } }] }] }] },
+  group_by: 'field_values.RtoHFr5S',
+  sort: [{ 'field_values.field009': { order: 'desc' } }],
+  include_subtasks: false,
+  include_status_uuid: false,
+  include_issue_type: false,
+  include_project_uuid: false,
+  is_show_derive: false,
+  search: { keyword: '', aliases: [] },
+}
+
+let currentKanbanData: any
+const fetchKanban = useThrottleFn(() => {
+  fetch('https://ones.ai/project/api/project/team/RDjYMhKq/filters/peek', {
+    method: 'POST',
+    body: JSON.stringify(kanbanQuery),
+  }).then((res) => {
+    return res.json()
+  }).then((res) => {
+    if (currentKanbanData) {
+      if (!isEqual(currentKanbanData, res)) {
+        $message.info('看板内容有变化，正在刷新')
+        // @ts-ignore
+        $('.ComponentMain-nav .FoldableTabs-item a').click()
+      }
+    }
+    else {
+      currentKanbanData = res
+    }
+  })
+}, 30 * 1000)
 
 export const handleKanban = () => {
   const kanban = $('.kanban-container-advance')
@@ -125,5 +178,6 @@ export const handleKanban = () => {
       kanban.hasListener = true
     }
     handleTaskDetailDialog()
+    fetchKanban()
   }
 }
