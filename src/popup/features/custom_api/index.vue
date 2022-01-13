@@ -41,6 +41,18 @@
             :placeholder="isCustom?'输入分支名':'点击另存为创建自定义配置'"
           />
         </n-form-item-grid-item>
+        <n-form-item-grid-item :span="22" label="ws地址" path="websocket">
+          <n-input
+            v-model:value="selectedConfig.websocket"
+            placeholder="自定义websocket地址, 如果不填则使用插件默认配置"
+          />
+          <n-tooltip placement="right" trigger="hover">
+            <template #trigger>
+              <question-icon class="ml-2" />
+            </template>
+            <p>dev格式: wss://dev.myones.net/wiki/B1002</p><p>local格式: ws://dev.localhost:3000</p>
+          </n-tooltip>
+        </n-form-item-grid-item>
         <n-form-item-grid-item :span="22" label="提示" path="showCustomApi">
           <n-tooltip placement="right" trigger="hover">
             <template #trigger>
@@ -139,6 +151,7 @@ const renderLabel = (option: PresetOption) => {
 const selectedConfig: Ref<PresetOptionConfig> = ref({
   customONESApiHost: '',
   customONESApiProjectBranch: '',
+  websocket: '',
   custom: false,
   isBranch: false,
 })
@@ -171,7 +184,10 @@ const syncFormData = async() => {
 
 const handleUpdatePresetValue = (value: string, option: PresetOption) => {
   formValue.preset = value
-  selectedConfig.value = option.config
+  selectedConfig.value = {
+    ...option.config,
+    websocket: option.config.websocket ?? '',
+  }
   customApiService.saveCustomApi(toRaw(formValue))
   console.log(toRaw(unref(selectedConfig)))
 }

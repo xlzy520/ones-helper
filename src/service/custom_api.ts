@@ -16,6 +16,7 @@ export interface PresetOptionConfig {
   customONESApiHost: string
   customONESApiProjectBranch: string
   isBranch: boolean
+  websocket?: string
 }
 
 export interface PresetOption {
