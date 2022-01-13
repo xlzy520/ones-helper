@@ -107,6 +107,10 @@ export const isInLimitedKanban = () => {
   return location.href.includes('https://ones.ai/project/#/team/RDjYMhKq/project/GL3ysesFPdnAQNIU/')
 }
 
+export const isGithubOAuthUrl = () => {
+  return location.href.includes('http://localhost:9030/githubAuth?code=')
+}
+
 export const sendMessage = (message: any) => {
   getCurrentTab().then((tab) => {
     const { id } = tab

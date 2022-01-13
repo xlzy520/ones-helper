@@ -7,7 +7,17 @@ import { run as runOtherScript } from './other_script'
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index'
 import $message from './antdMessage/index'
 import { customApiService, onesConfigService } from '~/service'
-import { $, isSaas, injectHead, injectScript, isDevDomain, isLocal, $All, isInLimitedKanban } from '~/common/utils'
+import {
+  $,
+  isSaas,
+  injectHead,
+  injectScript,
+  isDevDomain,
+  isLocal,
+  $All,
+  isInLimitedKanban,
+  isGithubOAuthUrl,
+} from '~/common/utils'
 import getBuildOnesProcessEnv from '~/contentScripts/other_script/getBuildOnesProcessEnv'
 import { handleKanban } from '~/contentScripts/task_action/kanban';
 
@@ -28,7 +38,7 @@ import { handleKanban } from '~/contentScripts/task_action/kanban';
     }
   }
 
-  if (location.href.includes('http://localhost:9030/githubAuth?code=')) {
+  if (isGithubOAuthUrl()) {
     $message.success('获取code成功，再次打开插件即可')
   }
 
