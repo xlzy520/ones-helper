@@ -22,6 +22,7 @@ specifiers:
   fs-extra: ^10.0.0
   interactjs: ^1.2.0
   kolorist: ^1.5.0
+  lodash-es: ^4.17.21
   naive-ui: ^2.19.3
   npm-run-all: ^4.1.5
   rimraf: ^3.0.2
@@ -41,6 +42,7 @@ specifiers:
 dependencies:
   date-fns: 2.27.0
   interactjs: 1.10.11
+  lodash-es: 4.17.21
   naive-ui: 2.23.1_vue@3.2.26
 
 devDependencies:
@@ -3941,7 +3943,7 @@ packages:
     dev: true
 
   /lodash-es/4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==, tarball: lodash-es/download/lodash-es-4.17.21.tgz}
     dev: false
 
   /lodash.defaults/4.2.0:
