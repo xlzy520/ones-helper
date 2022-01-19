@@ -1,6 +1,7 @@
 import { onesConfigService } from '~/service'
 import { $, $All, copyToClipboard, injectScript, isPrivate, isSaas, isCD } from '~/common/utils'
 import { ONESConfig } from '~/common/constants'
+import { getFeaturesConfig } from '~/service/featuresConfig'
 
 export function run(): void {
   // logic here
@@ -14,27 +15,32 @@ export function run(): void {
     // console.log(onesConfig)
   }
 
-  onesConfigService.getOnesConfigApi().then((res) => {
-    if (isPrivate() || isSaas()) {
-      const onesConfigScript = $All('script')[1]
-      // eslint-disable-next-line no-eval
-      let onesConfig = eval(onesConfigScript.innerHTML)
-      // 如果用户点击了保存，那就用修改后的，如果没有修改，永远用页面自己的
-      if (res.isUpdate) {
-        onesConfig = res
-      }
-      saveOnesConfig(onesConfig)
-    }
-    else {
-      let onesConfigDev = {}
-      if ($('#realBuildOnesProcessEnv')) {
-        const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML
-        // eslint-disable-next-line no-eval
-        onesConfigDev = eval(onesConfigScript)
-      }
-      // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
-      const onesConfig = res?.wechatBindSupport ? { ...ONESConfig, ...onesConfigDev, ...res } : ONESConfig
-      saveOnesConfig(onesConfig)
+  getFeaturesConfig().then((res) => {
+    const onesConfigItem = res.find(v => v.name === 'OnesConfig')
+    if (onesConfigItem && onesConfigItem.show) {
+      onesConfigService.getOnesConfigApi().then((res) => {
+        if (isPrivate() || isSaas()) {
+          const onesConfigScript = $All('script')[1]
+          // eslint-disable-next-line no-eval
+          let onesConfig = eval(onesConfigScript.innerHTML)
+          // 如果用户点击了保存，那就用修改后的，如果没有修改，永远用页面自己的
+          if (res.isUpdate) {
+            onesConfig = res
+          }
+          saveOnesConfig(onesConfig)
+        }
+        else {
+          let onesConfigDev = {}
+          if ($('#realBuildOnesProcessEnv')) {
+            const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML
+            // eslint-disable-next-line no-eval
+            onesConfigDev = eval(onesConfigScript)
+          }
+          // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
+          const onesConfig = res?.wechatBindSupport ? { ...ONESConfig, ...onesConfigDev, ...res } : ONESConfig
+          saveOnesConfig(onesConfig)
+        }
+      })
     }
   })
 
