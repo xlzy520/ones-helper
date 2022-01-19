@@ -24,7 +24,7 @@
         请注意！跳转之后的链接显示 <b class="text-red-500 px-2">无法访问此网站</b> 是正常的，重新打开插件即可
       </n-popconfirm>
       <n-tag v-if="code" type="info">
-        {{ privateCode }}
+        {{ privateCode.substring(0, 16).padEnd(20, '*') }}
       </n-tag>
     </div>
     <div class="layout-items-center py-2 switch-row">
