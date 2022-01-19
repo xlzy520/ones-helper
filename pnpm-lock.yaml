@@ -9,7 +9,7 @@ specifiers:
   '@types/node': ^16.7.13
   '@types/webextension-polyfill': ^0.8.0
   '@typescript-eslint/eslint-plugin': ^4.32.0
-  '@vitejs/plugin-vue': ^1.9.2
+  '@vitejs/plugin-vue': ^2.0.0
   '@vitejs/plugin-vue-jsx': ^1.2.0
   '@vue/compiler-sfc': ^3.2.19
   '@vueuse/core': ^6.5.3
@@ -54,7 +54,7 @@ devDependencies:
   '@types/node': 16.11.17
   '@types/webextension-polyfill': 0.8.2
   '@typescript-eslint/eslint-plugin': 4.33.0_eslint@7.32.0+typescript@4.5.4
-  '@vitejs/plugin-vue': 1.10.2_vite@2.7.6
+  '@vitejs/plugin-vue': 2.0.1_vite@2.7.6+vue@3.2.26
   '@vitejs/plugin-vue-jsx': 1.3.3
   '@vue/compiler-sfc': 3.2.26
   '@vueuse/core': 6.9.2_vue@3.2.26
@@ -936,13 +936,15 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/1.10.2_vite@2.7.6:
-    resolution: {integrity: sha512-/QJ0Z9qfhAFtKRY+r57ziY4BSbGUTGsPRMpB/Ron3QPwBZM4OZAZHdTa4a8PafCwU5DTatXG8TMDoP8z+oDqJw==, tarball: '@vitejs/plugin-vue/download/@vitejs/plugin-vue-1.10.2.tgz'}
+  /@vitejs/plugin-vue/2.0.1_vite@2.7.6+vue@3.2.26:
+    resolution: {integrity: sha512-wtdMnGVvys9K8tg+DxowU1ytTrdVveXr3LzdhaKakysgGXyrsfaeds2cDywtvujEASjWOwWL/OgWM+qoeM8Plg==, tarball: '@vitejs/plugin-vue/download/@vitejs/plugin-vue-2.0.1.tgz'}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
+      vue: ^3.2.25
     dependencies:
       vite: 2.7.6_sass@1.45.1
+      vue: 3.2.26
     dev: true
 
   /@vue/babel-helper-vue-transform-on/1.0.2:

@@ -21,7 +21,11 @@ export const sharedConfig: UserConfig = {
     __DEV__: isDev,
   },
   plugins: [
-    Vue(),
+    Vue({
+      script: {
+        refTransform: true,
+      },
+    }),
     VueJSX(),
 
     AutoImport({
