@@ -1,5 +1,27 @@
 <template>
   <div class="">
+    <div class="layout-slide pb-2 switch-row">
+      <div v-if="jenkinsCrumb" class="layout-items-center">
+        <n-tag type="success">
+          Jenkins已授权
+        </n-tag>
+        <n-popconfirm @positive-click="getLatestJenkinsCrumb">
+          <template #trigger>
+            <icon-park-outline-refresh class="ml-2 cursor-pointer" />
+          </template>
+          重新授权
+        </n-popconfirm>
+      </div>
+      <!--      <n-button type="primary" @click="getLatestJenkinsCrumb">-->
+      <!--        授权Jenkins-->
+      <!--      </n-button>-->
+      <div v-if="jenkinsCrumb" class="">
+        <n-tag type="info">
+          {{ jenkinsCrumb.substring(0, 16).padEnd(20, '*') }}
+        </n-tag>
+      </div>
+    </div>
+
     <div class="py-2">
       <div class="layout-slide">
         <div class="layout-items-center">
@@ -15,11 +37,6 @@
             </template>
             场景：本次改动只修改了common，没有自动触发构建
           </n-tooltip>
-        </div>
-        <div v-if="jenkinsCrumb" class="">
-          <n-tag type="info">
-            Jenkins凭证：{{ jenkinsCrumb.substring(0, 16).padEnd(20, '*') }}
-          </n-tag>
         </div>
       </div>
       <div class="">
@@ -207,6 +224,9 @@ const scan = () => {
 onMounted(() => {
   browser.storage.local.get('jenkinsCrumb').then((res) => {
     jenkinsCrumb.value = res.jenkinsCrumb
+    if (!res.jenkinsCrumb) {
+      getLatestJenkinsCrumb()
+    }
   })
   browser.runtime.onMessage.addListener(({ type, data }) => {
     if (type === 'jenkins-crumb') {
