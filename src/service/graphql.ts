@@ -121,36 +121,9 @@ export const fetchPublishVersion = () => {
       key
       name
       uuid
-      serverUpdateStamp
-      path
-      subTaskCount
-      subTaskDoneCount
-      position
-      status {
-        uuid
-        name
-        category
-      }
-      deadline
-      subTasks {
-        uuid
-      }
-      issueType {
-        uuid
-      }
-      subIssueType {
-        uuid
-      }
-      project {
-        uuid
-      }
-      parent {
-        uuid
-      }
-      estimatedHours
-      remainingManhour
-      issueTypeScope {
-        uuid
+      _FDxiwrFZ
+      _A3j2J3q8 {
+        value
       }
       importantField {
         bgColor

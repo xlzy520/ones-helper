@@ -141,6 +141,9 @@ export const isEqualAndIgnoreSomeProp = (objValue: any, srcValue: any, ignorePro
         }
         else {
           flag = item === srcItem
+          if (!flag) {
+            console.log(item, srcItem)
+          }
         }
       }
     }

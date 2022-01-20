@@ -43,3 +43,11 @@ export interface GithubBranchParam {
   ref: string
   sha: string
 }
+
+export interface commitHashResultItem {
+  name: string
+  hash: string
+  loading: boolean
+  success: boolean
+  reason: string
+}

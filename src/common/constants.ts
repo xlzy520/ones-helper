@@ -268,3 +268,174 @@ export const projectList = [
 
 export const GithubOAuthClientID = 'dcb6fb9f42ca21dba6ba'
 export const GithubOAuthClientSecrets = '72642603097212871b011ca2f4c9c4affe3127cc'
+
+export const GitHubRepoMap = {
+  'ONES Wiki for Web': {
+    product: 'WIKI',
+    type: 'WEB',
+    text: 'ONES Wiki for Web',
+    repo: 'wiki-web',
+  },
+  'ones-ai-web-common': {
+    product: 'ones-ai-web-common',
+    type: 'WEB',
+    text: 'ones-ai-web-common',
+    repo: 'ones-ai-web-common',
+  },
+  'ONES Audit Log': {
+    product: 'AUDITLOG',
+    type: 'API',
+    text: 'ONES Audit Log',
+    repo: 'audit-log-sync',
+  },
+  'ONES Wiki API': {
+    product: 'WIKI',
+    type: 'API',
+    text: 'ONES Wiki API',
+    repo: 'wiki-api',
+  },
+  'ONES DevOps API': {
+    product: 'DEVOPS',
+    type: 'API',
+    text: 'ONES DevOps API',
+    repo: 'ones-devops',
+  },
+  'ONES Official Website': {
+    product: 'WEBSITE',
+    type: 'WEB',
+    text: 'ONES Official Website',
+    repo: 'ones.ai',
+  },
+  'ONES Project for Web': {
+    product: 'PROJECT',
+    type: 'WEB',
+    text: 'ONES Project for Web',
+    repo: 'ones-project-web',
+  },
+  'ONES Project API': {
+    product: 'PROJECT',
+    type: 'API',
+    text: 'ONES Project API',
+    repo: 'bang-api',
+  },
+  'ONES Third Importer': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Third Importer',
+    repo: 'ones-third-importer',
+  },
+  'ONES Demo': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Demo',
+    repo: 'ones-demo',
+  },
+  'ONES CMD Proxy Service': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES CMD Proxy Service',
+    repo: 'ones-cmd-proxy-service',
+  },
+  'ONES Mapper Attachments': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Mapper Attachments',
+    repo: 'ones-mapper-attachments',
+  },
+  'ONES Web Gateway': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Web Gateway',
+    repo: 'web-gateway',
+  },
+  'ONES CRM': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES CRM',
+    repo: 'ones-crm',
+  },
+  'ONES Manual': {
+    product: 'PROJECT',
+    type: 'WEB',
+    text: 'ONES Manual',
+    repo: 'product-manual',
+  },
+  'ONES Official Website Blog CMS': {
+    product: 'BLOG',
+    type: 'WEB',
+    text: 'ONES Official Website Blog CMS',
+    repo: 'ones-blog-cms',
+  },
+  'ONES AI Docker': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES AI Docker',
+    repo: 'ones-ai-docker',
+  },
+  'ONES Binlog Event Sync': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Binlog Event Sync',
+    repo: 'binlog-event-sync',
+  },
+  'ONES Mobile Web': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Mobile Web',
+    repo: 'ones_mobile',
+  },
+  'ONES Purchase API': {
+    product: 'PURCHASE',
+    type: 'API',
+    text: 'ONES Purchase API',
+    repo: 'ones-purchase',
+  },
+  'ONES Purchase for Web': {
+    product: 'PURCHASE',
+    type: 'WEB',
+    text: 'ONES Purchase for Web',
+    repo: 'ones-purchase-web',
+  },
+  'ONES Superset': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Superset',
+    repo: 'superset',
+  },
+  'ONES BI Sync': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES BI Sync',
+    repo: 'ones-bi-sync',
+  },
+  'ONES Plugin Platform': {
+    product: 'PLATFORM',
+    type: 'API',
+    text: 'ONES Plugin Platform',
+    repo: 'ones-platform-api',
+  },
+  'ONES Plugin Host': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Plugin Host',
+    repo: 'ones-plugin',
+  },
+  'ONES Host Java': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Host Java',
+    repo: 'ones-plugin-java',
+  },
+  'ONES Hostboot': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Hostboot',
+    repo: 'ones-plugin-hostboot',
+  },
+  'ONES Host NodeJs': {
+    product: 'PROJECT',
+    type: 'TOOL',
+    text: 'ONES Host NodeJs',
+    repo: 'ones-plugin-node',
+  },
+}
