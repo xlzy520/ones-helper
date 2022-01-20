@@ -6,9 +6,19 @@ export interface StatusType {
   uuid: string
 }
 
+export interface ImportantFieldType {
+  bgColor: string
+  color: string
+  fieldUUID: string
+  name: string
+  uuid: string
+  value: string
+}
+
 export interface Task {
   estimatedHours: number
   // issueType: IssueType
+  importantField: ImportantFieldType[]
   key: string
   name: string
   planEndDate: number

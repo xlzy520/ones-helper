@@ -112,3 +112,123 @@ export const recordManhours = (variables: any) => {
     return res
   })
 }
+
+export const fetchPublishVersion = () => {
+  const query = {
+    query: `{
+    buckets(groupBy: {tasks: {}}, pagination: {limit: 50, after: "", preciseCount: true}) {
+    tasks(filterGroup: $filterGroup, orderBy: $orderBy, limit: 1000) {
+      key
+      name
+      uuid
+      serverUpdateStamp
+      path
+      subTaskCount
+      subTaskDoneCount
+      position
+      status {
+        uuid
+        name
+        category
+      }
+      deadline
+      subTasks {
+        uuid
+      }
+      issueType {
+        uuid
+      }
+      subIssueType {
+        uuid
+      }
+      project {
+        uuid
+      }
+      parent {
+        uuid
+      }
+      estimatedHours
+      remainingManhour
+      issueTypeScope {
+        uuid
+      }
+      importantField {
+        bgColor
+        color
+        name
+        value
+        fieldUUID
+      }
+    }
+    key
+    pageInfo {
+      count
+      preciseCount
+      totalCount
+      startPos
+      startCursor
+      endPos
+      endCursor
+      hasNextPage
+      unstable
+    }
+  }
+}`,
+    variables: {
+      groupBy: null,
+      orderBy: {
+        createTime: 'DESC',
+      },
+      filterGroup: [
+        {
+          project_in: [
+            'YEL8b4LVgWM3n6BK',
+          ],
+          issueType_in: [
+            'Fd7VdS9X',
+          ],
+          name_match: 'ONES v',
+        },
+      ],
+      bucketOrderBy: null,
+      search: {
+        keyword: '',
+        aliases: [],
+      },
+    },
+  }
+  // if (value) {
+  //   query.variables.filterGroup[0].name_match = value
+  // }
+  // if (status) {
+  //   query.variables.filterGroup[0].status_in = [status]
+  // }
+  // if (sprint) {
+  //   query.variables.filterGroup[0].sprint_in = [sprint]
+  // }
+  return graphqlFetch(query).then((res) => {
+    return res.data.buckets[0].tasks
+  })
+}
+
+export const fetchTaskInfo = (taskUUID) => {
+  return fetch(`https://ones.ai/project/api/project/team/RDjYMhKq/task/${taskUUID}/info`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(res => res.json()).then((res) => {
+    return res
+  })
+}
+
+export const fetchTasksInfo = (taskUUIDs) => {
+  return fetch('https://ones.ai/project/api/project/team/RDjYMhKq/tasks/info', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ids: taskUUIDs }),
+  }).then(res => res.json()).then((res) => {
+    return res
+  })
+}

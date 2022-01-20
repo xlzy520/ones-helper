@@ -118,7 +118,6 @@
               中创建 <n-tag type="primary">
                 {{ branchName }}
               </n-tag> 分支吗？
-            <!--            <n-input v-model:value="newPreset.name" placeholder="输入新的预设名" />-->
             </n-modal>
           </div>
         </div>
@@ -128,9 +127,6 @@
           <div class="font-bold">
             一键获取项目分支Commit Hash值
           </div>
-          <!--          <n-tag type="info" class="ml-2">-->
-          <!--            前端版-->
-          <!--          </n-tag>-->
         </div>
         <div class="">
           <div class="py-1">
@@ -173,25 +169,26 @@
           </n-button>
         </div>
       </div>
+      <create-all-product-branch :code="code" />
     </div>
     <div v-if="!code" class="disabled-area"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useMessage, NTooltip, NAlert, NDivider } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import browser from 'webextension-polyfill'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
 import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
 import { projectList } from '~/common/constants'
 import { copyToClipboard } from '~/common/utils'
+import CreateAllProductBranch from '~/popup/features/github/createAllProductBranch.vue'
 
 const message = useMessage()
 const otherConfig = reactive({
   data: {
     branchSelectEnhance: true,
-    // enableAutoGroup: true,
   },
 })
 
@@ -292,32 +289,6 @@ const getAllCommitHashAndCopy = () => {
     if (err) {
       copyHashLoading.value = false
     }
-  })
-}
-
-const JenkinsBuildBranch = ref('')
-const clearJenkinsBuildBranch = () => {
-  JenkinsBuildBranch.value = ''
-}
-
-const dispatchBuild = () => {
-  fetch('https://cd.myones.net/job/development/job/ones-project-web/job/S5075/build?delay=0sec', {
-    method: 'POST',
-    headers: {
-      'jenkins-crumb': '2ed5473409fb2165d4eb72ab9cbd7ab73c355689b3655e660007129694a68c7c',
-    },
-  }).then((res) => {
-    if (res.ok) {
-      return res.json()
-    }
-    else {
-      return Promise.reject(new Error('登录失效，1秒后获取凭证信息...'))
-    }
-  }).then((res) => {
-    message.success('触发')
-    console.log(123, res)
-  }).catch((err) => {
-    message.error(err.message)
   })
 }
 
