@@ -27,6 +27,7 @@ export async function getManifest() {
       page: './dist/background/index.html',
       persistent: true,
     },
+    devtools_page: './dist/devtools/index.html',
     icons: {
       16: './assets/favicon16.png',
       48: './assets/favicon128.png',
