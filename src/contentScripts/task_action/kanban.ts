@@ -1,7 +1,6 @@
 import { useThrottleFn } from '@vueuse/core'
-import { isEqual } from 'lodash-es'
 import $message from '../antdMessage/index'
-import { $, $All } from '~/common/utils'
+import { $, $All, isEqualAndIgnoreSomeProp } from '~/common/utils'
 
 let kanbanData = []
 
@@ -105,6 +104,7 @@ const kanbanQuery = {
   search: { keyword: '', aliases: [] },
 }
 
+// 判断看板内容是否有变化
 let currentKanbanData: any
 const fetchKanban = useThrottleFn(() => {
   fetch('https://ones.ai/project/api/project/team/RDjYMhKq/filters/peek', {
@@ -114,10 +114,11 @@ const fetchKanban = useThrottleFn(() => {
     return res.json()
   }).then((res) => {
     if (currentKanbanData) {
-      if (!isEqual(currentKanbanData, res)) {
+      const isEqual = isEqualAndIgnoreSomeProp(currentKanbanData, res, ['server_update_stamp'])
+      if (!isEqual) {
         $message.info('看板内容有变化，正在刷新')
         // @ts-ignore
-        $('.ComponentMain-nav .FoldableTabs-item a').click()
+        $('.ComponentMain-top .url-foldable-tabs-new-link.active').click()
       }
     }
     else {

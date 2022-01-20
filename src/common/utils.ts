@@ -1,3 +1,4 @@
+import { isObject } from 'lodash-es'
 import $message from '../contentScripts/antdMessage/index'
 import { getCurrentTab } from '~/common/tabs'
 
@@ -122,4 +123,27 @@ export const sendMessage = (message: any) => {
 
 export const isDev = () => {
   return process.env.NODE_ENV !== 'production'
+}
+
+export const isEqualAndIgnoreSomeProp = (objValue: any, srcValue: any, ignoreProps: string[]): boolean => {
+  if (objValue === srcValue) {
+    return true
+  }
+
+  let flag = true
+  if (isObject(objValue) && isObject(srcValue)) {
+    for (const key in objValue) {
+      if (!ignoreProps.includes(key)) {
+        const item = objValue[key]
+        const srcItem = srcValue[key]
+        if (isObject(item)) {
+          flag = isEqualAndIgnoreSomeProp(item, srcItem, ignoreProps)
+        }
+        else {
+          flag = item === srcItem
+        }
+      }
+    }
+  }
+  return flag
 }
