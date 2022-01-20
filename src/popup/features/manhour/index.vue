@@ -109,7 +109,7 @@
 </template>
 
 <script setup lang="tsx">
-import { useMessage } from 'naive-ui'
+import { useMessage, NEllipsis, NTag, NTooltip, NPopconfirm } from 'naive-ui'
 import { format } from 'date-fns'
 import { useDebounceFn } from '@vueuse/core'
 import { copyToClipboard, isDev } from '~/common/utils'
