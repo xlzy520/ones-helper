@@ -35,7 +35,7 @@
       title="分支创建进度"
       positive-text="确认"
     >
-      <div class="">
+      <div class="result-list">
         <div v-for="item in commitHashResult" :key="item.name" class="layout-items-center switch-row">
           <div class="w-[160px]">
             <n-ellipsis>{{ item.name }}</n-ellipsis>
@@ -351,5 +351,8 @@ const copyAllResult = () => {
 </script>
 
 <style lang="scss" scoped>
-
+.result-list{
+  max-height: 400px;
+  overflow: auto;
+}
 </style>
