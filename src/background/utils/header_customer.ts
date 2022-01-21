@@ -66,7 +66,7 @@ export class HeaderCustomer {
   handleRequest = (
     details: Browser.WebRequest.OnBeforeSendHeadersDetailsType
   ): Browser.WebRequest.BlockingResponseOrPromise => {
-    // console.log(details)
+    let shouldAddHeaders = false
     if (details.type === 'main_frame') {
       const { url } = details;
       // GitHub授权，配置写死了http://localhost:9030/githubAuth
@@ -75,13 +75,19 @@ export class HeaderCustomer {
         const code = urlObj.searchParams.get('code');
         setGithubAccessToken(code);
       }
-      console.log(details);
-    } else if (details.requestHeaders) {
-      details.requestHeaders.push(...this.buildHeaders(details));
-      details.requestHeaders.push(...this.authHeaders);
+      else if (url.includes('download_export_task')) {
+        shouldAddHeaders = true
+      }
     }
-    return { requestHeaders: details.requestHeaders };
-  };
+    else if (details.requestHeaders) {
+      shouldAddHeaders = true
+    }
+    if (shouldAddHeaders) {
+      details.requestHeaders.push(...this.buildHeaders(details))
+      details.requestHeaders.push(...this.authHeaders)
+    }
+    return { requestHeaders: details.requestHeaders }
+  }
 
   handleResponseHeaders = (
     details: Browser.WebRequest.OnHeadersReceivedDetailsType
