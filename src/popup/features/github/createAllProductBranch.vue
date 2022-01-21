@@ -1,9 +1,7 @@
 <template>
   <div class="py-2">
     <div class="layout-items-center">
-      <div class="font-bold">
-        一键创建最后一个ONES稳定大版本的所有产品的分支（技术支持组使用）
-      </div>
+      <div class="font-bold">一键创建最后一个ONES稳定大版本的所有产品的分支（技术支持组使用）</div>
     </div>
     <div class="mt-2">
       <n-button type="primary" ghost :loading="loading" @click="getAllCommitHash">
@@ -31,12 +29,16 @@
     <n-modal
       v-model:show="showModal"
       preset="dialog"
-      :style="{width:'600px'}"
+      :style="{ width: '600px' }"
       title="分支创建进度"
       positive-text="确认"
     >
       <div class="result-list">
-        <div v-for="item in commitHashResult" :key="item.name" class="layout-items-center switch-row">
+        <div
+          v-for="item in commitHashResult"
+          :key="item.name"
+          class="layout-items-center switch-row"
+        >
           <div class="w-[160px]">
             <n-ellipsis>{{ item.name }}</n-ellipsis>
           </div>
@@ -77,27 +79,27 @@
 </template>
 
 <script setup lang="ts">
-import { useMessage } from 'naive-ui'
-import { $ref } from 'vue/macros'
-import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/graphql'
-import { commitHashResultItem, Task } from '~/common/types'
-import { copyToClipboard } from '~/common/utils'
-import { GitHubRepoMap } from '~/common/constants'
-import { createNewBranch } from '~/service/github'
+import { useMessage } from 'naive-ui';
+import { $ref } from 'vue/macros';
+import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/graphql';
+import { commitHashResultItem, Task } from '~/common/types';
+import { copyToClipboard } from '~/common/utils';
+import { GitHubRepoMap } from '~/common/constants';
+import { createNewBranch } from '~/service/github';
 
-const message = useMessage()
+const message = useMessage();
 
 const props = defineProps({
   code: {
     type: String,
     default: '',
   },
-})
-let loading = $ref(false)
-const createLoading = $ref(false)
+});
+let loading = $ref(false);
+const createLoading = $ref(false);
 
-const branchName = $ref('')
-let showModal = $ref(false)
+const branchName = $ref('');
+let showModal = $ref(false);
 const columns = [
   {
     title: '产品名',
@@ -116,41 +118,43 @@ const columns = [
     key: 'status',
     align: 'center',
   },
-]
+];
 
-const commitHashResult: commitHashResultItem[] = $ref([])
-const CommitHashKey = '2C3W6Gvp'
-const frontCommonCommitHashKey = '_FDxiwrFZ' // 前端common库hash的属性值
-const publishTypeKey = '_A3j2J3q8' // 发布类型
+const commitHashResult: commitHashResultItem[] = $ref([]);
+const CommitHashKey = '2C3W6Gvp';
+const frontCommonCommitHashKey = '_FDxiwrFZ'; // 前端common库hash的属性值
+const publishTypeKey = '_A3j2J3q8'; // 发布类型
 const getAllCommitHash = () => {
-  loading = true
+  loading = true;
   fetchPublishVersion().then((res) => {
-    let lastMinorStableVersionItem
-    let frontCommonCommitHash = ''
+    let lastMinorStableVersionItem;
+    let frontCommonCommitHash = '';
     for (let i = 0; i < res.length; i++) {
-      const item = res[i]
+      const item = res[i];
       if (lastMinorStableVersionItem) {
-        const commonCommitHashItem = item[frontCommonCommitHashKey]
+        const commonCommitHashItem = item[frontCommonCommitHashKey];
         if (!frontCommonCommitHash && commonCommitHashItem && commonCommitHashItem.length > 20) {
-          frontCommonCommitHash = item[frontCommonCommitHashKey]
+          frontCommonCommitHash = item[frontCommonCommitHashKey];
         }
       }
       if (item[publishTypeKey].value === 'MINOR') {
-        lastMinorStableVersionItem = res[i + 1]
+        lastMinorStableVersionItem = res[i + 1];
       }
     }
     if (lastMinorStableVersionItem) {
-      const taskUUID = lastMinorStableVersionItem.uuid
+      const taskUUID = lastMinorStableVersionItem.uuid;
       fetchTaskInfo(taskUUID).then((res) => {
-        console.log(res)
-        const related_tasks = res.related_tasks
-        const childComponentUUIDs = related_tasks.filter(v => v.sub_issue_type_uuid).map(v => v.uuid)
+        console.log(res);
+        const related_tasks = res.related_tasks;
+        const childComponentUUIDs = related_tasks
+          .filter((v) => v.sub_issue_type_uuid)
+          .map((v) => v.uuid);
         fetchTasksInfo(childComponentUUIDs).then((res) => {
-          console.log(res)
-          const tasks = res.tasks
+          console.log(res);
+          const tasks = res.tasks;
           tasks.forEach((task) => {
-            const fieldValues = task.field_values
-            const result = fieldValues.find(v => v.field_uuid === CommitHashKey)
+            const fieldValues = task.field_values;
+            const result = fieldValues.find((v) => v.field_uuid === CommitHashKey);
             if (result) {
               commitHashResult.push({
                 name: task.summary,
@@ -158,9 +162,9 @@ const getAllCommitHash = () => {
                 loading: true,
                 success: false,
                 reason: '',
-              })
+              });
             }
-          })
+          });
           if (frontCommonCommitHash) {
             commitHashResult.push({
               name: 'ones-ai-web-common',
@@ -168,77 +172,76 @@ const getAllCommitHash = () => {
               loading: true,
               success: false,
               reason: '',
-            })
+            });
           }
-          loading = false
-          console.log(unref(commitHashResult))
+          loading = false;
+          console.log(unref(commitHashResult));
           const text = commitHashResult.map((v) => {
-            return `【${v.name}】: ${v.hash}`
-          })
-          copyToClipboard(text.join('\r\n'), false)
-          message.success('全部复制成功')
-        })
+            return `【${v.name}】: ${v.hash}`;
+          });
+          copyToClipboard(text.join('\r\n'), false);
+          message.success('全部复制成功');
+        });
         // console.log(childComponentUUIDs)
-      })
+      });
       // console.log(lastMinorStableVersionItem)
     }
     // console.log(res, latestMinor)
-  })
-}
+  });
+};
 
 const getProductName = (name = '') => {
-  return name.split(' v')[0]
-}
+  return name.split(' v')[0];
+};
 
 const createAllBranch = () => {
-  showModal = true
+  showModal = true;
   commitHashResult.forEach((item, index) => {
-    const productName = getProductName(item.name)
-    const repoData = GitHubRepoMap[productName]
-    console.log(productName, repoData)
-    const branch = branchName
+    const productName = getProductName(item.name);
+    const repoData = GitHubRepoMap[productName];
+    console.log(productName, repoData);
+    const branch = branchName;
     createNewBranch({
       owner: 'BangWork',
       repo: repoData.repo,
       ref: branch,
       sha: item.hash,
-    }).then((res) => {
-      message.success(`创建${repoData.repo} ${branch}分支成功`)
-      item.loading = false
-      item.success = true
-    }).catch((err) => {
-      message.error(err)
-      item.loading = false
-      item.success = false
-      item.reason = err
     })
-  })
-}
+      .then((res) => {
+        message.success(`创建${repoData.repo} ${branch}分支成功`);
+        item.loading = false;
+        item.success = true;
+      })
+      .catch((err) => {
+        message.error(err);
+        item.loading = false;
+        item.success = false;
+        item.reason = err;
+      });
+  });
+};
 
 const copyAllResult = () => {
   const text = commitHashResult.map((v) => {
-    let result = ''
+    let result = '';
     if (v.loading) {
-      result = '创建中'
-    }
-    else {
+      result = '创建中';
+    } else {
       if (v.success) {
-        result = '成功'
-      }
-      else {
-        result = `失败：${v.reason}`
+        result = '成功';
+      } else {
+        result = `失败：${v.reason}`;
       }
     }
-    return `【${v.name}】: ${v.hash}—— ${result}`
-  })
-  copyToClipboard(text.join('\r\n'), false)
-  message.success('全部复制成功')
-}
-
+    return `【${v.name}】: ${v.hash}—— ${result}`;
+  });
+  copyToClipboard(text.join('\r\n'), false);
+  message.success('全部复制成功');
+};
 </script>
 
 <style lang="scss" scoped>
-.result-list{
+.result-list {
   max-height: 400px;
   overflow: auto;
 }

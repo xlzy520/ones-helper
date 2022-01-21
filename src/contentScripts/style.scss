@@ -1,4 +1,4 @@
-@import "./antdMessage/index.css";
+@import './antdMessage/index.css';
 
 .och__api-info-wrapper {
   color: #120000;
@@ -22,8 +22,7 @@
 .och__api-info-wrapper:hover {
   opacity: 1;
   color: rgba(0, 0, 0, 0.6);
-  text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2),
-    0px -5px 35px rgba(255, 255, 255, 0.3);
+  text-shadow: 2px 8px 6px rgba(0, 0, 0, 0.2), 0px -5px 35px rgba(255, 255, 255, 0.3);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 

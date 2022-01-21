@@ -1,8 +1,8 @@
-import { PatternConfig } from '~/service/custom_api'
+import { PatternConfig } from '~/service/custom_api';
 
-export const PROJECT_BRANCH_KEY = 'customONESApiProjectBranch'
-export const ONES_HOST_KEY = 'customONESApiHost'
-export const CUSTOM_API_PATTERNS = 'customApiPatterns'
+export const PROJECT_BRANCH_KEY = 'customONESApiProjectBranch';
+export const ONES_HOST_KEY = 'customONESApiHost';
+export const CUSTOM_API_PATTERNS = 'customApiPatterns';
 
 // -local前端连dev
 // -local前端连私有部署
@@ -10,7 +10,7 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns'
 // -local前端连局域网
 // -dev前端连私有部署
 // -dev前端连SaaS
-export const DefaultPreset = '用户自定义(dev)'
+export const DefaultPreset = '用户自定义(dev)';
 export const DefaultPresetOptions = [
   {
     label: '用户自定义(dev)',
@@ -96,7 +96,7 @@ export const DefaultPresetOptions = [
       isHost: true,
     },
   },
-]
+];
 
 export const DefaultPatterns: PatternConfig[] = [
   {
@@ -115,7 +115,7 @@ export const DefaultPatterns: PatternConfig[] = [
     enable: true,
     pattern: 'http://dev.localhost/*',
   },
-]
+];
 
 export const ONESConfig = {
   // LOGIN_ROOT: '',
@@ -179,8 +179,7 @@ export const ONESConfig = {
   SENTRY_REPORT_DEV: '', // '' or 'true'
 
   // value for oauth of gitlab and github
-  gitlab_client_id:
-    '8351463ebcc0cb7d7447bc846898216f4ba1ed2705dcc2cc067b753597b449db',
+  gitlab_client_id: '8351463ebcc0cb7d7447bc846898216f4ba1ed2705dcc2cc067b753597b449db',
   github_client_id: '385a15378a83264b3aa7',
   scm_call_back_url: 'https://dev.myones.net/project/P3006',
 
@@ -201,31 +200,45 @@ export const ONESConfig = {
   // 自动工作流开关
   enable_automation: 'true',
   enable_automation_free_tag: 'true',
-}
+};
 
 export const featuresList = [
   {
-    name: 'API转发', show: true, component: 'CustomApi',
+    name: 'API转发',
+    show: true,
+    component: 'CustomApi',
   },
   {
-    name: 'OnesConfig', show: true, component: 'ones-config',
+    name: 'OnesConfig',
+    show: true,
+    component: 'ones-config',
   },
   {
-    name: '工时', show: true, component: 'man-hour',
+    name: '工时',
+    show: true,
+    component: 'man-hour',
   },
   {
-    name: '工作项', show: true, component: 'task-action',
+    name: '工作项',
+    show: true,
+    component: 'task-action',
   },
   {
-    name: 'Github', show: true, component: 'github',
+    name: 'Github',
+    show: true,
+    component: 'github',
   },
   {
-    name: 'Jenkins', show: true, component: 'jenkins',
+    name: 'Jenkins',
+    show: true,
+    component: 'jenkins',
   },
   {
-    name: '插件更新', show: true, component: 'about-me',
+    name: '插件更新',
+    show: true,
+    component: 'about-me',
   },
-]
+];
 
 export const projectList = [
   {
@@ -264,10 +277,10 @@ export const projectList = [
   //   owner: 'xlzy520',
   //   defaultBranch: 'master',
   // },
-]
+];
 
-export const GithubOAuthClientID = 'dcb6fb9f42ca21dba6ba'
-export const GithubOAuthClientSecrets = '72642603097212871b011ca2f4c9c4affe3127cc'
+export const GithubOAuthClientID = 'dcb6fb9f42ca21dba6ba';
+export const GithubOAuthClientSecrets = '72642603097212871b011ca2f4c9c4affe3127cc';
 
 export const GitHubRepoMap = {
   'ONES Wiki for Web': {
@@ -438,4 +451,4 @@ export const GitHubRepoMap = {
     text: 'ONES Host NodeJs',
     repo: 'ones-plugin-node',
   },
-}
+};

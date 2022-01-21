@@ -23,7 +23,8 @@
     "start:firefox": "web-ext run --source-dir ./extension --target=firefox-desktop",
     "clear": "rimraf ONESHelper/dist ONESHelper/manifest.json ONESHelper.*",
     "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
-    "publish:patch": "npm version patch && git push origin main --tags"
+    "publish:patch": "npm version patch && git push origin main --tags",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.9.0",
@@ -42,10 +43,12 @@
     "cross-env": "^7.0.3",
     "crx": "^5.0.1",
     "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
     "esno": "^0.10.0",
     "fs-extra": "^10.0.0",
     "kolorist": "^1.5.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "sass": "^1.42.1",
     "typescript": "^4.4.3",
@@ -62,8 +65,11 @@
   },
   "dependencies": {
     "date-fns": "^2.27.0",
+    "husky": "^7.0.4",
     "interactjs": "^1.2.0",
+    "lint-staged": "^12.2.2",
     "lodash-es": "^4.17.21",
-    "naive-ui": "^2.19.3"
+    "naive-ui": "^2.19.3",
+    "vue-json-viewer": "3"
   }
 }

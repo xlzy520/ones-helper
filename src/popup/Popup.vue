@@ -3,7 +3,12 @@
     <n-message-provider>
       <main class="h-[360px] px-4" :style="style">
         <n-tabs :default-value="defaultTab" type="line">
-          <n-tab-pane v-for="item in filterFeatures" :key="item.name" :name="item.name" :tab="item.name">
+          <n-tab-pane
+            v-for="item in filterFeatures"
+            :key="item.name"
+            :name="item.name"
+            :tab="item.name"
+          >
             <component :is="item.component"></component>
           </n-tab-pane>
         </n-tabs>
@@ -12,36 +17,34 @@
   </n-config-provider>
 </template>
 
-<script>
-
-</script>
+<script></script>
 
 <script setup lang="ts">
-import { NMessageProvider, NTabs, NTabPane, NConfigProvider, zhCN, dateZhCN } from 'naive-ui'
-import { featuresConfigService } from '~/service'
+import { NMessageProvider, NTabs, NTabPane, NConfigProvider, zhCN, dateZhCN } from 'naive-ui';
+import { featuresConfigService } from '~/service';
 
-const defaultTab = ref('API转发')
+const defaultTab = ref('API转发');
 
-const filterFeatures = ref([])
+const filterFeatures = ref([]);
 
 const style = ref({
   width: '500px',
-})
+});
 
 onMounted(() => {
   featuresConfigService.getFeaturesConfig().then((res) => {
     filterFeatures.value = res.filter((feature) => {
       if (feature.show) {
         if (feature.name === '工时') {
-          style.value.width = '800px'
+          style.value.width = '800px';
         }
-        return true
+        return true;
       }
 
-      return false
-    })
-  })
-})
+      return false;
+    });
+  });
+});
 
 // todo
 // 一键切换账号
