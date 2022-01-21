@@ -36,6 +36,10 @@ export const fetchBranchList = ({ owner, repo }: GithubBranchParam) => {
   return githubFetch(`repos/${owner}/${repo}/git/refs`)
 }
 
+export const searchBranch = ({ owner, repo, head }: GithubBranchParam) => {
+  return githubFetch(`repos/${owner}/${repo}/git/matching-refs/heads/${head}`)
+}
+
 export const fetchBranchSHA = ({ owner, repo, head }: GithubBranchParam) => {
   return githubFetch(`repos/${owner}/${repo}/git/refs/heads/${head}`).then((res) => {
     return res.object.sha

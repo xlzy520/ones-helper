@@ -39,9 +39,9 @@ export interface onesConfig {
 export interface GithubBranchParam {
   owner: string
   repo: string
-  head: string
-  ref: string
-  sha: string
+  head?: string
+  ref?: string
+  sha?: string
 }
 
 export interface commitHashResultItem {

@@ -42,7 +42,7 @@
     <n-divider title-placement="left">
       一键辅助功能
     </n-divider>
-    <div class="layout-items-center py-2 switch-row">
+    <div class="layout-items-center pb-2 switch-row">
       <div class="mr-4">
         我的角色是
       </div>
@@ -62,18 +62,37 @@
       <n-alert v-if="!code" title="请点击上方Github授权" type="default">
         <p>该区域功能依赖Github Token授权信息，授权后即可使用！</p>
       </n-alert>
-      <div class="py-2 ">
-        <div class="layout-items-center">
+      <div class=" ">
+        <div class="pb-2">
           <div class="font-bold">
             一键创建分支
           </div>
-          <!--          <n-tag type="info" class="ml-2">-->
-          <!--            前端版-->
-          <!--          </n-tag>-->
         </div>
-        <div class="">
-          <div class="py-1">
-            选择要创建分支的项目(基于主分支)
+        <div class="layout-items-center">
+          <div class="py-1 flex-shrink-0">
+            基于的分支（可搜索）：
+          </div>
+          <n-select
+            v-model:value="baseRef"
+            placeholder="请输入基于的分支, 可搜索"
+            class="mr-4"
+            clearable
+            :loading="branchLoading"
+            filterable
+            :options="allBranchOptions"
+            @search="handleBranchSearch"
+          />
+          <!--          <n-select-->
+          <!--            v-model:value="fastBranch"-->
+          <!--            placeholder="状态"-->
+          <!--            class="w-[200px]"-->
+          <!--            clearable-->
+          <!--            :options="allBranchOptions"-->
+          <!--          />-->
+        </div>
+        <div class="layout-items-center h-[34px]">
+          <div class="py-1 mr-2">
+            选择要创建分支的项目：
           </div>
           <n-checkbox-group v-model:value="checkedProjects">
             <n-checkbox
@@ -86,40 +105,37 @@
             ></n-checkbox>
           </n-checkbox-group>
         </div>
-        <div class="">
-          <div class="py-1">
-            输入要创建分支的名称
+        <div class="layout-items-center">
+          <div class="py-1 flex-shrink-0">
+            输入要创建分支的名称：
           </div>
-          <div class="layout-slide">
-            <n-input
-              v-model:value="branchName"
-              placeholder="分支名称"
-              class="mr-4"
-              clearable
-              @clear="clearBranchName"
-            />
-            <n-button type="primary" ghost :disabled="!canCreateBranches" @click="create">
-              👏 确定
-            </n-button>
-            <n-modal
-              v-model:show="showModal"
-              preset="dialog"
-              title="创建分支"
-              positive-text="确认"
-              @positive-click="createBranches"
-            >
-              确定要在以下项目：
-              <div class="">
-                <div v-for="item in checkedProjectsByRole" :key="item" class="py-1 font-bold">
-                  {{ item }}
-                </div>
+          <n-input
+            v-model:value="branchName"
+            placeholder="请输入新的分支名称"
+            class="mr-4"
+            clearable
+          />
+          <n-button type="primary" ghost :disabled="!canCreateBranches" @click="create">
+            👏 确定
+          </n-button>
+          <n-modal
+            v-model:show="showModal"
+            preset="dialog"
+            title="创建分支"
+            positive-text="确认"
+            @positive-click="createBranches"
+          >
+            确定要在以下项目：
+            <div class="">
+              <div v-for="item in checkedProjectsByRole" :key="item" class="py-1 font-bold">
+                {{ item }}
               </div>
+            </div>
 
-              中创建 <n-tag type="primary">
-                {{ branchName }}
-              </n-tag> 分支吗？
-            </n-modal>
-          </div>
+            中创建 <n-tag type="primary">
+              {{ branchName }}
+            </n-tag> 分支吗？
+          </n-modal>
         </div>
       </div>
       <div class="py-2">
@@ -128,9 +144,9 @@
             一键获取项目分支Commit Hash值
           </div>
         </div>
-        <div class="">
+        <div class="layout-items-center">
           <div class="py-1">
-            默认项目列表
+            默认项目列表：
           </div>
           <n-tag
             v-for="project in filterProjectList"
@@ -178,9 +194,11 @@
 <script setup lang="ts">
 import { useMessage } from 'naive-ui'
 import browser from 'webextension-polyfill'
+import { $ref } from 'vue/macros'
+import { useDebounceFn } from '@vueuse/core'
 import { onesConfigService } from '~/service'
 import QuestionIcon from '~/components/question-icon.vue'
-import { createNewBranch, fetchBranchSHA, getGithubOAuthToken } from '~/service/github'
+import { createNewBranch, fetchBranchList, fetchBranchSHA, getGithubOAuthToken, searchBranch } from '~/service/github'
 import { projectList } from '~/common/constants'
 import { copyToClipboard } from '~/common/utils'
 import CreateAllProductBranch from '~/popup/features/github/createAllProductBranch.vue'
@@ -195,10 +213,6 @@ const otherConfig = reactive({
 const code = ref('')
 const privateCode = computed(() => {
   return code.value.substring(0, 16)
-})
-
-const needGithubTokenClass = computed(() => {
-  return !code.value ? ['cursor-not-allowed', 'p-2'] : ['p-2']
 })
 
 const role = ref('fe')
@@ -218,11 +232,26 @@ const projectMapping = projectList.reduce((pre, cur) => {
 const checkedProjectsByRole = computed(() => {
   return checkedProjects.value.filter(project => projectMapping[project].type === role.value)
 })
-const branchName = ref('')
 
-const clearBranchName = () => {
-  branchName.value = ''
-}
+const baseRef = $ref('master')
+let allBranchOptions = $ref([])
+const branchName = ref('')
+let branchLoading = $ref(false)
+
+const handleBranchSearch = useDebounceFn((query) => {
+  if (!query.length) {
+    allBranchOptions = []
+    return
+  }
+  branchLoading = true
+  searchBranch({ owner: 'BangWork', repo: 'ones-project-web', head: query }).then((res) => {
+    const branches = res.sort((a, b) => a.ref.length - b.ref.length)
+    allBranchOptions = branches.map(v => ({ label: v.ref.replace('refs/heads/', ''), value: v.object.sha }))
+  }).finally(() => {
+    branchLoading = false
+  })
+}, 500)
+
 const canCreateBranches = computed(() => {
   return branchName.value && checkedProjects.value.length
 })
@@ -231,21 +260,26 @@ const create = () => {
   showModal.value = true
 }
 
-const getBranch = (project) => {
-  fetchBranchSHA(project)
-}
-
 const createBranches = () => {
+  const createNewBranchFn = (project, sha) => {
+    createNewBranch({ ...project, ref: branchName.value, sha }).then((res) => {
+      message.success(`创建${project.repo} ${branchName.value}分支成功`)
+    }).catch((err) => {
+      message.error(err)
+    })
+  }
+
   checkedProjects.value.forEach((v) => {
     const project = projectMapping[v]
-    fetchBranchSHA({ ...project, head: project.defaultBranch }).then((res) => {
-      message.success(`获取${project.repo} ${project.defaultBranch}分支sha信息成功`)
-      createNewBranch({ ...project, ref: branchName.value, sha: res }).then((res) => {
-        message.success(`创建${project.repo} ${branchName.value}分支成功`)
-      }).catch((err) => {
-        message.error(err)
+    if (baseRef === 'master') {
+      fetchBranchSHA({ ...project, head: project.defaultBranch }).then((res) => {
+        message.success(`获取${project.repo} ${project.defaultBranch}分支sha信息成功`)
+        createNewBranchFn(project, res)
       })
-    })
+    }
+    else {
+      createNewBranchFn(project, baseRef)
+    }
   })
 }
 
