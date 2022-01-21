@@ -95,6 +95,10 @@ export const isLocal = () => {
   return location.origin.includes('localhost');
 };
 
+export const isGitHub = () => {
+  return location.origin.includes('github.com')
+}
+
 export const isPrivate = () => {
   return location.href.includes('https://mars-dev.myones.net:');
 };
