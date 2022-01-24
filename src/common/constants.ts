@@ -452,3 +452,16 @@ export const GitHubRepoMap = {
     repo: 'ones-plugin-node',
   },
 };
+
+export const ONESConfigTypeMap = {
+  'none': 'platform',
+  'public': 'platform',
+  'private': 'platform',
+  'null': 'platform',
+  'SaaS': 'platform',
+
+  'true': 'boolean',
+  'false': 'boolean',
+
+  '\"false\"': 'boolean',
+}

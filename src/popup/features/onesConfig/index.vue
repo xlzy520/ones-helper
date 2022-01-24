@@ -25,10 +25,35 @@
           点击会自动重载页面，让修改的配置生效！！
         </n-popconfirm>
       </div>
+      <div class="">
+        <n-button class="primary" type="info" @click="showAddConfigModal">
+          增加属性
+        </n-button>
+        <n-modal
+          v-model:show="newConfig.showModal"
+          preset="dialog"
+          title="新的属性"
+          positive-text="确认"
+          @positive-click="onSubmitNewConfig"
+        >
+          <div class="layout-items-center">
+            <div class="flex-shrink-0">
+              属性名：
+            </div>
+            <n-input v-model:value="newConfig.name" placeholder="请输入属性名" />
+          </div>
+          <div class="layout-items-center mt-2">
+            <div class="flex-shrink-0">
+              属性值：
+            </div>
+            <n-input v-model:value="newConfig.value" placeholder="请输入属性值" />
+          </div>
+        </n-modal>
+      </div>
     </div>
     <n-divider class=""></n-divider>
     <n-alert title="温馨提示" type="info">
-      <div>第一次启用插件，若是没有读取到请<b style="color: #db2777">手动刷新页面</b>！！</div>
+      <div>若是没有读取到请<b style="color:#db2777">手动刷新页面</b>！！</div>
       <div>构建系统注入到项目一些配置项，提供编辑用于快速调试（不会保存到项目）！</div>
       <div>
         下面<b style="color: #22c55e">配置项修改后生效</b>需要点击<b style="color: #db2777">保存</b
@@ -101,6 +126,7 @@ import { onesConfigService } from '~/service';
 import { getCurrentTab } from '~/common/tabs';
 import { sendMessage } from '~/common/utils';
 import { onesConfig } from '~/common/types';
+import { ONESConfigTypeMap } from '~/common/constants'
 
 const filterKey = ref('');
 const clearFilterKey = () => {
@@ -121,32 +147,41 @@ const filterConfigFields = computed(() => {
   return configFields.value.filter((v) => v.key.toLowerCase().includes(filterKey.value));
 });
 
-const typeMap = {
-  none: 'platform',
-  public: 'platform',
-  private: 'platform',
-  null: 'platform',
-  SaaS: 'platform',
-
-  true: 'boolean',
-  false: 'boolean',
-
-  '"false"': 'boolean',
-};
+const newConfig = reactive({
+  showModal: false,
+  name: '',
+  value: '',
+})
+const showAddConfigModal = () => {
+  newConfig.showModal = true
+}
+const onSubmitNewConfig = () => {
+  const { name, value } = newConfig
+  if (!name || !value) {
+    useMessage().error('请输入必填项')
+    return
+  }
+  configFields.value.push({
+    key: name,
+    value,
+    type: 'input',
+  })
+  saveOnesConfig()
+}
 
 const fetchData = () => {
   getCurrentTab().then(({ url }) => {
     onesConfigService.getOnesConfigApi(true).then((res) => {
-      // console.log(res)
-      const keys = Object.keys(res);
-      const matchKey = keys.find((key) => url.includes(key));
+      const keys = Object.keys(res)
+      const matchKey = keys.find(key => url.includes(key))
       if (matchKey) {
         const config = res[matchKey];
         const configKeys = Object.keys(config);
         configFields.value = configKeys.map((key) => {
-          const value = config[key];
-          let type = typeMap[value];
-          if (!type) type = 'input';
+          const value = config[key]
+          let type = ONESConfigTypeMap[value]
+          if (!type)
+            type = 'input'
 
           return { key, value, type };
         });

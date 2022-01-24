@@ -1,7 +1,16 @@
-import { onesConfigService } from '~/service';
-import { $, $All, copyToClipboard, injectScript, isPrivate, isSaas, isCD } from '~/common/utils';
-import { ONESConfig } from '~/common/constants';
-import { getFeaturesConfig } from '~/service/featuresConfig';
+import { onesConfigService } from '~/service'
+import {
+  $,
+  $All,
+  copyToClipboard,
+  injectScript,
+  isPrivate,
+  isSaas,
+  isCD,
+  isGitHub,
+} from '~/common/utils'
+import { ONESConfig } from '~/common/constants'
+import { getFeaturesConfig } from '~/service/featuresConfig'
 
 export function run(): void {
   // logic here
@@ -24,12 +33,13 @@ export function run(): void {
           // eslint-disable-next-line no-eval
           let onesConfig = eval(onesConfigScript.innerHTML);
           // 如果用户点击了保存，那就用修改后的，如果没有修改，永远用页面自己的
-          if (res.isUpdate) {
-            onesConfig = res;
+          if (res?.isUpdate) {
+            onesConfig = res
           }
-          saveOnesConfig(onesConfig);
-        } else {
-          let onesConfigDev = {};
+          saveOnesConfig(onesConfig)
+        }
+        else if (!isGitHub()) {
+          let onesConfigDev = {}
           if ($('#realBuildOnesProcessEnv')) {
             const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML;
             // eslint-disable-next-line no-eval
