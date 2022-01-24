@@ -159,23 +159,18 @@ const fetchKanban = useThrottleFn(() => {
   fetch('https://ones.ai/project/api/project/team/RDjYMhKq/filters/peek', {
     method: 'POST',
     body: JSON.stringify(kanbanQuery),
+  }).then((res) => {
+    return res.json()
+  }).then((res) => {
+    const isEqual = isEqualAndIgnoreSomeProp(currentKanbanData, res, ['server_update_stamp'])
+    if (!isEqual) {
+      currentKanbanData = res
+      $message.info('看板内容有变化，正在刷新')
+      // @ts-ignore
+      $('.ComponentMain-top .url-foldable-tabs-new-link.active').click()
+    }
   })
-    .then((res) => {
-      return res.json();
-    })
-    .then((res) => {
-      if (currentKanbanData) {
-        const isEqual = isEqualAndIgnoreSomeProp(currentKanbanData, res, ['server_update_stamp']);
-        if (!isEqual) {
-          $message.info('看板内容有变化，正在刷新');
-          // @ts-ignore
-          $('.ComponentMain-top .url-foldable-tabs-new-link.active').click();
-        }
-      } else {
-        currentKanbanData = res;
-      }
-    });
-}, 30 * 1000);
+}, 30 * 1000)
 
 export const handleKanban = () => {
   const kanban = $('.kanban-container-advance');
