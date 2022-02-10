@@ -114,18 +114,20 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId });
 });
 
-onMessage('get-current-tab', async () => {
-  try {
-    const tab = await browser.tabs.get(previousTabId);
-    return {
-      title: tab?.id,
-    };
-  } catch {
-    return {
-      title: undefined,
-    };
-  }
-});
+// onMessage('get-current-tab', async () => {
+//   try {
+//     const tab = await browser.tabs.get(previousTabId);
+//     return {
+//       title: tab?.id,
+//     };
+//   } catch {
+//     return {
+//       title: undefined,
+//     };
+//   }
+// });
+
+// Browser.action.openPopup() // 能自动打开插件？
 
 browser.omnibox.setDefaultSuggestion({
   description:

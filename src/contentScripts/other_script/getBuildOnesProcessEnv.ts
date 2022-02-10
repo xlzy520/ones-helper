@@ -6,9 +6,9 @@ export function getBuildOnesProcessEnv() {
   document.body.appendChild(script);
 }
 export function getHostWindowObject() {
-  const hostWindow = JSON.stringify(window);
-  const script = document.createElement('script');
-  script.innerHTML = `hostWindow=${hostWindow}`;
-  script.id = 'ONESHostWindow';
-  document.body.appendChild(script);
+  // const hostWindow = JSON.stringify(window);
+  // const script = document.createElement('script');
+  // script.innerHTML = `hostWindow=${hostWindow}`;
+  // script.id = 'ONESHostWindow';
+  // document.body.appendChild(script);
 }
