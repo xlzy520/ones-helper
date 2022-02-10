@@ -22,11 +22,11 @@
           </div>
         </div>
       </div>
-      <div class="layout-slide py-2 switch-row">
-        <n-button v-if="newVersion" type="primary" :loading="downloading" @click="upgrade">
+      <div v-if="newVersion" class="layout-slide py-2 switch-row">
+        <n-button  type="primary" :loading="downloading" @click="upgrade">
           {{ downloadBtnText }}
         </n-button>
-        <n-button v-if="newVersion" class="" type="info" @click="reload">
+        <n-button class="" type="info" @click="reload">
           提示有误，我已更新，重启插件
         </n-button>
       </div>
