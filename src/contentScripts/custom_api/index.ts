@@ -6,7 +6,7 @@ import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
 import { patternToRegExp } from '~/common/url_pattern';
 import { PatternConfig, PresetOption, PresetOptionConfig } from '~/service/custom_api';
-import { injectScript, isDevDomain } from '~/common/utils';
+import {injectScript, isDevDomain, isLocal} from '~/common/utils';
 
 const checkIsMathUrl = async () => {
   const config = await customApiService.getCustomApi();
@@ -49,10 +49,12 @@ export async function handleCustomApi(customApiData): Promise<void> {
   const { customONESApiHost, customONESApiProjectBranch, websocket } = config;
   console.log(websocket);
   const path = websocket || customONESApiProjectBranch;
-  injectScript(`${proxyWebsocket};proxyWebsocket('${path}')`);
+  if (isDevDomain() || isLocal()) {
+    injectScript(`${proxyWebsocket};proxyWebsocket('${path}')`);
+  }
   if (customONESApiHost.includes('http://localhost')) {
     if (isDevDomain()) {
-      injectScript(`${proxyAJAX};run('${customONESApiHost}')`);
+      injectScript(`${proxyAJAX};run$1('${customONESApiHost}')`);
     }
   }
 }

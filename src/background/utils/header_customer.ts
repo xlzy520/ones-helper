@@ -97,7 +97,7 @@ export class HeaderCustomer {
     }
 
     const { responseHeaders = [], initiator, originUrl, url } = details;
-    if (url.endsWith('/auth/login')) {
+    if (url.endsWith('/auth/login') || url.endsWith('/auth/token_info')) {
       const keys = ['Ones-User-Id', 'Ones-Auth-Token'];
       const results = responseHeaders.filter((v: any) => keys.includes(v.name));
       if (results.length) {
