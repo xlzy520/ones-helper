@@ -20,3 +20,37 @@
 4. 全部兼容Firefox
 5. API映射信息支持拖拽移动
 6. 增加一键复制全部工作项
+
+
+### 开发手册
+1. 拉代码，yarn或者pnpm安装依赖。
+2. 本地调试，执行`pnpm run dev`
+3. 在浏览器拓展选项中加载项目中的ONESHelper文件夹即可
+
+#### 调试页面
+点击右键，检查即可
+
+#### 调试后台
+点击下图中的链接就可以了
+![](https://i0.hdslb.com/bfs/album/4dcff87e6e02cf5f83f63fe01b41d902feccd67a.png)
+
+#### 调试ContentScript
+直接在页面里的控制台即可查看
+
+#### 消息通信
+如下是获取Jenkins Token的例子
+```js
+browser.runtime.sendMessage({
+      type: 'jenkins-crumb',
+      data: crumb,
+    });
+
+browser.runtime.onMessage.addListener(({ type, data }) => {
+  if (type === 'jenkins-crumb') {
+    jenkinsCrumb.value = data;
+    browser.storage.local.set({ jenkinsCrumb: data });
+    message.success('Jenkins凭证获取成功, 请重新执行');
+  }
+});
+
+```
