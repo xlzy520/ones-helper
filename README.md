@@ -26,6 +26,7 @@
 1. 拉代码，yarn或者pnpm安装依赖。
 2. 本地调试，执行`pnpm run dev`
 3. 在浏览器拓展选项中加载项目中的ONESHelper文件夹即可
+   ![](https://i0.hdslb.com/bfs/album/ce99bf5c7fe21b509829816102eef3c80f6551c3.png)
 
 #### 调试页面
 点击右键，检查即可
