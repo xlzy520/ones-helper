@@ -15,4 +15,4 @@ else
   echo $(which npm)
 fi
 
-pnpm dlx lint-staged --verbose
+pnpm lint-staged --verbose
