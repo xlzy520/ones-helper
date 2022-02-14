@@ -42,7 +42,20 @@
 
 #### 消息通信
 
-如下是获取 Jenkins Token 的例子
+1. 插件发给页面，需要用`tabs.sendMessage`
+   直接引入`common/utils`里面的`sendMessage`方法即可
+
+```js
+sendMessage({
+  type: 'copyAllTasks',
+  data: {
+    shouldWithLink: false,
+  },
+});
+```
+
+2. 页面发给插件
+   如下是获取 Jenkins Token 的例子
 
 ```js
 browser.runtime.sendMessage({
