@@ -58,11 +58,13 @@ sendMessage({
    如下是获取 Jenkins Token 的例子
 
 ```js
+// contentScript中的代码
 browser.runtime.sendMessage({
   type: 'jenkins-crumb',
   data: crumb,
 });
 
+// 插件前端页面的代码
 browser.runtime.onMessage.addListener(({ type, data }) => {
   if (type === 'jenkins-crumb') {
     jenkinsCrumb.value = data;
