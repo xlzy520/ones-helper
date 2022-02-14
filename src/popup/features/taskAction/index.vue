@@ -46,8 +46,8 @@
 <script setup lang="ts">
 import QuestionIcon from '~/components/question-icon.vue';
 
-import { getCurrentTab } from '~/common/tabs';
 import { onesConfigService } from '~/service';
+import { sendMessage } from '~/common/utils';
 
 const taskConfig = reactive({
   data: {
@@ -68,16 +68,11 @@ const getOtherConfig = () => {
   });
 };
 const copyAll = (shouldWithLink = true) => {
-  getCurrentTab().then((tab) => {
-    const { id } = tab;
-    if (id) {
-      browser.tabs.sendMessage(id, {
-        type: 'copyAllTasks',
-        data: {
-          shouldWithLink,
-        },
-      });
-    }
+  sendMessage({
+    type: 'copyAllTasks',
+    data: {
+      shouldWithLink,
+    },
   });
 };
 
