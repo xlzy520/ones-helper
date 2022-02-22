@@ -22,9 +22,12 @@ export const addTaskCopyButton = () => {
 
 export const searchCustomerList = (name: string, fromSelf = false) => {
   fetchCustomerList(name).then((res) => {
-    const tasks = res.data.buckets[0].tasks;
+    // 目前后端会返回【运维服务】与【实施申请】两种工作项类型，因此只找实施申请类型即可
+    const tasks = res.data.buckets[0].tasks || [];
     if (tasks.length) {
-      const targetTask = tasks.find((v: Task) => v.status.name === '已完成');
+      const targetTask = tasks.find(
+        (v: Task) => v.status.name === '已完成' && v.issueType.name === '实施申请'
+      );
       if (targetTask) {
         const baseUrl = location.origin + location.pathname + location.hash;
         const signIndex = baseUrl.indexOf('?');

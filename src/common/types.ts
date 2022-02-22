@@ -6,6 +6,10 @@ export interface StatusType {
   uuid: string;
 }
 
+export interface IssueType {
+  name: string;
+}
+
 export interface ImportantFieldType {
   bgColor: string;
   color: string;
@@ -25,6 +29,7 @@ export interface Task {
   planStartDate: number;
   // project: Project
   status: StatusType;
+  issueType: IssueType;
   subIssueType: any;
   totalActualHours: number;
   uuid: string;
@@ -37,11 +42,11 @@ export interface onesConfig {
 }
 
 export interface GithubBranchParam {
-  owner: string
-  repo: string
-  head?: string
-  ref?: string
-  sha?: string
+  owner: string;
+  repo: string;
+  head?: string;
+  ref?: string;
+  sha?: string;
 }
 
 export interface commitHashResultItem {
