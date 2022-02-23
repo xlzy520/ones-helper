@@ -1,51 +1,60 @@
 <template>
   <div class="pb-4 overflow-y-hidden">
-    <div class="mb-2 layout-slide">
-      <div class="layout-items-center w-[240px]">
-        <div class="whitespace-nowrap">状态类型：</div>
+    <div class="mb-2 layout-slide flex justify-start items-center">
+      <div class="layout-items-center w-[330px]">
+        <div class="whitespace-nowrap w-[70px]">状态类型：</div>
         <n-select
           v-model:value="filter.statusCategory"
+          size="small"
           placeholder="状态"
-          class="w-[200px]"
+          class="w-[250px]"
           :options="filterOptions.statusCategoryOptions"
         />
       </div>
-      <div class="layout-items-center w-[270px]">
-        <div class="whitespace-nowrap">所属迭代：</div>
-        <n-select
-          v-model:value="filter.sprint"
-          class="w-[200px]"
-          placeholder="所属迭代"
-          clearable
-          :options="filterOptions.sprintOptions"
-        />
-      </div>
-      <div class="layout-items-center w-[240px]">
-        <div class="whitespace-nowrap">状态：</div>
+      <div class="layout-items-center w-[330px]">
+        <div class="whitespace-nowrap w-[70px]">状态：</div>
         <n-select
           v-model:value="filter.status"
+          size="small"
           placeholder="状态"
-          class="w-[200px]"
+          class="w-[250px]"
           clearable
           :options="filterOptions.statusOptions"
         />
       </div>
     </div>
-    <div class="mb-2 layout-slide">
-      <div class="layout-items-center">
-        <div class="whitespace-nowrap">标题：</div>
+    <div class="mb-2 layout-slide justify-start items-center">
+      <div class="layout-items-center w-[330px]">
+        <div class="whitespace-nowrap w-[70px]">标题：</div>
         <n-input
           v-model:value="filter.value"
+          size="small"
           placeholder="搜索关键字，支持清空"
           class="mr-4"
           clearable
           @clear="clearFilterKey"
         />
       </div>
+      <div class="layout-items-center w-[330px]">
+        <div class="whitespace-nowrap w-[70px]">所属迭代：</div>
+        <n-select
+          v-model:value="filter.sprint"
+          size="small"
+          class="w-[250px]"
+          placeholder="所属迭代"
+          clearable
+          :options="filterOptions.sprintOptions"
+        />
+      </div>
     </div>
     <div class="mb-2 layout-slide">
       <div class="layout-items-center">
-        <n-button type="primary" @click="copyAll"> 一键复制 </n-button>
+        <n-tooltip placement="bottom-start" trigger="hover">
+          <template #trigger>
+            <n-button type="primary" size="small" @click="copyAll"> 一键复制 </n-button>
+          </template>
+          复制当前全部工作项id+标题(适用于写工作报告！)
+        </n-tooltip>
       </div>
     </div>
 
@@ -102,7 +111,7 @@
 </template>
 
 <script setup lang="tsx">
-import { useMessage, NEllipsis, NTag, NTooltip, NPopconfirm } from 'naive-ui';
+import { useMessage, NEllipsis, NTag, NTooltip, NPopconfirm, NButton } from 'naive-ui';
 import { format } from 'date-fns';
 import { useDebounceFn } from '@vueuse/core';
 import { copyToClipboard, isDev } from '~/common/utils';
@@ -268,6 +277,9 @@ const columns = [
     key: 'number',
     width: 80,
     align: 'center',
+    sorter: (rowA, rowB) => {
+      return rowA.number - rowB.number;
+    },
     render(row: any) {
       const handleClick = () => {
         const text = `#${row.number}  ${row.name}`;
@@ -296,7 +308,6 @@ const columns = [
   {
     title: '标题',
     key: 'name',
-    width: 285,
     align: 'left',
     render(row: any) {
       const handlePositiveClick = () => {
@@ -324,7 +335,7 @@ const columns = [
   {
     title: '所属迭代',
     key: 'sprint',
-    width: 80,
+    width: 100,
     align: 'center',
     render(row: any) {
       const name = row.sprint?.name || '无';
@@ -344,8 +355,11 @@ const columns = [
   {
     title: '已登记',
     key: 'totalManhour',
-    width: 70,
+    width: 90,
     align: 'center',
+    sorter: (rowA, rowB) => {
+      return rowA.totalManhour - rowB.totalManhour;
+    },
     render(row: any) {
       let totalManhour = row.totalManhour;
       if (!totalManhour) {
@@ -359,6 +373,7 @@ const columns = [
     title: '操作',
     key: 'actions',
     align: 'center',
+    width: 90,
     render: (row: any) => {
       const handleClick = () => {
         recordFormData.task = row.uuid;
@@ -367,7 +382,7 @@ const columns = [
         selectTableRow.number = row.number;
       };
       return (
-        <NButton type="info" onClick={handleClick} size="small">
+        <NButton type="info" strong secondary onClick={handleClick} size="small">
           登记工时
         </NButton>
       );
