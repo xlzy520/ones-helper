@@ -124,6 +124,7 @@ server {
 </template>
 
 <script setup lang="tsx">
+import { NTag, NTooltip } from 'naive-ui';
 import { Ref } from 'vue-demi';
 import { DefaultPresetOptions } from '~/common/constants';
 import { customApiService } from '~/service';
@@ -135,12 +136,23 @@ const renderLabel = (option: PresetOption) => {
   }
   const { custom } = option.config;
   const tagName = custom ? '自定义请求头指向' : '内置请求头指向';
-  const tagType = custom ? 'info' : '';
+  const tagType = custom ? 'info' : 'default';
+  const slots = {
+    trigger: () => (
+      <NTag size="small" type={tagType}>
+        {tagName}
+      </NTag>
+    ),
+  };
   return (
     <div>
-      <n-tag size="small" type={tagType}>
-        {tagName}
-      </n-tag>
+      <NTooltip placement="top-start" v-slots={slots}>
+        <span>
+          {custom
+            ? '自定义请求头指向，更加灵活的设置转发域或者分支'
+            : '预设的一些配置，直接让请求转发到对应的域或者后端分支'}
+        </span>
+      </NTooltip>
       <span className="ml-4">{option.label}</span>
     </div>
   );

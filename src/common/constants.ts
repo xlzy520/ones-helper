@@ -43,6 +43,16 @@ export const DefaultPresetOptions = [
     },
   },
   {
+    label: '本地后端(后端开发专用，只允许修改端口，必须使用localhost)',
+    value: '本地=>本地后端',
+    config: {
+      custom: true,
+      customONESApiHost: 'http://localhost:9001/',
+      customONESApiProjectBranch: '',
+      isHost: true,
+    },
+  },
+  {
     label: '默认(不篡改任何请求，走项目自己的默认配置)',
     value: '默认',
     config: {
@@ -82,16 +92,6 @@ export const DefaultPresetOptions = [
     value: '本地=>预发布环境',
     config: {
       customONESApiHost: 'https://onesai.myones.net/project/api/project/',
-      customONESApiProjectBranch: '',
-      isHost: true,
-    },
-  },
-  {
-    label: '本地后端(后端开发专用，只允许修改端口，必须使用localhost)',
-    value: '本地=>本地后端',
-    config: {
-      custom: true,
-      customONESApiHost: 'http://localhost:9001/',
       customONESApiProjectBranch: '',
       isHost: true,
     },
@@ -454,14 +454,14 @@ export const GitHubRepoMap = {
 };
 
 export const ONESConfigTypeMap = {
-  'none': 'platform',
-  'public': 'platform',
-  'private': 'platform',
-  'null': 'platform',
-  'SaaS': 'platform',
+  none: 'platform',
+  public: 'platform',
+  private: 'platform',
+  null: 'platform',
+  SaaS: 'platform',
 
-  'true': 'boolean',
-  'false': 'boolean',
+  true: 'boolean',
+  false: 'boolean',
 
-  '\"false\"': 'boolean',
-}
+  '"false"': 'boolean',
+};
