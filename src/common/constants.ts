@@ -234,6 +234,11 @@ export const featuresList = [
     component: 'jenkins',
   },
   {
+    name: '批量建数据',
+    show: true,
+    component: 'batch-request',
+  },
+  {
     name: '插件更新',
     show: true,
     component: 'about-me',
