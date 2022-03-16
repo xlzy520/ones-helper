@@ -9,23 +9,23 @@ export async function getManifest() {
   // update this file to update this manifest.json
   // can also be conditional based on your need
   const manifest: Manifest.WebExtensionManifest = {
-    manifest_version: 2,
+    manifest_version: 3,
     name: pkg.displayName || pkg.name,
     version: pkg.version,
     description: pkg.description + (isDev ? '(开发版)' : ''),
     homepage_url: 'https://github.com/xlzy520/ones-helper',
-    browser_action: {
+    action: {
+      default_title: pkg.displayName,
       default_icon: './assets/favicon16.png',
       default_popup: './dist/popup/index.html',
     },
     options_ui: {
       page: './dist/options/index.html',
       open_in_tab: true,
-      chrome_style: false,
     },
     background: {
-      page: './dist/background/index.html',
-      persistent: true,
+      service_worker: './dist/background/background.global.js',
+      // persistent: true,
     },
     devtools_page: './dist/devtools/index.html',
     icons: {
@@ -39,34 +39,44 @@ export async function getManifest() {
       'downloads.open',
       'tabs',
       'storage',
-      'webRequest',
-      'webRequestBlocking',
+      // 'webRequest',
+      // 'webRequestBlocking',
       'contextMenus',
+      'declarativeNetRequest',
+      'declarativeNetRequestFeedback',
       // 'activeTab',
-      'https://github.com/BangWork/*',
-      'https://ones.ai/*',
-      'https://*.myones.net/*',
-      'http://dev.localhost/*',
-      'http://localhost/*',
-      'http://192.168.1.45/*',
-      'http://192.168.1.210/*',
-      'http://112.74.163.102/*',
     ],
-    content_scripts: [{
-      matches: [
-        'https://github.com/BangWork/*',
-        'https://ones.ai/*',
-        'https://*.myones.net/*',
-        'http://dev.localhost/*',
-        'http://localhost/*',
-        'http://112.74.163.102/*',
-        // '<all_urls>',
-        // 'https://*/*', 'https://*/*'
-      ],
-      js: ['./dist/contentScripts/index.global.js'],
-      css: ['./dist/contentScripts/style.css'],
-    }],
-    web_accessible_resources: ['./dist/contentScripts/style.css'],
+    host_permissions: ['*://*/*'],
+    content_scripts: [
+      {
+        matches: [
+          // 'https://github.com/BangWork/*',
+          // 'https://ones.ai/*',
+          // 'https://*.myones.net/*',
+          // 'http://dev.localhost/*',
+          // 'http://localhost/*',
+          // 'http://112.74.163.102/*',
+          '<all_urls>',
+          'https://*/*',
+          'https://*/*',
+        ],
+        js: ['./dist/contentScripts/index.global.js'],
+        css: ['./dist/contentScripts/style.css'],
+      },
+    ],
+    // web_accessible_resources: [
+    //   {
+    //     resources: ['./dist/contentScripts/style.css'],
+    //     matches: [
+    //       'https://github.com/BangWork/*',
+    //       'https://ones.ai/*',
+    //       'https://*.myones.net/*',
+    //       'http://dev.localhost/*',
+    //       'http://localhost/*',
+    //       'http://112.74.163.102/*',
+    //     ],
+    //   },
+    // ],
     omnibox: { keyword: 'ones' },
   };
 
@@ -78,7 +88,12 @@ export async function getManifest() {
     manifest.permissions?.push('webNavigation');
 
     // this is required on dev for Vite script to load
-    manifest.content_security_policy = `script-src \'self\' http://localhost:${port}; object-src \'self\'`;
+    manifest.content_security_policy = {
+      extension_pages: isDev
+        ? // this is required on dev for Vite script to load
+          `script-src 'self' http://localhost:${port}; object-src 'self' http://localhost:${port}`
+        : "script-src 'self'; object-src 'self'",
+    };
   }
 
   return manifest;

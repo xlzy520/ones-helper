@@ -129,7 +129,7 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 
 // Browser.action.openPopup() // 能自动打开插件？
 
-browser.omnibox.setDefaultSuggestion({
-  description:
-    '玩法待有缘人去实现，比如支持部分功能矩阵的单词快速跳转，或者问题订单的跳转（#3333）等',
-});
+// browser.omnibox.setDefaultSuggestion({
+//   description:
+//     '玩法待有缘人去实现，比如支持部分功能矩阵的单词快速跳转，或者问题订单的跳转（#3333）等',
+// });

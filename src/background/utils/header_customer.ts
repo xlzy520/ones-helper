@@ -66,7 +66,7 @@ export class HeaderCustomer {
   handleRequest = (
     details: Browser.WebRequest.OnBeforeSendHeadersDetailsType
   ): Browser.WebRequest.BlockingResponseOrPromise => {
-    let shouldAddHeaders = false
+    let shouldAddHeaders = false;
     if (details.type === 'main_frame') {
       const { url } = details;
       // GitHub授权，配置写死了http://localhost:9030/githubAuth
@@ -74,20 +74,18 @@ export class HeaderCustomer {
         const urlObj = new URL(url);
         const code = urlObj.searchParams.get('code');
         setGithubAccessToken(code);
+      } else if (url.includes('download_export_task')) {
+        shouldAddHeaders = true;
       }
-      else if (url.includes('download_export_task')) {
-        shouldAddHeaders = true
-      }
-    }
-    else if (details.requestHeaders) {
-      shouldAddHeaders = true
+    } else if (details.requestHeaders) {
+      shouldAddHeaders = true;
     }
     if (shouldAddHeaders) {
-      details.requestHeaders.push(...this.buildHeaders(details))
-      details.requestHeaders.push(...this.authHeaders)
+      details.requestHeaders.push(...this.buildHeaders(details));
+      details.requestHeaders.push(...this.authHeaders);
     }
-    return { requestHeaders: details.requestHeaders }
-  }
+    return { requestHeaders: details.requestHeaders };
+  };
 
   handleResponseHeaders = (
     details: Browser.WebRequest.OnHeadersReceivedDetailsType
@@ -132,6 +130,7 @@ export class HeaderCustomer {
   };
 
   addCustomHeadersListener = (): void => {
+    return;
     const defaultS = [
       'https://dev.myones.net/*',
       'http://dev.localhost:3000/*',
@@ -141,39 +140,140 @@ export class HeaderCustomer {
       'http://localhost/*',
     ];
     const patterns = this.patterns.length === 0 ? defaultS : this.patterns;
-    browser.webRequest.onBeforeSendHeaders.addListener(
-      this.handleRequest,
-      {
-        urls: patterns,
-        types: ['xmlhttprequest', 'stylesheet', 'script', 'main_frame'],
-      },
-      ['blocking', 'requestHeaders']
-    );
 
-    const extraInfoSpec: Browser.WebRequest.OnHeadersReceivedOptions[] = [
-      'blocking',
-      'responseHeaders',
-    ];
-    if (!isFirefox) {
-      extraInfoSpec.push('extraHeaders');
-    }
-    browser.webRequest.onHeadersReceived.addListener(
-      this.handleResponseHeaders,
-      {
-        urls: patterns,
-        types: ['xmlhttprequest'],
-      },
-      extraInfoSpec
-    );
+    // const ruleId = 1;
+    //
+    // const rules = {
+    //   removeRuleIds: [ruleId],
+    //   addRules: [
+    //     {
+    //       id: ruleId,
+    //       priority: 1,
+    //       condition: {
+    //         domains: defaultS,
+    //         resourceTypes: ['main_frame', 'xmlhttprequest'],
+    //       },
+    //       action: {
+    //         type: 'modifyHeaders',
+    //         requestHeaders: [
+    //           {
+    //             header: 'X-DeclarativeNetRequest-Sample',
+    //             operation: 'set',
+    //             value: 'request',
+    //           },
+    //         ],
+    //         responseHeaders: [
+    //           {
+    //             header: 'X-DeclarativeNetRequest-Sample',
+    //             operation: 'set',
+    //             value: 'response',
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   ],
+    // };
+    //
+    // chrome.declarativeNetRequest.updateDynamicRules(rules, () => {
+    //   if (browser.runtime.lastError) {
+    //     console.error(browser.runtime.lastError);
+    //   } else {
+    //     browser.declarativeNetRequest.getDynamicRules((rules) => console.log(rules));
+    //   }
+    // });
+
+    // browser.webRequest.onBeforeSendHeaders.addListener(
+    //   this.handleRequest,
+    //   {
+    //     urls: patterns,
+    //     types: ['xmlhttprequest', 'stylesheet', 'script', 'main_frame'],
+    //   },
+    //   ['blocking', 'requestHeaders']
+    // );
+    //
+    // const extraInfoSpec: Browser.WebRequest.OnHeadersReceivedOptions[] = [
+    //   'blocking',
+    //   'responseHeaders',
+    // ];
+    // if (!isFirefox) {
+    //   extraInfoSpec.push('extraHeaders');
+    // }
+    // browser.webRequest.onHeadersReceived.addListener(
+    //   this.handleResponseHeaders,
+    //   {
+    //     urls: patterns,
+    //     types: ['xmlhttprequest'],
+    //   },
+    //   extraInfoSpec
+    // );
   };
 
   removeCustomHeadersListener = (): void => {
-    if (browser.webRequest.onBeforeSendHeaders.hasListener(this.handleRequest))
-      browser.webRequest.onBeforeSendHeaders.removeListener(this.handleRequest);
+    // if (browser.webRequest.onBeforeSendHeaders.hasListener(this.handleRequest))
+    //   browser.webRequest.onBeforeSendHeaders.removeListener(this.handleRequest);
   };
 
   onPatternsChange = (): void => {
-    this.removeCustomHeadersListener();
-    this.addCustomHeadersListener();
+    console.log(3333);
+
+    const defaultS = [
+      'https://dev.myones.net/*',
+      'http://dev.localhost:3000/*',
+      'http://dev.localhost/*',
+      'http://192.168.1.45:9001/*',
+      'http://192.168.1.210:9001/*',
+      'http://localhost/*',
+      'https://www.bilibili.com/',
+      'https://api.bilibili.com/',
+      'api.bilibili.com',
+      'bilibili.com',
+    ];
+    const patterns = this.patterns.length === 0 ? defaultS : this.patterns;
+
+    console.log(this.buildHeaders());
+    console.log(this.authHeaders);
+
+    browser.declarativeNetRequest.updateSessionRules({
+      removeRuleIds: [1],
+      addRules: [
+        {
+          id: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              {
+                header: 'user-agent',
+                operation: 'set',
+                value: 'ones788999',
+              },
+            ],
+          },
+          condition: {
+            domains: defaultS,
+            // urlFilter: '|https*',
+            // tabIds: [tab.id],
+            resourceTypes: [
+              'main_frame',
+              'sub_frame',
+              'stylesheet',
+              'script',
+              'image',
+              'font',
+              'object',
+              'xmlhttprequest',
+              'ping',
+              'csp_report',
+              'media',
+              'websocket',
+              'webtransport',
+              'webbundle',
+              'other',
+            ],
+          },
+        },
+      ],
+    });
+    // this.removeCustomHeadersListener();
+    // this.addCustomHeadersListener();
   };
 }
