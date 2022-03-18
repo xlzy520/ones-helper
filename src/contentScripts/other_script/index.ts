@@ -121,7 +121,6 @@ export function run(): void {
       reqCountOneTime,
     } = data;
 
-    let newData: string;
     let successCount = 0;
     let failCount = 0;
     let contexts = body.match(/\{\{.*?\}\}/g); // 找出所有花括号地方
@@ -129,6 +128,7 @@ export function run(): void {
     for (let i = start; i < (count + start); ) {
       let promiseList = [];
       while(promiseList.length < reqCountOneTime) {
+        let newData: string;
         if (contexts) {
           contexts.forEach((context: string) => {
             let scope = {} as any;
