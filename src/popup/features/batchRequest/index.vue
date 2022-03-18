@@ -24,6 +24,7 @@
         >
           <n-input-number
             :show-button='false'
+            :max='500'
             v-model:value="formValue.reqCountOneTime"
           />
         </n-form-item-grid-item>
