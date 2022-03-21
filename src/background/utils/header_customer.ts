@@ -1,7 +1,16 @@
 import { useDebounceFn } from '@vueuse/core';
 import Browser from 'webextension-polyfill';
 import { isFirefox } from '~/env';
-import { GithubOAuthClientID, GithubOAuthClientSecrets } from '~/common/constants';
+import {
+  DefaultPreset,
+  DefaultPresetOptions,
+  GithubOAuthClientID,
+  GithubOAuthClientSecrets,
+  NetRequestIDMap,
+  ONES_HOST_KEY,
+  PROJECT_BRANCH_KEY,
+} from '~/common/constants';
+import { PresetOption } from '~/service/custom_api';
 
 export type Headers = Browser.WebRequest.HttpHeaders;
 
@@ -233,25 +242,30 @@ export class HeaderCustomer {
     console.log(this.buildHeaders());
     console.log(this.authHeaders);
 
-    browser.declarativeNetRequest.updateSessionRules({
-      removeRuleIds: [1],
-      addRules: [
-        {
-          id: 1,
+    browser.storage.local.get('customApiData').then(({ customApiData = {} as any }) => {
+      const headers: Headers = [];
+      const rules = [];
+      const { preset = DefaultPreset, presetOptions = DefaultPresetOptions as PresetOption[] } =
+        customApiData;
+      const selectedConfig = presetOptions.find((v: any) => v.value === preset).config;
+      const customHOST = selectedConfig[ONES_HOST_KEY];
+      if (customHOST) {
+        const value = customHOST;
+        rules.push({
+          id: NetRequestIDMap.ProjectAPI,
           action: {
             type: 'modifyHeaders',
             requestHeaders: [
               {
-                header: 'user-agent',
+                header: 'x-ones-api-host',
                 operation: 'set',
-                value: 'ones788999',
+                value,
               },
             ],
           },
           condition: {
             domains: defaultS,
-            // urlFilter: '|https*',
-            // tabIds: [tab.id],
+            urlFilter: '/api/project/',
             resourceTypes: [
               'main_frame',
               'sub_frame',
@@ -270,9 +284,207 @@ export class HeaderCustomer {
               'other',
             ],
           },
-        },
-      ],
+        });
+        rules.push({
+          id: NetRequestIDMap.WikiAPI,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              {
+                header: 'x-ones-api-host',
+                operation: 'set',
+                value: customHOST.replace('api/project/', 'api/wiki/'),
+              },
+            ],
+          },
+          condition: {
+            domains: defaultS,
+            urlFilter: '/api/wiki/',
+            resourceTypes: [
+              'main_frame',
+              'sub_frame',
+              'stylesheet',
+              'script',
+              'image',
+              'font',
+              'object',
+              'xmlhttprequest',
+              'ping',
+              'csp_report',
+              'media',
+              'websocket',
+              'webtransport',
+              'webbundle',
+              'other',
+            ],
+          },
+        });
+      } else {
+        const projectBranch = selectedConfig[PROJECT_BRANCH_KEY];
+        if (projectBranch) {
+          rules.push({
+            id: NetRequestIDMap.ProjectAPI,
+            action: {
+              type: 'modifyHeaders',
+              requestHeaders: [
+                {
+                  header: 'x-ones-api-branch-project',
+                  operation: 'set',
+                  value: `/project/${projectBranch}/`,
+                },
+                {
+                  header: 'x-ones-api-branch-wiki',
+                  operation: 'set',
+                  value: `/project/${projectBranch}/`,
+                },
+              ],
+            },
+            condition: {
+              domains: defaultS,
+              urlFilter: '/api/project/',
+              resourceTypes: [
+                'main_frame',
+                'sub_frame',
+                'stylesheet',
+                'script',
+                'image',
+                'font',
+                'object',
+                'xmlhttprequest',
+                'ping',
+                'csp_report',
+                'media',
+                'websocket',
+                'webtransport',
+                'webbundle',
+                'other',
+              ],
+            },
+          });
+          rules.push({
+            id: NetRequestIDMap.WikiAPI,
+            action: {
+              type: 'modifyHeaders',
+              requestHeaders: [
+                {
+                  header: 'x-ones-api-branch-project',
+                  operation: 'set',
+                  value: `/wiki/${projectBranch}/`,
+                },
+                {
+                  header: 'x-ones-api-branch-wiki',
+                  operation: 'set',
+                  value: `/wiki/${projectBranch}/`,
+                },
+              ],
+            },
+            condition: {
+              domains: defaultS,
+              urlFilter: '/api/wiki/',
+              resourceTypes: [
+                'main_frame',
+                'sub_frame',
+                'stylesheet',
+                'script',
+                'image',
+                'font',
+                'object',
+                'xmlhttprequest',
+                'ping',
+                'csp_report',
+                'media',
+                'websocket',
+                'webtransport',
+                'webbundle',
+                'other',
+              ],
+            },
+          });
+        }
+      }
+
+      console.log(rules);
+      browser.declarativeNetRequest.updateSessionRules({
+        removeRuleIds: [NetRequestIDMap.WikiAPI, NetRequestIDMap.ProjectAPI],
+        addRules: rules,
+      });
     });
+
+    // browser.declarativeNetRequest.updateSessionRules({
+    //   removeRuleIds: [1],
+    //   addRules: [
+    //     {
+    //       id: 1,
+    //       action: {
+    //         type: 'modifyHeaders',
+    //         requestHeaders: [
+    //           {
+    //             header: 'user-agent',
+    //             operation: 'set',
+    //             value: 'ones788999',
+    //           },
+    //         ],
+    //       },
+    //       condition: {
+    //         domains: defaultS,
+    //         // urlFilter: '|https*',
+    //         // tabIds: [tab.id],
+    //         resourceTypes: [
+    //           'main_frame',
+    //           'sub_frame',
+    //           'stylesheet',
+    //           'script',
+    //           'image',
+    //           'font',
+    //           'object',
+    //           'xmlhttprequest',
+    //           'ping',
+    //           'csp_report',
+    //           'media',
+    //           'websocket',
+    //           'webtransport',
+    //           'webbundle',
+    //           'other',
+    //         ],
+    //       },
+    //     },
+    //     {
+    //       id: 2,
+    //       action: {
+    //         type: 'modifyHeaders',
+    //         requestHeaders: [
+    //           {
+    //             header: 'user-agent',
+    //             operation: 'set',
+    //             value: 'ones788999',
+    //           },
+    //         ],
+    //       },
+    //       condition: {
+    //         domains: defaultS,
+    //         // urlFilter: '|https*',
+    //         // tabIds: [tab.id],
+    //         resourceTypes: [
+    //           'main_frame',
+    //           'sub_frame',
+    //           'stylesheet',
+    //           'script',
+    //           'image',
+    //           'font',
+    //           'object',
+    //           'xmlhttprequest',
+    //           'ping',
+    //           'csp_report',
+    //           'media',
+    //           'websocket',
+    //           'webtransport',
+    //           'webbundle',
+    //           'other',
+    //         ],
+    //       },
+    //     },
+    //   ],
+    // });
     // this.removeCustomHeadersListener();
     // this.addCustomHeadersListener();
   };

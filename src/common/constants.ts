@@ -465,3 +465,8 @@ export const ONESConfigTypeMap = {
 
   '"false"': 'boolean',
 };
+
+export const NetRequestIDMap = {
+  ProjectAPI: 3,
+  WikiAPI: 4,
+};

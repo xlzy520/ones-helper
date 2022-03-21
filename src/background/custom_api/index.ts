@@ -65,6 +65,6 @@ async function syncPatterns(headerCustomer: HeaderCustomer) {
 }
 
 export function customApi(): void {
-  syncApiSetting(headerCustomer);
+  // syncApiSetting(headerCustomer);
   syncPatterns(headerCustomer);
 }
