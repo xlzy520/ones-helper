@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import { sendMessage, onMessage } from 'webext-bridge';
 import Browser, { Tabs } from 'webextension-polyfill';
 import { customApi } from './custom_api';
@@ -132,4 +133,116 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 browser.omnibox.setDefaultSuggestion({
   description:
     '玩法待有缘人去实现，比如支持部分功能矩阵的单词快速跳转，或者问题订单的跳转（#3333）等',
+});
+
+// 右键菜单管理
+
+function openNewTab(url: string): void {
+  browser.tabs.create({
+    url,
+  });
+}
+
+const githubBaseDomain = 'https://github.com/BangWork';
+
+const FE_Github_Root = {
+  title: 'ONES前端代码仓',
+  parentId: 'ones-fast-open',
+  id: 'ones-github-code-url',
+};
+
+const FE_REPO_DATA = [
+  {
+    title: 'ones-project-web',
+    parentId: 'ones-github-code-url',
+    onclick: () => {
+      openNewTab(`${githubBaseDomain}/ones-project-web`);
+    },
+  },
+  {
+    title: 'ones-ai-web-common',
+    parentId: 'ones-github-code-url',
+    onclick: () => {
+      openNewTab(`${githubBaseDomain}/ones-ai-web-common`);
+    },
+  },
+  {
+    title: 'wiki-web',
+    parentId: 'ones-github-code-url',
+    onclick: () => {
+      openNewTab(`${githubBaseDomain}/wiki-web`);
+    },
+  },
+  {
+    parentId: 'ones-github-code-url',
+    type: 'separator',
+  },
+  {
+    title: 'ones-design',
+    parentId: 'ones-github-code-url',
+    onclick: () => {
+      openNewTab(`${githubBaseDomain}/ones-design`);
+    },
+  },
+];
+
+browser.contextMenus.create({
+  id: 'ones-fast-open',
+  title: 'ONES网页快开',
+  type: 'normal',
+});
+
+browser.contextMenus.create(FE_Github_Root);
+
+FE_REPO_DATA.forEach((item) => {
+  browser.contextMenus.create(item);
+});
+
+browser.contextMenus.create({
+  id: 'ones-design',
+  parentId: 'ones-fast-open',
+  title: 'ONES组件库文档',
+  type: 'normal',
+  onclick: () => {
+    openNewTab('https://bangwork.github.io/ones-design/?path=/story/ones-design--page');
+  },
+});
+
+browser.contextMenus.create({
+  id: 'jenkins',
+  parentId: 'ones-fast-open',
+  title: 'ONES Jenkins',
+  type: 'normal',
+});
+browser.contextMenus.create({
+  parentId: 'jenkins',
+  title: '开发环境: project-web',
+  type: 'normal',
+  onclick: () => {
+    openNewTab('https://cd.myones.net/job/development/job/ones-project-web/');
+  },
+});
+browser.contextMenus.create({
+  parentId: 'jenkins',
+  title: '开发环境: wiki-web',
+  type: 'normal',
+  onclick: () => {
+    openNewTab('https://cd.myones.net/job/development/job/wiki-web/');
+  },
+});
+browser.contextMenus.create({
+  parentId: 'jenkins',
+  title: '预发环境: project-web',
+  type: 'normal',
+  onclick: () => {
+    openNewTab('https://cd.myones.net/job/kubernetes-preview/job/build-project-web/');
+  },
+});
+browser.contextMenus.create({
+  parentId: 'jenkins',
+  title: '预发环境: wiki-web',
+  type: 'normal',
+  onclick: () => {
+    openNewTab('https://cd.myones.net/job/kubernetes-preview/job/build-wiki-web/');
+  },
 });
