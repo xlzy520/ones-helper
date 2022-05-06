@@ -2,6 +2,7 @@ import { customApiService } from '../../service';
 import { hideCustomApiInfo, showCustomApiInfo, syncCustomApiInfo } from './show_custom_api_info';
 import proxyAJAX from './proxyAJAX';
 import proxyWebsocket from './proxyWebsocket';
+import proxyFetch from './proxyFetch';
 import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
 import { patternToRegExp } from '~/common/url_pattern';
@@ -50,11 +51,12 @@ export async function handleCustomApi(customApiData): Promise<void> {
   console.log(websocket);
   const path = websocket || customONESApiProjectBranch;
   if (isDevDomain() || isLocal()) {
-    injectScript(`${proxyWebsocket};proxyWebsocket('${path}')`);
+    injectScript(`${proxyWebsocket};proxyWebsocket('${path}')`, 'proxyWebSocket');
   }
   if (customONESApiHost.includes('http://localhost')) {
     if (isDevDomain()) {
-      injectScript(`${proxyAJAX};run$1('${customONESApiHost}')`);
+      injectScript(`${proxyAJAX};run$1('${customONESApiHost}')`, 'proxyXHR');
+      injectScript(`${proxyFetch};proxyFetch('${customONESApiHost}')`, 'proxyFetch');
     }
   }
 }
