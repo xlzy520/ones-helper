@@ -7,7 +7,7 @@ export default function run(sUrl = 'http://192.168.1.210:9001/') {
 
   // @ts-ignore
   MyXHR.prototype.open = function (...args) {
-    console.log(args)
+    // console.log(args)
     let url = args[1];
     // const reg = /https:\/\/dev.myones.net.*?api/
     if (url.toString().startsWith('api/')) {
