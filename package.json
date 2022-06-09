@@ -26,7 +26,8 @@
     "clear": "rimraf ONESHelper/dist ONESHelper/manifest.json ONESHelper.*",
     "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
     "publish:patch": "npm version patch && git push origin main --tags",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "watch:bg": "nodemon --ignore \"*.d.ts\" --watch \"src/background\" -e ts,js,mjs,json,vue --exec \"pnpm dev:bg\""
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.9.0",
@@ -66,12 +67,14 @@
     "webextension-polyfill": "^0.8.0"
   },
   "dependencies": {
+    "@types/chrome": "^0.0.190",
     "date-fns": "^2.27.0",
     "husky": "^7.0.4",
     "interactjs": "^1.2.0",
     "lint-staged": "^12.2.2",
     "lodash-es": "^4.17.21",
     "naive-ui": "^2.19.3",
+    "nodemon": "^2.0.16",
     "vue-json-viewer": "3"
   }
 }

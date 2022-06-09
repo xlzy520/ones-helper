@@ -13,13 +13,11 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "vite/client"
-    ],
+    "types": ["vite/client", "@types/chrome"],
     "paths": {
       "~/*": ["src/*"]
     },
-    "jsx": "preserve",
+    "jsx": "preserve"
   },
   "exclude": ["dist", "node_modules"]
 }
