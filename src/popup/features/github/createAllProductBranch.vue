@@ -4,9 +4,19 @@
       <div class="font-bold">一键创建最后一个ONES稳定大版本的所有产品的分支（技术支持组使用）</div>
     </div>
     <div class="mt-2">
-      <n-button type="primary" ghost :loading="loading" @click="getAllCommitHash">
-        ✨ 先点我获取并复制全部产品Hash
-      </n-button>
+      <div class="layout-items-center">
+        <n-input
+          v-model:value="publishTaskUUID"
+          placeholder="不想自动获取，手动输入TaskUUID"
+          class="mr-4"
+          clearable
+          @clear="publishTaskUUID = ''"
+        />
+        <n-button type="primary" ghost :loading="loading" @click="getAllCommitHash">
+          ✨ 点我获取并复制全部产品Hash
+        </n-button>
+      </div>
+
       <div class="layout-slide mt-2">
         <n-input
           v-model:value="branchName"
@@ -82,7 +92,7 @@
 import { useMessage } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/graphql';
-import { commitHashResultItem, Task } from '~/common/types';
+import { commitHashResultItem, fieldValueType, Task } from '~/common/types';
 import { copyToClipboard } from '~/common/utils';
 import { GitHubRepoMap } from '~/common/constants';
 import { createNewBranch } from '~/service/github';
@@ -124,70 +134,85 @@ const commitHashResult: commitHashResultItem[] = $ref([]);
 const CommitHashKey = '2C3W6Gvp';
 const frontCommonCommitHashKey = '_FDxiwrFZ'; // 前端common库hash的属性值
 const publishTypeKey = '_A3j2J3q8'; // 发布类型
+const publishTaskUUID = ref('');
+
+const handleTaskInfo = (taskUUID: string, frontCommonCommitHash: string) => {
+  fetchTaskInfo(taskUUID).then((res) => {
+    console.log(res);
+    if (!frontCommonCommitHash) {
+      frontCommonCommitHash = res.field_values.find(
+        (item: fieldValueType) => item.field_uuid === 'FDxiwrFZ'
+      ).value;
+    }
+    console.log(frontCommonCommitHash);
+    const related_tasks = res.related_tasks;
+    const childComponentUUIDs = related_tasks
+      .filter((v: Task) => v.sub_issue_type_uuid)
+      .map((v: Task) => v.uuid);
+    fetchTasksInfo(childComponentUUIDs).then((res) => {
+      console.log(res);
+      const tasks = res.tasks;
+      tasks.forEach((task: Task) => {
+        const fieldValues = task.field_values;
+        const result = fieldValues.find((v) => v.field_uuid === CommitHashKey);
+        if (result) {
+          commitHashResult.push({
+            name: task.summary,
+            hash: result.value,
+            loading: true,
+            success: false,
+            reason: '',
+          });
+        }
+      });
+      if (frontCommonCommitHash) {
+        commitHashResult.push({
+          name: 'ones-ai-web-common',
+          hash: frontCommonCommitHash,
+          loading: true,
+          success: false,
+          reason: '',
+        });
+      }
+      loading = false;
+      console.log(unref(commitHashResult));
+      const text = commitHashResult.map((v) => {
+        return `【${v.name}】: ${v.hash}`;
+      });
+      copyToClipboard(text.join('\r\n'), false);
+      message.success('全部复制成功');
+    });
+    // console.log(childComponentUUIDs)
+  });
+};
 const getAllCommitHash = () => {
   loading = true;
-  fetchPublishVersion().then((res) => {
-    let lastMinorStableVersionItem;
-    let frontCommonCommitHash = '';
-    for (let i = 0; i < res.length; i++) {
-      const item = res[i];
-      if (lastMinorStableVersionItem) {
-        const commonCommitHashItem = item[frontCommonCommitHashKey];
-        if (!frontCommonCommitHash && commonCommitHashItem && commonCommitHashItem.length > 20) {
-          frontCommonCommitHash = item[frontCommonCommitHashKey];
+  if (publishTaskUUID.value) {
+    handleTaskInfo(publishTaskUUID.value, '');
+  } else {
+    fetchPublishVersion().then((res) => {
+      let lastMinorStableVersionItem;
+      let frontCommonCommitHash = '';
+      for (let i = 0; i < res.length; i++) {
+        const item = res[i];
+        if (lastMinorStableVersionItem) {
+          const commonCommitHashItem = item[frontCommonCommitHashKey];
+          if (!frontCommonCommitHash && commonCommitHashItem && commonCommitHashItem.length > 20) {
+            frontCommonCommitHash = item[frontCommonCommitHashKey];
+          }
+        }
+        if (item[publishTypeKey].value === 'MINOR') {
+          lastMinorStableVersionItem = res[i + 1];
         }
       }
-      if (item[publishTypeKey].value === 'MINOR') {
-        lastMinorStableVersionItem = res[i + 1];
+      if (lastMinorStableVersionItem) {
+        const taskUUID = lastMinorStableVersionItem.uuid;
+        handleTaskInfo(taskUUID, frontCommonCommitHash);
+        // console.log(lastMinorStableVersionItem)
       }
-    }
-    if (lastMinorStableVersionItem) {
-      const taskUUID = lastMinorStableVersionItem.uuid;
-      fetchTaskInfo(taskUUID).then((res) => {
-        console.log(res);
-        const related_tasks = res.related_tasks;
-        const childComponentUUIDs = related_tasks
-          .filter((v) => v.sub_issue_type_uuid)
-          .map((v) => v.uuid);
-        fetchTasksInfo(childComponentUUIDs).then((res) => {
-          console.log(res);
-          const tasks = res.tasks;
-          tasks.forEach((task) => {
-            const fieldValues = task.field_values;
-            const result = fieldValues.find((v) => v.field_uuid === CommitHashKey);
-            if (result) {
-              commitHashResult.push({
-                name: task.summary,
-                hash: result.value,
-                loading: true,
-                success: false,
-                reason: '',
-              });
-            }
-          });
-          if (frontCommonCommitHash) {
-            commitHashResult.push({
-              name: 'ones-ai-web-common',
-              hash: frontCommonCommitHash,
-              loading: true,
-              success: false,
-              reason: '',
-            });
-          }
-          loading = false;
-          console.log(unref(commitHashResult));
-          const text = commitHashResult.map((v) => {
-            return `【${v.name}】: ${v.hash}`;
-          });
-          copyToClipboard(text.join('\r\n'), false);
-          message.success('全部复制成功');
-        });
-        // console.log(childComponentUUIDs)
-      });
-      // console.log(lastMinorStableVersionItem)
-    }
-    // console.log(res, latestMinor)
-  });
+      // console.log(res, latestMinor)
+    });
+  }
 };
 
 const getProductName = (name = '') => {
@@ -198,7 +223,13 @@ const createAllBranch = () => {
   showModal = true;
   commitHashResult.forEach((item, index) => {
     const productName = getProductName(item.name);
-    const repoData = GitHubRepoMap[productName];
+    const repoData = GitHubRepoMap[productName as keyof typeof GitHubRepoMap];
+    if (!repoData) {
+      item.loading = false;
+      item.success = false;
+      item.reason = '未找到对应的仓库';
+      return;
+    }
     console.log(productName, repoData);
     const branch = branchName;
     createNewBranch({
