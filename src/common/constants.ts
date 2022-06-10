@@ -10,11 +10,11 @@ export const CUSTOM_API_PATTERNS = 'customApiPatterns';
 // -local前端连局域网
 // -dev前端连私有部署
 // -dev前端连SaaS
-export const DefaultPreset = '用户自定义(dev)';
+export const DefaultPreset = '自定义(dev)';
 export const DefaultPresetOptions = [
   {
-    label: '用户自定义(dev)',
-    value: '用户自定义(dev)',
+    label: '自定义(dev)',
+    value: '自定义(dev)',
     config: {
       custom: true,
       customONESApiHost: '',
@@ -23,21 +23,21 @@ export const DefaultPresetOptions = [
     },
   },
   {
-    label: '用户自定义(SaaS)',
-    value: '用户自定义(SaaS)',
+    label: '自定义(SaaS)',
+    value: '自定义(SaaS)',
     config: {
       custom: true,
-      customONESApiHost: 'https://ones.ai/project/api/project/',
+      customONESApiHost: 'https://ones.ai',
       customONESApiProjectBranch: '',
       isHost: true,
     },
   },
   {
-    label: '用户自定义(私有部署)',
-    value: '用户自定义(私有部署)',
+    label: '自定义(私有部署)',
+    value: '自定义(私有部署)',
     config: {
       custom: true,
-      customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
+      customONESApiHost: 'https://mars-dev.myones.net:16416',
       customONESApiProjectBranch: '',
       isHost: true,
     },
@@ -73,7 +73,7 @@ export const DefaultPresetOptions = [
     label: '私有部署',
     value: '本地=>私有部署',
     config: {
-      customONESApiHost: 'https://mars-dev.myones.net:16416/project/api/project/',
+      customONESApiHost: 'https://mars-dev.myones.net:16416',
       customONESApiProjectBranch: '',
       isHost: true,
     },
@@ -82,7 +82,7 @@ export const DefaultPresetOptions = [
     label: 'SaaS',
     value: '本地=>SaaS',
     config: {
-      customONESApiHost: 'https://ones.ai/project/api/project/',
+      customONESApiHost: 'https://ones.ai',
       customONESApiProjectBranch: '',
       isHost: true,
     },
@@ -91,7 +91,7 @@ export const DefaultPresetOptions = [
     label: '预发布环境',
     value: '本地=>预发布环境',
     config: {
-      customONESApiHost: 'https://onesai.myones.net/project/api/project/',
+      customONESApiHost: 'https://onesai.myones.net',
       customONESApiProjectBranch: '',
       isHost: true,
     },
@@ -101,19 +101,11 @@ export const DefaultPresetOptions = [
 export const DefaultPatterns: PatternConfig[] = [
   {
     enable: true,
-    pattern: 'http://localhost/*',
+    pattern: 'localhost',
   },
   {
     enable: true,
-    pattern: 'https://dev.myones.net/*',
-  },
-  {
-    enable: true,
-    pattern: 'http://dev.localhost:3000/*',
-  },
-  {
-    enable: true,
-    pattern: 'http://dev.localhost/*',
+    pattern: 'dev.myones.net',
   },
 ];
 
@@ -210,17 +202,17 @@ export const featuresList = [
   },
   {
     name: 'OnesConfig',
-    show: true,
+    show: false,
     component: 'ones-config',
   },
   {
     name: '工时',
-    show: true,
+    show: false,
     component: 'man-hour',
   },
   {
     name: '工作项',
-    show: true,
+    show: false,
     component: 'task-action',
   },
   {
@@ -235,7 +227,7 @@ export const featuresList = [
   },
   {
     name: '插件更新',
-    show: true,
+    show: false,
     component: 'about-me',
   },
 ];
