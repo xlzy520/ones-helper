@@ -19,9 +19,16 @@ export interface ImportantFieldType {
   value: string;
 }
 
+export interface fieldValueType {
+  field_uuid: string;
+  value: string;
+}
+
 export interface Task {
+  summary: string;
   estimatedHours: number;
   // issueType: IssueType
+  sub_issue_type_uuid: string;
   importantField: ImportantFieldType[];
   key: string;
   name: string;
@@ -34,6 +41,7 @@ export interface Task {
   totalActualHours: number;
   uuid: string;
   _fStamp: number;
+  field_values: fieldValueType[];
 }
 
 export interface onesConfig {
