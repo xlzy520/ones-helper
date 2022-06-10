@@ -1,7 +1,7 @@
 <template>
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-message-provider>
-      <main class="h-[360px] px-4" :style="style">
+      <main class="h-[360px] w-[800px] px-4">
         <n-tabs :default-value="defaultTab" type="line">
           <n-tab-pane
             v-for="item in filterFeatures"
@@ -28,7 +28,7 @@ const defaultTab = ref('API转发');
 const filterFeatures = ref([]);
 
 const style = ref({
-  width: '500px',
+  width: '800px',
 });
 
 onMounted(() => {
@@ -36,7 +36,7 @@ onMounted(() => {
     filterFeatures.value = res.filter((feature) => {
       if (feature.show) {
         if (feature.name === '工时') {
-          style.value.width = '800px';
+          style.value.width = '720px';
         }
         return true;
       }
