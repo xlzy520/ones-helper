@@ -1,57 +1,69 @@
 import Browser from 'webextension-polyfill';
-import styles from './style.scss';
 
+import { onMessage } from 'webext-bridge';
 import { handleCustomApi } from './custom_api/index';
 import { branchSelectEnhance } from './github_enhance/index';
-import { run as runOtherScript } from './other_script';
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index';
 import $message from './antdMessage/index';
+import { saveOnesConfig, initOnesConfig } from './onesConfig';
 import { customApiService, onesConfigService } from '~/service';
+
 import {
   $,
   isSaas,
-  injectHead,
   injectScript,
-  isDevDomain,
-  isLocal,
-  $All,
   isInLimitedKanban,
   isGithubOAuthUrl,
+  runtimeInjectPageScript,
 } from '~/common/utils';
-import {
-  getBuildOnesProcessEnv,
-  getHostWindowObject,
-} from '~/contentScripts/other_script/getBuildOnesProcessEnv';
 import { handleKanban } from '~/contentScripts/task_action/kanban';
+import { getJenkinsToken } from '~/contentScripts/Jenkins';
+import { initInjectContent } from '~/contentScripts/inject';
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
   console.info('[ONES Helper] Hello world from content script');
 
-  const isFEOnesDev = isDevDomain() || isLocal();
-
-  const styleEl = document.createElement('style');
-  styleEl.innerHTML = styles;
-  injectHead(styleEl);
-
-  // 开发环境注入特殊脚本获取环境变量
-  if (isFEOnesDev) {
-    if (!$('#buildOnesProcessEnv')) {
-      injectScript(`${getBuildOnesProcessEnv};getBuildOnesProcessEnv()`, 'buildOnesProcessEnv');
-      injectScript(`${getHostWindowObject};getHostWindowObject();`, 'getHostWindowObject');
-    }
-  }
+  // 初始化插入样式、脚本
+  initInjectContent();
 
   if (isGithubOAuthUrl()) {
+    alert('132131');
     $message.success('获取code成功，再次打开插件即可');
   }
+
+  getJenkinsToken(); // 获取Jenkins token
 
   // API转发
   customApiService.getCustomApi().then((customApiData) => {
     handleCustomApi(customApiData);
   });
 
-  runOtherScript();
+  // 统一消息监听
+  browser.runtime.onMessage.addListener((request: any) => {
+    const { type, data } = request;
+    if (type === 'onesConfig') {
+      saveOnesConfig(data);
+      const reloadScript = 'window && window.location.reload()';
+      runtimeInjectPageScript({
+        code: reloadScript,
+        type: '',
+      });
+    } else if (type === 'githubAccessToken') {
+      window.alert('获取code成功，请重新打开ONES Helper即可');
+    }
+    // else if (type === 'copyAllTasks') {
+    //   handleCopyAllTasks(data);
+    // }
+
+    console.log('接收消息：', request);
+  });
+
+  onMessage('githubAccessToken', (data) => {
+    window.alert('获取code成功，请重新打开ONES Helper即可');
+  });
+
+  initOnesConfig();
 
   onesConfigService.getOtherConfig().then((res) => {
     setInterval(() => {

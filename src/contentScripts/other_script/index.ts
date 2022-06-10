@@ -1,71 +1,7 @@
-import { onesConfigService } from '~/service'
-import {
-  $,
-  $All,
-  copyToClipboard,
-  injectScript,
-  isPrivate,
-  isSaas,
-  isCD,
-  isGitHub,
-} from '~/common/utils'
-import { ONESConfig } from '~/common/constants'
-import { getFeaturesConfig } from '~/service/featuresConfig'
+import { copyToClipboard, injectScript, isCD } from '~/common/utils';
 
 export function run(): void {
-  // logic here
-
-  const saveOnesConfig = (onesConfig: any) => {
-    const dataStr = JSON.stringify(onesConfig);
-    const newOnesConfig = `onesConfig=${dataStr}`;
-    injectScript(newOnesConfig);
-    const path = location.origin + location.pathname;
-    onesConfigService.saveOnesConfigApi({ [path]: onesConfig });
-    // console.log(onesConfig)
-  };
-
-  getFeaturesConfig().then((res) => {
-    const onesConfigItem = res.find((v) => v.name === 'OnesConfig');
-    if (onesConfigItem && onesConfigItem.show) {
-      onesConfigService.getOnesConfigApi().then((res) => {
-        if (isPrivate() || isSaas()) {
-          const onesConfigScript = $All('script')[1];
-          // eslint-disable-next-line no-eval
-          let onesConfig = eval(onesConfigScript.innerHTML);
-          // 如果用户点击了保存，那就用修改后的，如果没有修改，永远用页面自己的
-          if (res?.isUpdate) {
-            onesConfig = res
-          }
-          saveOnesConfig(onesConfig)
-        }
-        else if (!isGitHub()) {
-          let onesConfigDev = {}
-          if ($('#realBuildOnesProcessEnv')) {
-            const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML;
-            // eslint-disable-next-line no-eval
-            onesConfigDev = eval(onesConfigScript);
-          }
-          // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
-          const onesConfig = res?.wechatBindSupport
-            ? { ...ONESConfig, ...onesConfigDev, ...res }
-            : ONESConfig;
-          saveOnesConfig(onesConfig);
-        }
-      });
-    }
-  });
-
   // Jenkins
-  if (isCD()) {
-    const scripts = document.querySelectorAll('script:not([src])');
-    const targetScript = scripts[1];
-    const crumb = targetScript.innerHTML.substring(29, 93);
-    browser.runtime.sendMessage({
-      type: 'jenkins-crumb',
-      data: crumb,
-    });
-  }
-
   const handleCopyAllTasks = (data: any) => {
     const href = location.href;
     const searchReg = /\/team\/(\w+)\/project\/(\w+).*?\/sprint\/(\w+)\/?/;
@@ -110,17 +46,4 @@ export function run(): void {
         });
     }
   };
-
-  browser.runtime.onMessage.addListener((request: any) => {
-    const { type, data } = request;
-    if (type === 'onesConfig') {
-      saveOnesConfig(data);
-      const newOnesConfig = 'window && window.location.reload()';
-      injectScript(newOnesConfig);
-    } else if (type === 'copyAllTasks') {
-      handleCopyAllTasks(data);
-    }
-
-    console.log('接收消息：', request);
-  });
 }
