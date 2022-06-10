@@ -54,6 +54,7 @@
           class="mr-4"
           clearable
           @clear="clearJenkinsBuildBranch"
+          @change="saveJenkinsBuildBranch"
         />
         <n-button type="success" ghost :disabled="!canDispatch" @click="dispatchBuild">
           立即触发
@@ -107,6 +108,9 @@ const checkedProjects = ref(mainProjects);
 const JenkinsBuildBranch = ref('');
 const clearJenkinsBuildBranch = () => {
   JenkinsBuildBranch.value = '';
+};
+const saveJenkinsBuildBranch = () => {
+  Browser.storage.local.set({ JenkinsBuildBranch: JenkinsBuildBranch.value });
 };
 const canDispatch = computed(() => {
   return checkedProjects.value.length && JenkinsBuildBranch.value;
@@ -211,8 +215,9 @@ const scan = () => {
 };
 
 onMounted(() => {
-  browser.storage.local.get('jenkinsCrumb').then((res) => {
+  browser.storage.local.get(['jenkinsCrumb', 'JenkinsBuildBranch']).then((res) => {
     jenkinsCrumb.value = res.jenkinsCrumb;
+    JenkinsBuildBranch.value = res.JenkinsBuildBranch;
     if (!res.jenkinsCrumb) {
       getLatestJenkinsCrumb();
     }
