@@ -12,6 +12,7 @@
     "dev:web": "vite",
     "dev:js": "npm run build:js -- --mode development",
     "dev:bg": "npm run build:bg -- --mode development",
+    "watch:build:web": "cross-env NODE_ENV=watch build:web",
     "build": "cross-env NODE_ENV=production run-s clear build:web build:prepare build:js build:bg",
     "build:prepare": "esno scripts/prepare.ts",
     "build:web": "vite build",
@@ -27,7 +28,8 @@
     "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
     "publish:patch": "npm version patch && git push origin main --tags",
     "prepare": "husky install",
-    "watch:bg": "nodemon --ignore \"*.d.ts\" --watch \"src/background\" -e ts,js,mjs,json,vue --exec \"pnpm dev:bg\""
+    "watch:bg": "nodemon --ignore \"*.d.ts\" --watch \"src/background\" -e ts,js,mjs,json,vue --exec \"pnpm dev:bg\"",
+    "watch:web": "nodemon --ignore \"*.d.ts\" --watch \"src/popup\" -e ts,js,mjs,json,vue --exec \"pnpm build:web\""
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.9.0",
