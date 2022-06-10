@@ -2,6 +2,8 @@ import { sendMessage, onMessage } from 'webext-bridge';
 import Browser, { Tabs } from 'webextension-polyfill';
 import { customApi } from './custom_api';
 import { isSaas } from '~/common/utils';
+import { getCurrentTab } from '~/common/tabs';
+import { injectPageScript, dispatchInjectScript } from '~/background/utils/injectScript';
 // import { groupAllTabs } from './background/groupTabs'
 
 // only on dev mode
@@ -17,14 +19,23 @@ const runCustomApi = () => {
     customApi();
   }
 };
-
 runCustomApi();
 
 browser.runtime.onMessage.addListener((request) => {
-  const { type } = request;
-  console.log(type);
+  const { type, data } = request;
+  // console.log(type, data);
   if (type === 'och_customApiChange') {
     runCustomApi();
+  } else if (type === 'injectPageScript') {
+    // injectPageScript({ code: '', type: '' });
+    getCurrentTab().then((tab) => {
+      Browser.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: injectPageScript,
+        args: [data],
+      });
+    });
+  } else if (type === 'getOnesConfig') {
   } else if (type === 'privateDeploy') {
     console.log(999);
     Browser.tabs
@@ -86,8 +97,7 @@ browser.runtime.onMessage.addListener((request) => {
 });
 
 browser.runtime.onInstalled.addListener((): void => {
-  // eslint-disable-next-line no-console
-  console.log('Extension installed');
+  console.log('插件已安装');
 });
 
 let previousTabId = 0;
