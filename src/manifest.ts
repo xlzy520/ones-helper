@@ -35,12 +35,9 @@ export async function getManifest() {
     },
     permissions: [
       'cookies',
-      'downloads',
-      'downloads.open',
       'tabs',
       'storage',
       'webRequest',
-      'contextMenus',
       'declarativeNetRequest',
       'declarativeNetRequestFeedback',
       'scripting',
