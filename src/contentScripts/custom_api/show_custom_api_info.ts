@@ -12,32 +12,54 @@ export const UniClassName = `${DOM_SCOPE}api-info-wrapper`;
 function createOptionEl({ name, value }: { name: string; value: string }) {
   const optionEl = document.createElement('div');
   optionEl.className = `${DOM_SCOPE}api-info-option`;
-  optionEl.textContent = `${name}：${value}`;
+  optionEl.textContent = `${name}${value}`;
   return optionEl;
 }
 
 function getInfoOptionElList(): Promise<HTMLElement[]> {
   return new Promise((resolve) => {
-    browser.storage.local.get('customApiData').then(({ customApiData = {} as any }) => {
-      // browser.storage.local.get([ONES_HOST_KEY, PROJECT_BRANCH_KEY]).then((data) => {
-      // 兼容火狐，第一次拿到customApiData的时候是undefined
-      const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData;
-      const selectedConfig = presetOptions.find((v: any) => v.value === preset).config;
-      const onesHost = selectedConfig[ONES_HOST_KEY];
-      const onesHostInfoEL = createOptionEl({
-        name: 'API Host',
-        value: onesHost || '默认',
-      });
+    browser.storage.local
+      .get(['customApiData', 'onesConfigData'])
+      .then(({ customApiData = {} as any, onesConfigData = {} as any }) => {
+        // browser.storage.local.get([ONES_HOST_KEY, PROJECT_BRANCH_KEY]).then((data) => {
+        // 兼容火狐，第一次拿到customApiData的时候是undefined
+        const { preset = DefaultPreset, presetOptions = DefaultPresetOptions } = customApiData;
+        const selectedConfig = presetOptions.find((v: any) => v.value === preset).config;
+        const onesHost = selectedConfig[ONES_HOST_KEY];
+        const elList = [];
+        if (onesHost) {
+          elList.push(
+            createOptionEl({
+              name: 'API Host:',
+              value: onesHost || '默认',
+            })
+          );
+        }
+        const projectBranch = selectedConfig[PROJECT_BRANCH_KEY];
+        if (projectBranch) {
+          elList.push(
+            createOptionEl({
+              name: 'API 分支:',
+              value: projectBranch || '默认',
+            })
+          );
+        }
 
-      const projectBranch = selectedConfig[PROJECT_BRANCH_KEY];
-      const projectBranchInfoEl = createOptionEl({
-        name: 'API 分支',
-        value: projectBranch || '默认',
-      });
-      if (projectBranch) console.log('通过 ONES Helper 设定分支：', projectBranch);
+        // console.log(onesConfigData);
+        const path = location.origin + location.pathname;
+        if (onesConfigData[path]?.isUpdate) {
+          const projectBranchInfoEl1 = createOptionEl({
+            name: 'ONESConfig生效中',
+            value: '',
+          });
+          elList.push(projectBranchInfoEl1);
+        }
 
-      resolve([onesHostInfoEL, projectBranchInfoEl]);
-    });
+        if (onesHost) console.log('通过 ONES Helper 设定Host：', onesHost);
+        if (projectBranch) console.log('通过 ONES Helper 设定分支：', projectBranch);
+
+        resolve(elList);
+      });
   });
 }
 

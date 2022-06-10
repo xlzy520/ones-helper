@@ -1,12 +1,13 @@
+import Browser from 'webextension-polyfill';
 import { customApiService } from '../../service';
 import { hideCustomApiInfo, showCustomApiInfo, syncCustomApiInfo } from './show_custom_api_info';
 import proxyAJAX from './proxyAJAX';
 import proxyWebsocket from './proxyWebsocket';
 import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
+import { runtimeInjectPageScript, isDevDomain, isLocal } from '~/common/utils';
 import { patternToRegExp } from '~/common/url_pattern';
 import { PatternConfig, PresetOption, PresetOptionConfig } from '~/service/custom_api';
-import {injectScript, isDevDomain, isLocal} from '~/common/utils';
 
 const checkIsMathUrl = async () => {
   const config = await customApiService.getCustomApi();
@@ -15,18 +16,17 @@ const checkIsMathUrl = async () => {
   if (enableApiPatterns.length > 0) {
     return enableApiPatterns.some((item: PatternConfig) => {
       const { pattern } = item;
-      return patternToRegExp(pattern).test(window.location.href);
+      return window.location.href.includes(pattern);
     });
   }
   return false;
 };
 
 const addEventListeners = () => {
-  browser.runtime.onMessage.addListener(({ type, customApiData }) => {
-    // console.log(type)
-    if (type === CustomApiChange) {
+  browser.runtime.onMessage.addListener(({ type, data }) => {
+    if (type === 'proxyConfigUpdate' || type === CustomApiChange) {
       syncCustomApiInfo();
-      if (customApiData.showCustomApi) {
+      if (data.showCustomApi) {
         showCustomApiInfo();
       } else {
         hideCustomApiInfo();
@@ -36,25 +36,39 @@ const addEventListeners = () => {
 };
 
 export async function handleCustomApi(customApiData): Promise<void> {
+  // console.log(customApiData, '===========打印的 ------ handleCustomApi');
   const isMatchUrl = await checkIsMathUrl();
   if (!isMatchUrl) return;
-
   const config: PresetOptionConfig = customApiData.presetOptions.find(
     (v: PresetOption) => v.value === customApiData.preset
   ).config;
-  if (customApiData.showCustomApi) {
-    showCustomApiInfo();
-  }
   addEventListeners();
   const { customONESApiHost, customONESApiProjectBranch, websocket } = config;
-  console.log(websocket);
+  // console.log(websocket);
   const path = websocket || customONESApiProjectBranch;
   if (isDevDomain() || isLocal()) {
-    injectScript(`${proxyWebsocket};proxyWebsocket('${path}')`);
-  }
-  if (customONESApiHost.includes('http://localhost')) {
-    if (isDevDomain()) {
-      injectScript(`${proxyAJAX};run$1('${customONESApiHost}')`);
+    if (path) {
+      runtimeInjectPageScript({
+        code: `${proxyWebsocket};proxyWebsocket('${path}')`,
+        type: '',
+      });
     }
   }
+  Browser.storage.local.get('proxyConfig').then(({ proxyConfig: config }) => {
+    if (!config || (config && config.showCustomApi)) {
+      showCustomApiInfo();
+    }
+    if (config?.forceReplace || customONESApiHost.includes('http://localhost')) {
+      runtimeInjectPageScript({
+        code: `${proxyAJAX};run('${customONESApiHost}')`,
+        type: '',
+      });
+    } else {
+      const code = `window.XMLHttpRequest.prototype.open = window.XMLHttpRequest.prototype.originalOpen || window.XMLHttpRequest.prototype.open`;
+      runtimeInjectPageScript({
+        code,
+        type: '',
+      });
+    }
+  });
 }
