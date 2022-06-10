@@ -1,5 +1,6 @@
 import { useDebounceFn } from '@vueuse/core';
 import Browser from 'webextension-polyfill';
+
 import { isFirefox } from '~/env';
 import {
   DefaultPreset,
@@ -25,7 +26,7 @@ export enum ApiPath {
 
 export interface ProxyParams {
   id: number;
-  value: ApiPath;
+  value: string;
   urlFilter: string;
 }
 
@@ -63,7 +64,6 @@ const setGithubAccessToken = useDebounceFn((code) => {
         browser.storage.local.set({
           githubAccessToken: token,
         });
-        alert('获取code成功，请重新打开ONES Helper即可');
       }
     });
 }, 1000);
@@ -187,7 +187,7 @@ export class HeaderCustomer {
           {
             header: 'x-ones-api-host',
             operation: HeaderOperation.SET,
-            value,
+            value: `${value}/project/api/project/`,
           },
         ],
       },
@@ -250,12 +250,12 @@ export class HeaderCustomer {
         if (projectBranch) {
           const projectRule = this.getModifyHeadersBranchRule({
             id: NetRequestIDMap.ProjectAPI,
-            value: ApiPath.Project,
+            value: `/project/${projectBranch}/`,
             urlFilter: ApiPath.Project,
           });
           const wikiRule = this.getModifyHeadersBranchRule({
             id: NetRequestIDMap.WikiAPI,
-            value: ApiPath.Wiki,
+            value: `/wiki/${projectBranch}/`,
             urlFilter: ApiPath.Wiki,
           });
           rules.push(projectRule, wikiRule);
