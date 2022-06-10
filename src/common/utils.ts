@@ -82,6 +82,12 @@ export const injectScript = function (scriptContent: string, id = '') {
   scriptTag.innerHTML = scriptContent;
   injectHead(scriptTag);
 };
+export const runtimeInjectPageScript = (data) => {
+  browser.runtime.sendMessage({
+    type: 'injectPageScript',
+    data,
+  });
+};
 
 export const isSaas = () => {
   return location.href.includes('https://ones.ai/');
@@ -96,8 +102,8 @@ export const isLocal = () => {
 };
 
 export const isGitHub = () => {
-  return location.origin.includes('github.com')
-}
+  return location.origin.includes('github.com');
+};
 
 export const isPrivate = () => {
   return location.href.includes('https://mars-dev.myones.net:');
