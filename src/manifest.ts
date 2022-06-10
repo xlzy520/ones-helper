@@ -43,39 +43,22 @@ export async function getManifest() {
       'contextMenus',
       'declarativeNetRequest',
       'declarativeNetRequestFeedback',
-      // 'activeTab',
+      'scripting',
     ],
     host_permissions: ['*://*/*'],
     content_scripts: [
       {
-        matches: [
-          // 'https://github.com/BangWork/*',
-          // 'https://ones.ai/*',
-          // 'https://*.myones.net/*',
-          // 'http://dev.localhost/*',
-          // 'http://localhost/*',
-          // 'http://112.74.163.102/*',
-          '<all_urls>',
-          'https://*/*',
-          'https://*/*',
-        ],
+        matches: ['<all_urls>', 'https://*/*', 'https://*/*'],
         js: ['./dist/contentScripts/index.global.js'],
         css: ['./dist/contentScripts/style.css'],
       },
     ],
-    // web_accessible_resources: [
-    //   {
-    //     resources: ['./dist/contentScripts/style.css'],
-    //     matches: [
-    //       'https://github.com/BangWork/*',
-    //       'https://ones.ai/*',
-    //       'https://*.myones.net/*',
-    //       'http://dev.localhost/*',
-    //       'http://localhost/*',
-    //       'http://112.74.163.102/*',
-    //     ],
-    //   },
-    // ],
+    web_accessible_resources: [
+      {
+        resources: ['evalScript/page-script.js'],
+        matches: ['http://*/*', 'https://*/*'],
+      },
+    ],
     omnibox: { keyword: 'ones' },
   };
 
