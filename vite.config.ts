@@ -1,14 +1,14 @@
-import { dirname, relative } from 'path'
-import { defineConfig, UserConfig } from 'vite'
-import Vue from '@vitejs/plugin-vue'
-import VueJSX from '@vitejs/plugin-vue-jsx'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import WindiCSS from 'vite-plugin-windicss'
-import windiConfig from './windi.config'
-import { r, port, isDev } from './scripts/utils'
+import { dirname, relative } from 'path';
+import { defineConfig, UserConfig } from 'vite';
+import Vue from '@vitejs/plugin-vue';
+import VueJSX from '@vitejs/plugin-vue-jsx';
+import Icons from 'unplugin-icons/vite';
+import IconsResolver from 'unplugin-icons/resolver';
+import Components from 'unplugin-vue-components/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import WindiCSS from 'vite-plugin-windicss';
+import windiConfig from './windi.config';
+import { r, port, isDev, isWatch } from './scripts/utils';
 
 export const sharedConfig: UserConfig = {
   root: r('src'),
@@ -32,9 +32,7 @@ export const sharedConfig: UserConfig = {
       imports: [
         'vue',
         {
-          'webextension-polyfill': [
-            ['default', 'browser'],
-          ],
+          'webextension-polyfill': [['default', 'browser']],
         },
       ],
       dts: r('src/auto-imports.d.ts'),
@@ -64,7 +62,7 @@ export const sharedConfig: UserConfig = {
       enforce: 'post',
       apply: 'build',
       transformIndexHtml(html, { path }) {
-        return html.replace(/"\/assets\//g, `"${relative(dirname(path), '/assets')}/`)
+        return html.replace(/"\/assets\//g, `"${relative(dirname(path), '/assets')}/`);
       },
     },
   ],
@@ -78,7 +76,18 @@ export const sharedConfig: UserConfig = {
       // 'vue-demi',
     ],
   },
-}
+};
+
+const input: any = isWatch
+  ? {
+      popup: r('src/popup/index.html'),
+    }
+  : {
+      background: r('src/background/index.html'),
+      options: r('src/options/index.html'),
+      popup: r('src/popup/index.html'),
+      devtools: r('src/devtools/index.html'),
+    };
 
 export default defineConfig(({ command }) => ({
   ...sharedConfig,
@@ -92,19 +101,15 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: r('ONESHelper/dist'),
     emptyOutDir: false,
-    sourcemap: isDev ? 'inline' : false,
+    sourcemap: isDev || isWatch ? 'inline' : false,
     // https://developer.chrome.com/docs/webstore/program_policies/#:~:text=Code%20Readability%20Requirements
     terserOptions: {
       mangle: false,
     },
+    minify: !(isDev || isWatch),
     brotliSize: false,
     rollupOptions: {
-      input: {
-        background: r('src/background/index.html'),
-        options: r('src/options/index.html'),
-        popup: r('src/popup/index.html'),
-        devtools: r('src/devtools/index.html'),
-      },
+      input,
     },
   },
   plugins: [
@@ -115,4 +120,4 @@ export default defineConfig(({ command }) => ({
       config: windiConfig,
     }),
   ],
-}))
+}));
