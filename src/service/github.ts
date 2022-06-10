@@ -1,50 +1,52 @@
-import { GithubBranchParam } from '~/common/types'
+import { GithubBranchParam } from '~/common/types';
 
 export const getGithubOAuthToken = (): Promise<any> => {
   return browser.storage.local.get('githubAccessToken').then((res: any) => {
-    return res.githubAccessToken
-  })
-}
+    return res.githubAccessToken;
+  });
+};
 
-const baseUrl = 'https://api.github.com/'
-let token = ''
+const baseUrl = 'https://api.github.com/';
+let token = '';
 getGithubOAuthToken().then((res) => {
-  token = res
-})
+  token = res;
+});
 
 export const githubFetch = (url: string, options = {}) => {
   return fetch(baseUrl + url, {
     headers: {
-      'Authorization': `token ${token}`,
+      Authorization: `token ${token}`,
       'Content-Type': 'application/json',
     },
     ...options,
-  }).then(res => res.json()).then((res) => {
-    console.log(res)
-    if (res.message) {
-      return Promise.reject(res.message)
-    }
-    return res
   })
-}
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      if (res.message) {
+        return Promise.reject(res.message);
+      }
+      return res;
+    });
+};
 
 export const fetchLatestRelease = () => {
-  return githubFetch('repos/xlzy520/ones-helper/releases/latest')
-}
+  return githubFetch('repos/xlzy520/ones-helper/releases/latest');
+};
 
 export const fetchBranchList = ({ owner, repo }: GithubBranchParam) => {
-  return githubFetch(`repos/${owner}/${repo}/git/refs`)
-}
+  return githubFetch(`repos/${owner}/${repo}/git/refs`);
+};
 
 export const searchBranch = ({ owner, repo, head }: GithubBranchParam) => {
-  return githubFetch(`repos/${owner}/${repo}/git/matching-refs/heads/${head}`)
-}
+  return githubFetch(`repos/${owner}/${repo}/git/matching-refs/heads/${head}`);
+};
 
 export const fetchBranchSHA = ({ owner, repo, head }: GithubBranchParam) => {
   return githubFetch(`repos/${owner}/${repo}/git/refs/heads/${head}`).then((res) => {
-    return res.object.sha
-  })
-}
+    return res.object.sha;
+  });
+};
 
 export const createNewBranch = ({ owner, repo, ref, sha }: GithubBranchParam) => {
   return githubFetch(`repos/${owner}/${repo}/git/refs`, {
@@ -55,5 +57,10 @@ export const createNewBranch = ({ owner, repo, ref, sha }: GithubBranchParam) =>
       ref: `refs/heads/${ref}`,
       sha,
     }),
-  })
-}
+  });
+};
+export const deleteBranch = ({ owner, repo, head }: GithubBranchParam) => {
+  return githubFetch(`repos/${owner}/${repo}/git/refs/heads/${head}`, {
+    method: 'DELETE',
+  });
+};
