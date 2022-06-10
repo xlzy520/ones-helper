@@ -17,7 +17,6 @@ async function stubIndexHtml() {
       .replace('"./main.ts"', `"http://localhost:${port}/${view}/main.ts"`)
       .replace('<div id="app"></div>', '<div id="app">Vite server did not start</div>');
     if (view === 'background') {
-      const ss = await fs.readFile(r(`src/${view}/index.html`), 'utf-8');
       await fs.writeFile(r(`ONESHelper/dist/${view}/index.html`), data, 'utf-8');
     } else {
       await fs.writeFile(r(`ONESHelper/dist/${view}/index.html`), data, 'utf-8');
