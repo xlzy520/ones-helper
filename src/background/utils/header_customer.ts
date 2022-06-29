@@ -12,6 +12,7 @@ import {
   PROJECT_BRANCH_KEY,
 } from '~/common/constants';
 import { PresetOption } from '~/service/custom_api';
+import { getCurrentTab } from '~/common/tabs';
 
 const RuleActionType = chrome.declarativeNetRequest.RuleActionType;
 const HeaderOperation = chrome.declarativeNetRequest.HeaderOperation;
@@ -63,6 +64,24 @@ const setGithubAccessToken = useDebounceFn((code) => {
       if (token) {
         browser.storage.local.set({
           githubAccessToken: token,
+        });
+        getCurrentTab().then((tab) => {
+          const tabId = tab.id;
+          if (tabId) {
+            Browser.tabs.remove(tabId);
+            function myAlert() {
+              window.alert('Github Token获取成功，请打开插件');
+            }
+            getCurrentTab().then((tab) => {
+              const newTabId = tab.id;
+              if (newTabId) {
+                Browser.scripting.executeScript({
+                  target: { tabId: newTabId },
+                  func: myAlert,
+                });
+              }
+            });
+          }
         });
       }
     });
@@ -149,13 +168,13 @@ export class HeaderCustomer {
     ];
     const patterns = this.patterns.length === 0 ? myDomains : this.patterns;
 
-    browser.webRequest.onBeforeSendHeaders.addListener(
+    browser.webRequest.onBeforeRequest.addListener(
       this.handleRequest,
       {
         urls: patterns,
         types: ['xmlhttprequest', 'stylesheet', 'main_frame'],
       },
-      ['requestHeaders']
+      ['requestBody']
     );
 
     const extraInfoSpec: Browser.WebRequest.OnHeadersReceivedOptions[] = ['responseHeaders'];
