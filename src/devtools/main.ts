@@ -29,14 +29,12 @@ import {
   NDivider,
   NCard,
 } from 'naive-ui';
-import Browser from 'webextension-polyfill';
-import App from './devtools.vue';
-import JsonViewer from 'vue-json-viewer';
-import CommonInfo from './features/common-info/index.vue';
-import { $ } from '~/common/utils';
-const app = createApp(App);
-app.component('CommonInfo', CommonInfo);
 
+import Browser from 'webextension-polyfill';
+import JsonViewer from 'vue-json-viewer';
+import router from './router/index';
+
+import App from './App.vue';
 const naive = create({
   components: [
     useMessage,
@@ -68,6 +66,8 @@ const naive = create({
     NCard,
   ],
 });
+const app = createApp(App);
+app.use(router);
 
 app.use(naive);
 app.use(JsonViewer);
