@@ -64,3 +64,8 @@ export interface commitHashResultItem {
   success: boolean;
   reason: string;
 }
+
+export interface RuntimeMessage {
+  type: string;
+  data: any;
+}
