@@ -1,8 +1,9 @@
+import Browser from 'webextension-polyfill';
 import { HeaderCustomer } from '../utils/header_customer';
 import { customApiService } from '../../service';
 import { PatternConfig } from '~/service/custom_api';
-
-const headerCustomer = new HeaderCustomer();
+import { isSaas } from '~/common/utils';
+import { NetRequestIDMap } from '~/common/constants';
 
 async function syncPatterns(headerCustomer: HeaderCustomer) {
   const customApiData = await customApiService.getCustomApi();
@@ -18,5 +19,28 @@ async function syncPatterns(headerCustomer: HeaderCustomer) {
 }
 
 export function customApi(): void {
-  syncPatterns(headerCustomer);
+  Browser.storage.local.get('proxyConfig').then(({ proxyConfig }) => {
+    // 初次使用，没有配置
+    if (!proxyConfig) {
+      proxyConfig = {
+        proxyEnable: true,
+      };
+    }
+    if (!proxyConfig.proxyEnable) {
+      chrome.declarativeNetRequest.updateSessionRules({
+        removeRuleIds: [NetRequestIDMap.WikiAPI, NetRequestIDMap.ProjectAPI],
+      });
+      return;
+    }
+    if (!proxyConfig.forceReplace) {
+      const headerCustomer = new HeaderCustomer();
+      syncPatterns(headerCustomer);
+    }
+  });
 }
+
+export const runCustomApi = () => {
+  if (!isSaas()) {
+    customApi();
+  }
+};

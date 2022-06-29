@@ -6,8 +6,8 @@ import proxyWebsocket from './proxyWebsocket';
 import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
 import { runtimeInjectPageScript, isDevDomain, isLocal } from '~/common/utils';
-import { patternToRegExp } from '~/common/url_pattern';
 import { PatternConfig, PresetOption, PresetOptionConfig } from '~/service/custom_api';
+import { RuntimeMessage } from '~/common/types';
 
 const checkIsMathUrl = async () => {
   const config = await customApiService.getCustomApi();
@@ -23,7 +23,8 @@ const checkIsMathUrl = async () => {
 };
 
 const addEventListeners = () => {
-  browser.runtime.onMessage.addListener(({ type, data }) => {
+  browser.runtime.onMessage.addListener((request: RuntimeMessage) => {
+    const { type, data } = request;
     if (type === 'proxyConfigUpdate' || type === CustomApiChange) {
       syncCustomApiInfo();
       if (data.showCustomApi) {
@@ -36,15 +37,13 @@ const addEventListeners = () => {
 };
 
 export async function handleCustomApi(customApiData): Promise<void> {
-  // console.log(customApiData, '===========打印的 ------ handleCustomApi');
   const isMatchUrl = await checkIsMathUrl();
+  console.log(isMatchUrl);
   if (!isMatchUrl) return;
   const config: PresetOptionConfig = customApiData.presetOptions.find(
     (v: PresetOption) => v.value === customApiData.preset
   ).config;
-  addEventListeners();
   const { customONESApiHost, customONESApiProjectBranch, websocket } = config;
-  // console.log(websocket);
   const path = websocket || customONESApiProjectBranch;
   if (isDevDomain() || isLocal()) {
     if (path) {
@@ -64,6 +63,7 @@ export async function handleCustomApi(customApiData): Promise<void> {
         type: '',
       });
     } else {
+      addEventListeners();
       const code = `window.XMLHttpRequest.prototype.open = window.XMLHttpRequest.prototype.originalOpen || window.XMLHttpRequest.prototype.open`;
       runtimeInjectPageScript({
         code,

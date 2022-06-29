@@ -229,10 +229,12 @@ const changeProxyConfig = () => {
     })
     .then((res) => {
       message.success('代理配置已更新');
-      sendMessage({
+      const messageData = {
         type: 'proxyConfigUpdate',
         data: toRaw(proxyConfig.value),
-      });
+      };
+      sendMessage(messageData);
+      Browser.runtime.sendMessage(messageData);
     });
 };
 

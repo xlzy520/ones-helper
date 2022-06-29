@@ -1,4 +1,4 @@
-export function injectPageScript(data) {
+export function injectPageScript(data: any) {
   const injectPageScriptTag = document.querySelector('#injectPageScript');
   if (injectPageScriptTag) {
     document.dispatchEvent(
