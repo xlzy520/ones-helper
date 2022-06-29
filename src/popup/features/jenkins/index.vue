@@ -18,6 +18,7 @@
           {{ jenkinsCrumb.substring(0, 16).padEnd(20, '*') }}
         </n-tag>
       </div>
+      <div v-else class="">正在获取Jenkins token</div>
     </div>
 
     <div class="py-2">
