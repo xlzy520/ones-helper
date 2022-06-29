@@ -6,7 +6,12 @@ import proxyWebsocket from './proxyWebsocket';
 import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
 import { runtimeInjectPageScript, isDevDomain, isLocal } from '~/common/utils';
-import { PatternConfig, PresetOption, PresetOptionConfig } from '~/service/custom_api';
+import {
+  CustomApiData,
+  PatternConfig,
+  PresetOption,
+  PresetOptionConfig,
+} from '~/service/custom_api';
 import { RuntimeMessage } from '~/common/types';
 
 const checkIsMathUrl = async () => {
@@ -36,13 +41,16 @@ const addEventListeners = () => {
   });
 };
 
-export async function handleCustomApi(customApiData): Promise<void> {
+export async function handleCustomApi(customApiData: CustomApiData): Promise<void> {
   const isMatchUrl = await checkIsMathUrl();
   console.log(isMatchUrl);
   if (!isMatchUrl) return;
-  const config: PresetOptionConfig = customApiData.presetOptions.find(
+  const config: PresetOptionConfig | undefined = customApiData.presetOptions.find(
     (v: PresetOption) => v.value === customApiData.preset
-  ).config;
+  )?.config;
+  if (!config) {
+    return;
+  }
   const { customONESApiHost, customONESApiProjectBranch, websocket } = config;
   const path = websocket || customONESApiProjectBranch;
   if (isDevDomain() || isLocal()) {

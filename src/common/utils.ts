@@ -1,4 +1,5 @@
 import { isObject } from 'lodash-es';
+// @ts-ignore
 import $message from '../contentScripts/antdMessage/index';
 import { getCurrentTab } from '~/common/tabs';
 

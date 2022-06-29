@@ -27,11 +27,6 @@ import { initInjectContent } from '~/contentScripts/inject';
   // 初始化插入样式、脚本
   initInjectContent();
 
-  if (isGithubOAuthUrl()) {
-    alert('132131');
-    $message.success('获取code成功，再次打开插件即可');
-  }
-
   getJenkinsToken(); // 获取Jenkins token
 
   // API转发

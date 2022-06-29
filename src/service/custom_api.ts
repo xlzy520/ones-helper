@@ -35,8 +35,8 @@ export interface CustomApiData {
 
 export function getCustomApi(): Promise<any> {
   return new Promise((resolve) => {
-    browser.storage.local.get('customApiData').then(({ customApiData = {} }) => {
-      const result = {
+    browser.storage.local.get('customApiData').then(({ customApiData = {} as CustomApiData }) => {
+      const result: CustomApiData = {
         ...customApiData,
         preset: customApiData.preset || DefaultPreset,
         [CUSTOM_API_PATTERNS]: customApiData[CUSTOM_API_PATTERNS] || DefaultPatterns,

@@ -64,9 +64,12 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
 }
 
 function dragMoveListener(event: Event) {
+  // @ts-ignore
   const target: HTMLElement = event.target;
   // keep the dragged position in the data-x/data-y attributes
+  // @ts-ignore
   const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+  // @ts-ignore
   const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
   // translate the element
