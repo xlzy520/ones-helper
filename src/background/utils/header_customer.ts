@@ -1,12 +1,9 @@
-import { useDebounceFn } from '@vueuse/core';
 import Browser from 'webextension-polyfill';
 
 import { isFirefox } from '~/env';
 import {
   DefaultPreset,
   DefaultPresetOptions,
-  GithubOAuthClientID,
-  GithubOAuthClientSecrets,
   NetRequestIDMap,
   ONES_HOST_KEY,
   PROJECT_BRANCH_KEY,
@@ -52,45 +49,49 @@ const resourceTypes = [
   ResourceType.WEBSOCKET,
 ];
 
-const myDomains = ['localhost', 'dev.myones.net', 'ones.ai'];
-
-const setGithubAccessToken = useDebounceFn((code) => {
-  const getAccessTokenUrl = `https://github.com/login/oauth/access_token?client_id=${GithubOAuthClientID}&client_secret=${GithubOAuthClientSecrets}&code=`;
-  fetch(getAccessTokenUrl + code)
-    .then((res) => res.text())
-    .then((res) => {
-      console.log(res);
-      const token = getAccessToken(res);
-      if (token) {
-        browser.storage.local.set({
-          githubAccessToken: token,
-        });
-        getCurrentTab().then((tab) => {
-          const tabId = tab.id;
-          if (tabId) {
-            Browser.tabs.remove(tabId);
-            function myAlert() {
-              window.alert('Github Token获取成功，请打开插件');
-            }
-            getCurrentTab().then((tab) => {
-              const newTabId = tab.id;
-              if (newTabId) {
-                Browser.scripting.executeScript({
-                  target: { tabId: newTabId },
-                  func: myAlert,
-                });
+const setGithubAccessToken = (code: string) => {
+  Browser.storage.local.get('GithubOAuthInfo').then(({ GithubOAuthInfo }) => {
+    if (!GithubOAuthInfo) {
+      return;
+    }
+    const { GithubOAuthClientID, GithubOAuthClientSecrets } = GithubOAuthInfo;
+    const getAccessTokenUrl = `https://github.com/login/oauth/access_token?client_id=${GithubOAuthClientID}&client_secret=${GithubOAuthClientSecrets}&code=`;
+    fetch(getAccessTokenUrl + code)
+      .then((res) => res.text())
+      .then((res) => {
+        console.log(res);
+        const token = getAccessToken(res);
+        if (token) {
+          browser.storage.local.set({
+            githubAccessToken: token,
+          });
+          getCurrentTab().then((tab) => {
+            const tabId = tab.id;
+            if (tabId) {
+              Browser.tabs.remove(tabId);
+              function myAlert() {
+                window.alert('Github Token获取成功，请打开插件');
               }
-            });
-          }
-        });
-      }
-    });
-}, 1000);
+              getCurrentTab().then((tab) => {
+                const newTabId = tab.id;
+                if (newTabId) {
+                  Browser.scripting.executeScript({
+                    target: { tabId: newTabId },
+                    func: myAlert,
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+  });
+};
 
 export class HeaderCustomer {
-  private patterns: string[] = [];
-
-  private authHeaders: Headers = [];
+  // private patterns: string[] = [];
+  private hostList: string[] = [];
+  // private authHeaders: Headers = [];
 
   options: HeaderCustomerOptions = {
     headersBuilder: () => [],
@@ -101,7 +102,11 @@ export class HeaderCustomer {
   }
 
   setPatterns = (patterns: string[]): void => {
-    this.patterns = patterns.length === 0 ? myDomains : patterns;
+    // this.patterns = patterns;
+    this.hostList = patterns.map((pattern) => {
+      const url = new URL(pattern);
+      return url.host;
+    });
     this.onPatternsChange();
   };
 
@@ -129,7 +134,7 @@ export class HeaderCustomer {
       const keys = ['Ones-User-Id', 'Ones-Auth-Token'];
       const results = responseHeaders.filter((v: any) => keys.includes(v.name));
       if (results.length) {
-        this.authHeaders = results;
+        // this.authHeaders = results;
       }
     }
     let corsOriginValue = '*';
@@ -163,15 +168,14 @@ export class HeaderCustomer {
     const myDomains = [
       'https://dev.myones.net/*',
       'http://dev.localhost:3000/*',
-      'http://dev.localhost/*',
+      'http://dev.localhost:9001/*',
       'http://localhost/*',
     ];
-    const patterns = this.patterns.length === 0 ? myDomains : this.patterns;
 
     browser.webRequest.onBeforeRequest.addListener(
       this.handleRequest,
       {
-        urls: patterns,
+        urls: myDomains,
         types: ['xmlhttprequest', 'stylesheet', 'main_frame'],
       },
       ['requestBody']
@@ -184,7 +188,7 @@ export class HeaderCustomer {
     browser.webRequest.onHeadersReceived.addListener(
       this.handleResponseHeaders,
       {
-        urls: patterns,
+        urls: myDomains,
         types: ['xmlhttprequest'],
       },
       extraInfoSpec
@@ -211,7 +215,7 @@ export class HeaderCustomer {
         ],
       },
       condition: {
-        domains: myDomains,
+        domains: this.hostList,
         urlFilter,
         resourceTypes,
       },
@@ -237,7 +241,7 @@ export class HeaderCustomer {
         ],
       },
       condition: {
-        domains: myDomains,
+        domains: this.hostList,
         urlFilter,
         resourceTypes,
       },
@@ -284,7 +288,7 @@ export class HeaderCustomer {
         }
       }
 
-      console.log(this.authHeaders);
+      // console.log(this.authHeaders);
 
       browser.declarativeNetRequest.updateSessionRules({
         removeRuleIds: [NetRequestIDMap.WikiAPI, NetRequestIDMap.ProjectAPI],
