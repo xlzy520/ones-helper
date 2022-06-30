@@ -271,9 +271,6 @@ export const projectList = [
   // },
 ];
 
-export const GithubOAuthClientID = 'dcb6fb9f42ca21dba6ba';
-export const GithubOAuthClientSecrets = '72642603097212871b011ca2f4c9c4affe3127cc';
-
 export const GitHubRepoMap = {
   'ONES Wiki for Web': {
     product: 'WIKI',

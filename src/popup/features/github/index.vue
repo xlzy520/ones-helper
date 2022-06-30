@@ -182,8 +182,12 @@ import {
 import { projectList } from '~/common/constants';
 import { copyToClipboard } from '~/common/utils';
 import CreateAllProductBranch from '~/popup/features/github/createAllProductBranch.vue';
+import { fetchTaskInfo } from '~/service/graphql';
 
 const message = useMessage();
+const state = reactive({
+  GithubOAuthClientID: '',
+});
 const otherConfig = reactive({
   data: {
     branchSelectEnhance: true,
@@ -322,12 +326,26 @@ const getOtherConfig = () => {
   });
 };
 
+const getGithubOAuthInfo = () => {
+  browser.storage.local.get('GithubOAuthInfo').then(({ GithubOAuthInfo }) => {
+    if (GithubOAuthInfo) {
+      state.GithubOAuthClientID = GithubOAuthInfo.GithubOAuthClientID;
+    } else {
+      fetchTaskInfo('9tnwZjqBCGpdAKEo').then((res) => {
+        const data = JSON.parse(res.desc);
+        state.GithubOAuthClientID = data.GithubOAuthClientID;
+        browser.storage.local.set({ GithubOAuthInfo: data });
+      });
+    }
+  });
+};
+
 const auth = () => {
   if (code.value) {
     return;
   }
   browser.tabs.create({
-    url: 'https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=dcb6fb9f42ca21dba6ba',
+    url: `https://github.com/login/oauth/authorize?scope=repo,user:email&client_id=${state.GithubOAuthClientID}`,
     active: true,
   });
 };
@@ -340,8 +358,8 @@ const clearAuth = () => {
 };
 
 onMounted(() => {
+  getGithubOAuthInfo();
   browser.storage.local.get('role').then((res) => {
-    console.log(res);
     role.value = res.role || 'fe';
   });
   getOtherConfig();

@@ -91,6 +91,7 @@
 <script setup lang="ts">
 import { useMessage } from 'naive-ui';
 import { $ref } from 'vue/macros';
+import browser from 'webextension-polyfill';
 import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/graphql';
 import { commitHashResultItem, fieldValueType, Task } from '~/common/types';
 import { copyToClipboard } from '~/common/utils';
@@ -107,6 +108,10 @@ const props = defineProps({
 });
 let loading = $ref(false);
 const createLoading = $ref(false);
+
+const state = reactive({
+  GitHubRepoMap: {},
+});
 
 const branchName = $ref('');
 let showModal = $ref(false);
@@ -269,6 +274,24 @@ const copyAllResult = () => {
   copyToClipboard(text.join('\r\n'), false);
   message.success('全部复制成功');
 };
+
+const getGitHubRepoMap = () => {
+  browser.storage.local.get('GitHubRepoMap').then(({ GitHubRepoMap }) => {
+    if (GitHubRepoMap) {
+      state.GitHubRepoMap = GitHubRepoMap;
+    } else {
+      fetchTaskInfo('9tnwZjqBOZOCNBIr').then((res) => {
+        const data = JSON.parse(res.desc);
+        state.GitHubRepoMap = data;
+        browser.storage.local.set({ GitHubRepoMap: data });
+      });
+    }
+  });
+};
+
+onMounted(() => {
+  getGitHubRepoMap();
+});
 </script>
 
 <style lang="scss" scoped>
