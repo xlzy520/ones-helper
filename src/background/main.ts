@@ -26,7 +26,7 @@ browser.runtime.onMessage.addListener((request: RuntimeMessage) => {
       break;
     case 'injectPageScript':
       getCurrentTab().then((tab) => {
-        console.log('onMessage injectPageScript', data, '===========打印的 ------ ');
+        // console.log('onMessage injectPageScript', data, '===========打印的 ------ ');
         if (tab.id) {
           Browser.scripting.executeScript({
             target: { tabId: tab.id },
