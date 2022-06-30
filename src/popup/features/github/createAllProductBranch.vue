@@ -92,7 +92,7 @@
 import { useMessage } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import browser from 'webextension-polyfill';
-import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/graphql';
+import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/request';
 import { commitHashResultItem, fieldValueType, Task } from '~/common/types';
 import { copyToClipboard } from '~/common/utils';
 import { GitHubRepoMap } from '~/common/constants';

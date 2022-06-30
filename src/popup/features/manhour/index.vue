@@ -114,9 +114,9 @@
 import { useMessage, NEllipsis, NTag, NTooltip, NPopconfirm, NButton } from 'naive-ui';
 import { format } from 'date-fns';
 import { useDebounceFn } from '@vueuse/core';
-import { copyToClipboard, isDev } from '~/common/utils';
+import { copyToClipboard, getUid, isDev } from '~/common/utils';
 
-import { fetchMyTaskList, recordManhours } from '~/service/graphql';
+import { fetchMyTaskList, recordManhours } from '~/service/request';
 
 const message = useMessage();
 

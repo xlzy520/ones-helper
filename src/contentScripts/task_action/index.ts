@@ -1,5 +1,5 @@
 import { $, copyToClipboard } from '~/common/utils';
-import { fetchCustomerList } from '~/service/graphql';
+import { fetchCustomerList } from '~/service/request';
 import { Task } from '~/common/types';
 
 export const addTaskCopyButton = () => {

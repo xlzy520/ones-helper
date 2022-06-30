@@ -1,22 +1,33 @@
+import { generateUUID } from '~/common/utils';
+
 interface GraphqlQuery {
   query: string;
   variables: any;
 }
 
-const graphqlFetch = (query: GraphqlQuery) => {
-  // return fetch('https://ones.ai/project/api/project/team/XBUM7Mss/items/graphql', {
-  return fetch('https://ones.ai/project/api/project/team/RDjYMhKq/items/graphql', {
-    method: 'POST',
+const baseUrl = 'https://our.ones.pro/project/api/project/team/RDjYMhKq/';
+
+const baseFetch = (url: string, { data = {}, method = 'POST' }) => {
+  const config = {
+    method,
     headers: {
       'Content-Type': 'application/json',
-      // 'Cookie': cookie,
     },
-    body: JSON.stringify(query),
-  })
+  };
+  if (method !== 'GET') {
+    config.body = JSON.stringify(data);
+  }
+  return fetch(`${baseUrl}${url}`, config)
     .then((res) => res.json())
     .then((res) => {
       return res;
     });
+};
+
+const graphqlFetch = (query: GraphqlQuery) => {
+  return baseFetch('items/graphql', {
+    data: query,
+  });
 };
 
 export const fetchCustomerList = (name: string) => {
@@ -116,9 +127,7 @@ export const recordManhours = (variables: any) => {
       '\n    mutation AddManhour {\n      addManhour (mode: $mode owner: $owner task: $task type: $type start_time: $start_time hours: $hours description: $description) {\n        key\n      }\n    }\n  ',
     variables,
   };
-  return graphqlFetch(query).then((res) => {
-    return res;
-  });
+  return graphqlFetch(query);
 };
 
 export const fetchPublishVersion = () => {
@@ -188,28 +197,49 @@ export const fetchPublishVersion = () => {
   });
 };
 
-export const fetchTaskInfo = (taskUUID) => {
-  return fetch(`https://ones.ai/project/api/project/team/RDjYMhKq/task/${taskUUID}/info`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      return res;
-    });
+export const fetchTaskInfo = (taskUUID: string) => {
+  return baseFetch(`task/${taskUUID}/info`, {
+    method: 'GET',
+  });
 };
 
-export const fetchTasksInfo = (taskUUIDs) => {
-  return fetch('https://ones.ai/project/api/project/team/RDjYMhKq/tasks/info', {
+export const fetchTasksInfo = (taskUUIDs: string[]) => {
+  return baseFetch(`tasks/info`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ ids: taskUUIDs }),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      return res;
-    });
+    data: { ids: taskUUIDs },
+  });
+};
+
+export const createFeedback = (text: string, uid: string) => {
+  const uuid = generateUUID(uid);
+  const payload = {
+    tasks: [
+      {
+        uuid,
+        owner: uid,
+        assign: '9tnwZjqB',
+        summary: text,
+        parent_uuid: '9tnwZjqBdphgfyol',
+        field_values: [
+          { field_uuid: 'field004', type: 8, value: '9tnwZjqB' },
+          { field_uuid: 'field012', type: 1, value: 'Lv5Tbmih' },
+          { field_uuid: 'field013', type: 5, value: null },
+          { field_uuid: 'field029', type: 44, value: [] },
+          { field_uuid: 'field037', type: 49, value: null },
+          { field_uuid: 'field011', type: 7, value: null },
+          { field_uuid: 'field027', type: 5, value: null },
+          { field_uuid: 'field028', type: 5, value: null },
+          { field_uuid: 'field033', type: 4, value: null },
+        ],
+        project_uuid: 'GL3ysesFPdnAQNIU',
+        issue_type_uuid: '9Li7LYVW',
+        sub_issue_type_uuid: '9Li7LYVW',
+        add_manhours: [],
+        watchers: ['9tnwZjqB'],
+      },
+    ],
+  };
+  return baseFetch('tasks/add2', {
+    data: payload,
+  });
 };

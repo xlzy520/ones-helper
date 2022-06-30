@@ -182,7 +182,7 @@ import {
 import { projectList } from '~/common/constants';
 import { copyToClipboard } from '~/common/utils';
 import CreateAllProductBranch from '~/popup/features/github/createAllProductBranch.vue';
-import { fetchTaskInfo } from '~/service/graphql';
+import { fetchTaskInfo } from '~/service/request';
 
 const message = useMessage();
 const state = reactive({
