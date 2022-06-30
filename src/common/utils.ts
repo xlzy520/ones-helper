@@ -165,3 +165,25 @@ export const isEqualAndIgnoreSomeProp = (
   }
   return flag;
 };
+
+export const getUid = () => {
+  return browser.cookies
+    .get({
+      name: 'ones-uid',
+      url: 'https://our.ones.pro',
+    })
+    .then((res) => {
+      return res.value;
+    });
+};
+
+export const generateUUID = (userId: string) => {
+  const sourceStr = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const uuidStrings = [];
+  const stringLength = 8;
+  for (let i = 0; i < stringLength; i += 1) {
+    const digit = Math.floor(Math.random() * (sourceStr.length - 1));
+    uuidStrings.push(sourceStr.charAt(digit));
+  }
+  return (userId || '') + uuidStrings.join('');
+};

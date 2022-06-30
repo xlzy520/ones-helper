@@ -406,20 +406,11 @@ const filteredTableData = computed(() => {
   });
 });
 
-const getUid = () => {
-  browser.cookies
-    .get({
-      name: 'ones-uid',
-      url: 'https://ones.ai',
-    })
-    .then((res) => {
-      recordFormData.owner = res.value;
-    });
-};
-
 onMounted(() => {
   getData();
-  getUid();
+  getUid().then((res: string) => {
+    recordFormData.owner = res;
+  });
 });
 </script>
 
