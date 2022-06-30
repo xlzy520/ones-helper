@@ -91,7 +91,7 @@ export const runtimeInjectPageScript = (data) => {
 };
 
 export const isSaas = () => {
-  return location.href.includes('https://ones.ai/');
+  return location.href.includes('https://our.ones.pro/');
 };
 
 export const isDevDomain = () => {
