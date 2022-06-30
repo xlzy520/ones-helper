@@ -253,6 +253,9 @@ export class HeaderCustomer {
       const selectedConfig = presetOptions.find((v: any) => v.value === preset).config;
       const customHOST = selectedConfig[ONES_HOST_KEY];
       if (customHOST) {
+        if (customHOST.includes('localhost')) {
+          return;
+        }
         const projectRule = this.getModifyHeadersApiHostRule({
           id: NetRequestIDMap.ProjectAPI,
           value: customHOST,

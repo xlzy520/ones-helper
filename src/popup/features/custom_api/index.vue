@@ -19,19 +19,19 @@
           <p>显示当前页面的自定义API配置信息</p>
         </n-tooltip>
       </div>
-      <div class="layout-items-center ml-6">
-        <div class="mr-4">强制覆盖URL：</div>
-        <n-tooltip placement="right" trigger="hover">
-          <template #trigger>
-            <n-switch
-              v-model:value="proxyConfig.forceReplace"
-              class=""
-              @change="changeProxyConfig"
-            />
-          </template>
-          <p>开启之后会强制替换请求的URL地址</p>
-        </n-tooltip>
-      </div>
+      <!--      <div class="layout-items-center ml-6">-->
+      <!--        <div class="mr-4">强制覆盖URL：</div>-->
+      <!--        <n-tooltip placement="right" trigger="hover">-->
+      <!--          <template #trigger>-->
+      <!--            <n-switch-->
+      <!--              v-model:value="proxyConfig.forceReplace"-->
+      <!--              class=""-->
+      <!--              @change="changeProxyConfig"-->
+      <!--            />-->
+      <!--          </template>-->
+      <!--          <p>开启之后会强制替换请求的URL地址</p>-->
+      <!--        </n-tooltip>-->
+      <!--      </div>-->
     </div>
     <n-divider />
     <div class="">
@@ -219,7 +219,7 @@ const isCustom = computed(() => selectedConfig.value.custom);
 const proxyConfig: Ref = ref({
   proxyEnable: true,
   showCustomApi: true,
-  forceReplace: false,
+  // forceReplace: false,
 });
 
 const changeProxyConfig = () => {

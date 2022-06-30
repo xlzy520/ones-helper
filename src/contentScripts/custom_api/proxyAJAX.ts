@@ -1,4 +1,4 @@
-export default function run(sUrl = 'http://127.0.0.0:9001/') {
+export default function run(sUrl = 'http://localhost:9001') {
   class MyXHR extends XMLHttpRequest {
     originalOpen: any;
   }
@@ -11,7 +11,7 @@ export default function run(sUrl = 'http://127.0.0.0:9001/') {
     let url = args[1];
     // const reg = /https:\/\/dev.myones.net.*?api/
     if (url.toString().startsWith('api/')) {
-      url = sUrl + url.toString().replace('api/project/', '');
+      url = `${sUrl}/${url.toString().replace('api/project/', '')}`;
     }
     args[1] = url;
     // @ts-ignore

@@ -31,8 +31,8 @@ const addEventListeners = () => {
   browser.runtime.onMessage.addListener((request: RuntimeMessage) => {
     const { type, data } = request;
     if (type === 'proxyConfigUpdate' || type === CustomApiChange) {
-      syncCustomApiInfo();
-      if (data.showCustomApi) {
+      if (data.proxyEnable && data.showCustomApi) {
+        syncCustomApiInfo();
         showCustomApiInfo();
       } else {
         hideCustomApiInfo();
@@ -43,7 +43,7 @@ const addEventListeners = () => {
 
 export async function handleCustomApi(customApiData: CustomApiData): Promise<void> {
   const isMatchUrl = await checkIsMathUrl();
-  console.log(isMatchUrl);
+  console.log('isMatchUrl', isMatchUrl);
   if (!isMatchUrl) return;
   const config: PresetOptionConfig | undefined = customApiData.presetOptions.find(
     (v: PresetOption) => v.value === customApiData.preset
@@ -61,11 +61,11 @@ export async function handleCustomApi(customApiData: CustomApiData): Promise<voi
       });
     }
   }
-  Browser.storage.local.get('proxyConfig').then(({ proxyConfig: config }) => {
-    if (!config || (config && config.showCustomApi)) {
+  Browser.storage.local.get('proxyConfig').then(({ proxyConfig }) => {
+    if (!proxyConfig || (proxyConfig?.proxyEnable && proxyConfig?.showCustomApi)) {
       showCustomApiInfo();
     }
-    if (config?.forceReplace || customONESApiHost.includes('http://localhost')) {
+    if (customONESApiHost.includes('http://localhost')) {
       runtimeInjectPageScript({
         code: `${proxyAJAX};run('${customONESApiHost}')`,
         type: '',

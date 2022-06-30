@@ -32,10 +32,8 @@ export function customApi(): void {
       });
       return;
     }
-    if (!proxyConfig.forceReplace) {
-      const headerCustomer = new HeaderCustomer();
-      syncPatterns(headerCustomer);
-    }
+    const headerCustomer = new HeaderCustomer();
+    syncPatterns(headerCustomer);
   });
 }
 

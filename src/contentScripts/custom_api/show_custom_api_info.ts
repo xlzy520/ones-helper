@@ -140,7 +140,7 @@ export async function syncCustomApiInfo(): Promise<void> {
   }
 }
 
-export async function hideCustomApiInfo(): Promise<void> {
+export function hideCustomApiInfo(): void {
   const wrapperEl = document.querySelector(`#${WRAPPER_EL_ID}`);
   if (wrapperEl) {
     document.body.removeChild(wrapperEl);
