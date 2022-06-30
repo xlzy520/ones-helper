@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "@antfu",
+    "prettier"
+  ],
+  "rules": {
+    "no-console": "off",
+    "curly": "off",
+    "react/react-in-jsx-scope": "off"
+  }
+}

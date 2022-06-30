@@ -1,0 +1,217 @@
+.msg-like-ant {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  -webkit-font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum';
+  position: fixed;
+  top: 16px;
+  left: 0;
+  z-index: 1010;
+  width: 100%;
+  pointer-events: none;
+}
+
+.msg-like-ant .msg-like-ant-content {
+  padding: 8px;
+  text-align: center;
+}
+
+.msg-like-ant .msg-like-ant-content:first-child {
+  margin-top: -8px;
+}
+
+.msg-like-ant .move-up-enter {
+  -webkit-animation-duration: 0.2s;
+  animation-duration: 0.2s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+  opacity: 0;
+  -webkit-animation-timing-function: cubic-bezier(0.08, 0.82, 0.17, 1);
+  animation-timing-function: cubic-bezier(0.08, 0.82, 0.17, 1);
+  -webkit-animation-name: antMoveUpIn;
+  animation-name: antMoveUpIn;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+
+@-webkit-keyframes antMoveUpIn {
+  0% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes antMoveUpIn {
+  0% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    opacity: 1;
+  }
+}
+
+.msg-like-ant .move-up-leave {
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+  -webkit-animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.34);
+  animation-timing-function: cubic-bezier(0.6, 0.04, 0.98, 0.34);
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+  pointer-events: none;
+  -webkit-animation-name: MessageMoveOut;
+  animation-name: MessageMoveOut;
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+}
+
+@-webkit-keyframes MessageMoveOut {
+  0% {
+    max-height: 150px;
+    padding: 8px;
+    opacity: 1;
+  }
+
+  100% {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes MessageMoveOut {
+  0% {
+    max-height: 150px;
+    padding: 8px;
+    opacity: 1;
+  }
+
+  100% {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+  }
+}
+
+.msg-like-ant .msg-content {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: all;
+  text-align: center;
+}
+
+.msg-like-ant .msg-content .iconfont {
+  display: inline-block;
+  color: inherit;
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+  vertical-align: -1px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  margin-right: 8px;
+}
+
+.msg-like-ant .msg-content .iconfont.icon-success {
+  color: #52c41a;
+}
+
+.msg-like-ant .msg-content .iconfont.icon-info {
+  color: #1890ff;
+}
+
+.msg-like-ant .msg-content .iconfont.icon-warning {
+  color: #faad14;
+}
+
+.msg-like-ant .msg-content .iconfont.icon-error {
+  color: #f5222d;
+}
+
+.msg-like-ant .msg-content .iconfont.icon-loading {
+  color: #1890ff;
+  animation: loadingCircle 1s infinite linear;
+}
+
+@keyframes loadingCircle {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@font-face {
+  font-family: 'iconfont';
+  src: url('./font/iconfont.eot?t=1610353371890'); /* IE9 */
+  src: url('./font/iconfont.eot?t=1610353371890#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */
+      url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAQIAAsAAAAACLQAAAO6AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDSAqELIN7ATYCJAMYCw4ABCAFhG0HVButB8ieg3FD38jdpr/ko99is6cgQLv+J5vc+gmsPmT0MCsIt7WWeQb/EepJvgIqKdY7e7k9zk8uJaEqDKkqW6PaAAETs9M8duV/7ufr0hosr23tUhm2tkc7o03HAxpQ5q+iT180ilvMv4l49Topmf3E6RCATaxsokq1m3uoo6BZAhB9ejoD9YYNNUEVmEZ9YKNCLMCDqc3ULgHMz55evGGZCRoeCS1s0O3gwfq5v6dygneCNgkK+eE8gL4NJJANFIgxg75hlIpcNontDi9TC8DFREMd6jHiFCnrqddLQ0Uhgctazu8/HhKFAKEjdS7wdfIeeO4fsaHB8zjZkL4IFiT0ZWFBQf8Uipdl0g84wQE2gi+IkC0r0RAJn+tabmCwG3Ct6NH/t5rcvt307t3md+60mbBj1i4hJ+6evZNm23ZlHRN2jNa07DJeMiu02bcWCWnqfkz36Dt36h/ZMWFnyOma528XnLB05+zdiz9Tk+WOM3slLSYsCbaXLROtlrVcdkhLm6UnFaP0/nPWrolhzQ+NeRoU3ARluUPqzx91iMWJJFZVDWtW+AZEB/jGy1xc+/mudK4mfhX/1N+/SlEflhJIKzHUR/Dw9cuWlCleETFj5ZoZkYERKydNSc6YGZEYSZmO2yvu31vufOwSm3ytc8n59u1+G5X6VIppBpNXOKB+/1PH1YHfvw+k1H+/1SH//t1/NNwnwP3o2tH69AahDT70/Dk6Kfs+No5rgk0mjU9vcSocLxyxYspU1qxQLDOnkLwjgQw3nTqFMQDgPS6PyvLgPSaPy4oAyJOygm44lkmH/qIACDhRzRzWvlfmm+koAB4l9hAx7zHF9ryJBovl/wL5wiblKcmuKwc5mogAdNJJeFMt2NwG330o0JNDBUJQeQSmIQdoGMSAxCQZrfDZ4MGhGHRMyoNNlurbHYIMooRQFpBpqgCBv/2g4ctRkPi7jFb4x+Ah1DvQ8U+CTTMRdKBDaj3tyoPIKHnY6R17Ws780KnNvPyW3HNipK7MaI8keZjEgtz8dvFEGckhlgx+ccsh6mM34RSribNRkjAOEI7I6rSH6nmVl9dt6J6mnTmFJpURCINCeKBOvIN6YmEy/KS70uw8/i2E45kEg0wguqKPEEJO2D8qkCt/AfqkyxYhXspdBvOCY2kIig/qhsCkoGrCQyScY9CA4XERhEWZ6rEhc2YlT7bqtlQ3Pb0hfZd7ABtaqgtNSKGER+jCQPV88EerDR5qLeV5rU9/44WZqw3vKFlWV+k6SFgAAAAA')
+      format('woff2'),
+    url('./font/iconfont.woff?t=1610353371890') format('woff'),
+    url('./font/iconfont.ttf?t=1610353371890') format('truetype'),
+    /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+      url('./font/iconfont.svg?t=1610353371890#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-info:before {
+  content: '\e6e4';
+}
+
+.icon-success:before {
+  content: '\e610';
+}
+
+.icon-loading:before {
+  content: '\e633';
+}
+
+.icon-warning:before {
+  content: '\e63d';
+}
+
+.icon-error:before {
+  content: '\e61f';
+}

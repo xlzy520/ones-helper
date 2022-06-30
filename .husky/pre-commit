@@ -1,0 +1,18 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+if [ -d "$HOME/.nvm" ]; then
+  echo "有.nvm这个目录"
+
+  export NVM_DIR="$HOME/.nvm"
+  . "$NVM_DIR/nvm.sh"
+
+  matchNvmUseNodeVersion=$(nvm ls | grep 'node' | grep -oE "v([0-9]+\.?)+")
+  export PATH="$NVM_DIR/versions/node/$matchNvmUseNodeVersion/bin:$PATH"
+else
+  echo "没有.nvm,那尝试输出node的二进制执行路径"
+  echo $(which node)
+  echo $(which npm)
+fi
+
+pnpm lint-staged --verbose
