@@ -43,6 +43,7 @@
               filterable
               :options="formValue.presetOptions"
               :render-label="renderLabel"
+              :disabled="!proxyConfig.proxyEnable"
               @change="handleUpdatePresetValue"
             />
             <!--            <plus-icon class="ml-2" />-->
@@ -55,7 +56,7 @@
           >
             <n-input
               v-model:value="selectedConfig.customONESApiHost"
-              :disabled="!isCustom"
+              :disabled="!isCustom || !proxyConfig.proxyEnable"
               :placeholder="isCustom ? '输入API 域名' : '点击另存为创建自定义配置'"
               clearable
             />
@@ -68,13 +69,14 @@
           >
             <n-input
               v-model:value="selectedConfig.customONESApiProjectBranch"
-              :disabled="!isCustom"
+              :disabled="!isCustom || !proxyConfig.proxyEnable"
               :placeholder="isCustom ? '输入分支名' : '点击另存为创建自定义配置'"
             />
           </n-form-item-grid-item>
           <n-form-item-grid-item :span="22" label="WS地址" path="websocket">
             <n-input
               v-model:value="selectedConfig.websocket"
+              :disabled="!proxyConfig.proxyEnable"
               placeholder="自定义websocket地址, 如果不填则使用插件默认配置"
             />
             <n-tooltip placement="right" trigger="hover">
@@ -113,7 +115,9 @@
               @positive-click="onDelete"
             >
               <template #trigger>
-                <n-button class="" type="error"> 删除 </n-button>
+                <n-button :disabled="!proxyConfig.proxyEnable" class="" type="error">
+                  删除
+                </n-button>
               </template>
               确认删除该自定义配置吗？
             </n-popconfirm>
