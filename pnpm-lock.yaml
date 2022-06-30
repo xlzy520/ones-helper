@@ -42,6 +42,7 @@ specifiers:
   vue: ^3.2.19
   vue-demi: ^0.11.4
   vue-json-viewer: '3'
+  vue-router: ^4.0.12
   web-ext: ^6.4.0
   webext-bridge: ^5.0.0
   webextension-polyfill: ^0.8.0
@@ -90,6 +91,7 @@ devDependencies:
   vite-plugin-windicss: 1.6.3_vite@2.7.13
   vue: 3.2.27
   vue-demi: 0.11.4_vue@3.2.27
+  vue-router: 4.0.16_vue@3.2.27
   web-ext: 6.6.0
   webext-bridge: 5.0.2
   webextension-polyfill: 0.8.0
@@ -1012,6 +1014,10 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.2.27
       '@vue/shared': 3.2.27
+    dev: true
+
+  /@vue/devtools-api/6.1.4:
+    resolution: {integrity: sha512-IiA0SvDrJEgXvVxjNkHPFfDx6SXw0b/TUkqMcDZWNg9fnCAHbTpoo59YfJ9QLFkwa3raau5vSlRVzMSLDnfdtQ==}
     dev: true
 
   /@vue/reactivity-transform/3.2.27:
@@ -6112,6 +6118,15 @@ packages:
       clipboard: 2.0.8
       vue: 3.2.27
     dev: false
+
+  /vue-router/4.0.16_vue@3.2.27:
+    resolution: {integrity: sha512-JcO7cb8QJLBWE+DfxGUL3xUDOae/8nhM1KVdnudadTAORbuxIC/xAydC5Zr/VLHUDQi1ppuTF5/rjBGzgzrJNA==}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      '@vue/devtools-api': 6.1.4
+      vue: 3.2.27
+    dev: true
 
   /vue/3.2.27:
     resolution: {integrity: sha512-p1cH8Q6eaPwvANCjFQj497a914cxXKKwOG3Lg9USddTOrn4/zFMKjn9dnovkx+L8VtFaNgbVqW8mLJS/eTA6xw==}
