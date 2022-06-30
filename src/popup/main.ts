@@ -36,7 +36,8 @@ import TaskAction from '~/popup/features/taskAction/index.vue';
 import Github from '~/popup/features/github/index.vue';
 import ManHour from '~/popup/features/manhour/index.vue';
 import Jenkins from '~/popup/features/jenkins/index.vue';
-import AboutMe from '~/popup/features/about/index.vue';
+import FeedBack from '~/popup/features/feedback/index.vue';
+// import AboutMe from '~/popup/features/about/index.vue';
 
 export const app = createApp(App);
 
@@ -46,7 +47,8 @@ app.component('TaskAction', TaskAction);
 app.component('Github', Github);
 app.component('ManHour', ManHour);
 app.component('Jenkins', Jenkins);
-app.component('AboutMe', AboutMe);
+app.component('FeedBack', FeedBack);
+// app.component('AboutMe', AboutMe);
 
 const naive = create({
   components: [
