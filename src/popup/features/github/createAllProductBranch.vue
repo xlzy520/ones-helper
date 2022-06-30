@@ -95,7 +95,6 @@ import browser from 'webextension-polyfill';
 import { fetchPublishVersion, fetchTaskInfo, fetchTasksInfo } from '~/service/request';
 import { commitHashResultItem, fieldValueType, Task } from '~/common/types';
 import { copyToClipboard } from '~/common/utils';
-import { GitHubRepoMap } from '~/common/constants';
 import { createNewBranch } from '~/service/github';
 
 const message = useMessage();
@@ -228,7 +227,7 @@ const createAllBranch = () => {
   showModal = true;
   commitHashResult.forEach((item, index) => {
     const productName = getProductName(item.name);
-    const repoData = GitHubRepoMap[productName as keyof typeof GitHubRepoMap];
+    const repoData = state.GitHubRepoMap[productName as keyof typeof state.GitHubRepoMap];
     if (!repoData) {
       item.loading = false;
       item.success = false;
