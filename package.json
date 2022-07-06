@@ -25,7 +25,7 @@
     "start:firefox": "web-ext run --source-dir ./extension --target=firefox-desktop",
     "clear": "rimraf ONESHelper/dist ONESHelper/manifest.json ONESHelper.*",
     "lint": "eslint 'src/**/*.{json,ts,js,vue}'",
-    "publish:patch": "npm version patch && git push origin main --tags",
+    "publish:patch": "npm version patch && git push origin next --tags",
     "prepare": "husky install",
     "watch:bg": "nodemon --ignore \"*.d.ts\" --watch \"src/background\" -e ts,js,mjs,json,vue --exec \"pnpm dev:bg\"",
     "watch:web": "nodemon --ignore \"*.d.ts\" --watch \"src/popup\" -e ts,js,mjs,json,vue --exec \"pnpm build:web\"",
