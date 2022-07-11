@@ -1,41 +1,43 @@
 <template>
   <div class="py-2">
-    <div class="layout-items-center">
-      <div class="font-bold">一键创建最后一个ONES稳定大版本的所有产品的分支（技术支持组使用）</div>
-    </div>
-    <div class="mt-2">
-      <div class="layout-items-center">
-        <n-input
-          v-model:value="publishTaskUUID"
-          placeholder="不想自动获取，手动输入TaskUUID"
-          class="mr-4"
-          clearable
-          @clear="publishTaskUUID = ''"
-        />
-        <n-button type="primary" ghost :loading="loading" @click="getAllCommitHash">
-          ✨ 点我获取并复制全部产品Hash
-        </n-button>
-      </div>
+    <details>
+      <summary class="font-bold cursor-pointer hover:text-blue-600">
+        一键创建最后一个ONES稳定大版本的所有产品的分支（技术支持组使用）
+      </summary>
+      <div class="mt-2">
+        <div class="layout-items-center">
+          <n-input
+            v-model:value="publishTaskUUID"
+            placeholder="不想自动获取，手动输入TaskUUID"
+            class="mr-4"
+            clearable
+            @clear="publishTaskUUID = ''"
+          />
+          <n-button type="primary" ghost :loading="loading" @click="getAllCommitHash">
+            ✨ 点我获取并复制全部产品Hash
+          </n-button>
+        </div>
 
-      <div class="layout-slide mt-2">
-        <n-input
-          v-model:value="branchName"
-          placeholder="分支名称"
-          class="mr-4"
-          clearable
-          @clear="branchName = ''"
-        />
-        <n-button
-          :disabled="!commitHashResult.length || !branchName"
-          type="primary"
-          ghost
-          :loading="createLoading"
-          @click="createAllBranch"
-        >
-          ✨ 以此创建分支
-        </n-button>
+        <div class="layout-slide mt-2">
+          <n-input
+            v-model:value="branchName"
+            placeholder="分支名称"
+            class="mr-4"
+            clearable
+            @clear="branchName = ''"
+          />
+          <n-button
+            :disabled="!commitHashResult.length || !branchName"
+            type="primary"
+            ghost
+            :loading="createLoading"
+            @click="createAllBranch"
+          >
+            ✨ 以此创建分支
+          </n-button>
+        </div>
       </div>
-    </div>
+    </details>
     <n-modal
       v-model:show="showModal"
       preset="dialog"
