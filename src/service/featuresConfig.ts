@@ -12,3 +12,13 @@ export function getFeaturesConfig(): Promise<any> {
 export function saveFeaturesConfig(featuresConfig: any): Promise<void> {
   return browser.storage.local.set({ featuresConfig });
 }
+
+export function getCurrentTab(): Promise<any> {
+  return browser.storage.local.get('currentTab').then((res: { currentTab: string }) => {
+    return res.currentTab;
+  });
+}
+
+export function saveCurrentTab(currentTab: string): Promise<void> {
+  return browser.storage.local.set({ currentTab });
+}

@@ -69,3 +69,9 @@ export interface RuntimeMessage {
   type: string;
   data: any;
 }
+
+export interface FeatureItem {
+  name: string;
+  show: boolean;
+  component: string;
+}

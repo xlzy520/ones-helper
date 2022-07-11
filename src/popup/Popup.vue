@@ -1,8 +1,8 @@
 <template>
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-message-provider>
-      <main class="h-[360px] w-[800px] px-4">
-        <n-tabs :default-value="defaultTab" type="line">
+      <main class="h-[360px] w-[720px] px-4">
+        <n-tabs :value="currentTab" type="line" @update-value="changeTab">
           <n-tab-pane
             v-for="item in filterFeatures"
             :key="item.name"
@@ -22,26 +22,28 @@
 <script setup lang="ts">
 import { NMessageProvider, NTabs, NTabPane, NConfigProvider, zhCN, dateZhCN } from 'naive-ui';
 import { featuresConfigService } from '~/service';
+import { FeatureItem } from '~/common/types';
 
-const defaultTab = ref('API转发');
+const currentTab = ref('API转发');
 
 const filterFeatures = ref([]);
 
-const style = ref({
-  width: '800px',
-});
+// const style = ref({
+//   width: '800px',
+// });
+
+const changeTab = (value: string) => {
+  currentTab.value = value;
+  featuresConfigService.saveCurrentTab(value);
+};
 
 onMounted(() => {
+  featuresConfigService.getCurrentTab().then((res) => {
+    currentTab.value = res;
+  });
   featuresConfigService.getFeaturesConfig().then((res) => {
-    filterFeatures.value = res.filter((feature) => {
-      if (feature.show) {
-        if (feature.name === '工时') {
-          style.value.width = '720px';
-        }
-        return true;
-      }
-
-      return false;
+    filterFeatures.value = res.filter((feature: FeatureItem) => {
+      return feature.show;
     });
   });
 });
