@@ -150,7 +150,7 @@ export const featuresList = [
   },
   {
     name: 'OnesConfig',
-    show: false,
+    show: true,
     component: 'ones-config',
   },
   {
