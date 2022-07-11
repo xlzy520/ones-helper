@@ -1,5 +1,5 @@
-import { sendMessage } from 'webext-bridge';
-import Browser, { Tabs } from 'webextension-polyfill';
+// import { sendMessage } from 'webext-bridge';
+import Browser from 'webextension-polyfill';
 import { runCustomApi } from './custom_api';
 import { getCurrentTab } from '~/common/tabs';
 import { injectPageScript } from '~/background/utils/injectScript';
@@ -49,30 +49,25 @@ browser.runtime.onInstalled.addListener((): void => {
   console.log('插件已安装');
 });
 
-let previousTabId = 0;
+// const previousTabId = 0;
 
 // communication example: send previous tab title from background page
 // see shim.d.ts for type declaration
 // @ts-ignore
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  if (!previousTabId) {
-    previousTabId = tabId;
-    return;
-  }
-
-  let tab: Tabs.Tab;
-
-  try {
-    tab = await browser.tabs.get(previousTabId);
-    previousTabId = tabId;
-  } catch {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('previous tab', tab);
-  sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId });
-});
+// browser.tabs.onActivated.addListener(async ({ tabId }) => {
+// if (!previousTabId) {
+//   previousTabId = tabId;
+// }
+// let tab: Tabs.Tab;
+//
+// try {
+//   tab = await browser.tabs.get(previousTabId);
+//   previousTabId = tabId;
+// } catch {}
+// eslint-disable-next-line no-console
+// console.log('previous tab', tab);
+// sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId });
+// });
 
 // browser.omnibox.setDefaultSuggestion({
 //   description:
