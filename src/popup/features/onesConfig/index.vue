@@ -26,7 +26,9 @@
         </n-popconfirm>
       </div>
       <div class="">
-        <n-button class="primary" type="info" @click="showAddConfigModal"> 增加属性 </n-button>
+        <n-button class="primary" type="info" @click="showAddConfigModal">
+          增加属性(触发读取)
+        </n-button>
         <n-modal
           v-model:show="newConfig.showModal"
           preset="dialog"
@@ -47,6 +49,7 @@
     </div>
     <n-divider class=""></n-divider>
     <n-alert title="温馨提示" type="info">
+      <div>默认不读取ONESConfig，如果想要读取并修改，请先增加一条自定义属性来触发!</div>
       <div>若是没有读取到请<b style="color: #db2777">手动刷新页面</b>！！</div>
       <div>构建系统注入到项目一些配置项，提供编辑用于快速调试（不会保存到项目）！</div>
       <div>
@@ -116,6 +119,7 @@
 
 <script setup lang="ts">
 import { useMessage } from 'naive-ui';
+import { Ref } from 'vue-demi';
 import { onesConfigService } from '~/service';
 import { getCurrentTab } from '~/common/tabs';
 import { sendMessage } from '~/common/utils';
@@ -127,7 +131,13 @@ const clearFilterKey = () => {
   filterKey.value = '';
 };
 
-const configFields = ref([]);
+interface ConfigItem {
+  key: string;
+  value: string | boolean | number;
+  type: string;
+}
+
+const configFields: Ref<ConfigItem[]> = ref([]);
 
 const platformOptions = ['none', 'SaaS', 'private', 'public'].map((value) => ({
   label: value,
@@ -187,7 +197,7 @@ const saveOnesConfig = () => {
   });
 
   console.log(toRaw(unref(configFields)));
-  onesConfig.isUpdate = true; // 标记为用户修改保存过
+  onesConfig.isUpdate = 'true'; // 标记为用户修改保存过
   saveData(onesConfig);
   window.close();
 };

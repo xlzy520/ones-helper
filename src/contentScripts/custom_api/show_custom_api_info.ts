@@ -9,9 +9,17 @@ const DOM_SCOPE = 'och__';
 const WRAPPER_EL_ID = 'och__custom-api-info';
 export const UniClassName = `${DOM_SCOPE}api-info-wrapper`;
 
-function createOptionEl({ name, value }: { name: string; value: string }) {
+function createOptionEl({
+  name,
+  value,
+  className = '',
+}: {
+  name: string;
+  value: string;
+  className?: string;
+}) {
   const optionEl = document.createElement('div');
-  optionEl.className = `${DOM_SCOPE}api-info-option`;
+  optionEl.className = `${DOM_SCOPE}api-info-option ${className}`;
   optionEl.textContent = `${name}${value}`;
   return optionEl;
 }
@@ -51,6 +59,7 @@ function getInfoOptionElList(): Promise<HTMLElement[]> {
           const projectBranchInfoEl1 = createOptionEl({
             name: 'ONESConfig生效中',
             value: '',
+            className: 'ones-helper-danger',
           });
           elList.push(projectBranchInfoEl1);
         }

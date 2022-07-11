@@ -45,7 +45,7 @@ export interface Task {
 }
 
 export interface onesConfig {
-  isUpdate?: boolean;
+  isUpdate?: string;
   [key: string]: string | boolean | undefined;
 }
 

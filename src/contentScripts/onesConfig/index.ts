@@ -1,16 +1,6 @@
 import Browser from 'webextension-polyfill';
-import {
-  $,
-  $All,
-  injectScript,
-  isDevDomain,
-  isGitHub,
-  isLocal,
-  isPrivate,
-  isSaas,
-  runtimeInjectPageScript,
-} from '~/common/utils';
-import { customApiService, onesConfigService } from '~/service';
+import { $All, isDevDomain, isPrivate, isSaas, runtimeInjectPageScript } from '~/common/utils';
+import { onesConfigService } from '~/service';
 import { getFeaturesConfig } from '~/service/featuresConfig';
 import { ONESConfig } from '~/common/constants';
 
@@ -26,13 +16,14 @@ export const saveOnesConfig = (onesConfig: any) => {
 };
 
 document.addEventListener('saveOnesConfig', (event) => {
+  // @ts-ignore
   const detail = event.detail;
   saveOnesConfig(detail);
 });
 
 export const initOnesConfig = () => {
   getFeaturesConfig().then((res) => {
-    const onesConfigItem = res.find((v) => v.name === 'OnesConfig');
+    const onesConfigItem = res.find((v: any) => v.name === 'OnesConfig');
     if (onesConfigItem && onesConfigItem.show) {
       onesConfigService.getOnesConfigApi().then((res) => {
         if (isPrivate() || isSaas()) {
@@ -44,7 +35,7 @@ export const initOnesConfig = () => {
             saveOnesConfig(onesConfig);
           } else {
             const onesConfigScript = $All('script')[1];
-            browser.runtime.sendMessage({
+            Browser.runtime.sendMessage({
               type: 'injectPageScript',
               data: {
                 code: onesConfigScript.innerHTML,
@@ -53,18 +44,21 @@ export const initOnesConfig = () => {
             });
           }
           // eslint-disable-next-line no-eval
-        } else if (isDevDomain() || isLocal()) {
-          let onesConfigDev = {};
-          if ($('#realBuildOnesProcessEnv')) {
-            const onesConfigScript = ($('#realBuildOnesProcessEnv') as Element).innerHTML;
-            // eslint-disable-next-line no-eval
-            onesConfigDev = eval(onesConfigScript);
+        } else if (isDevDomain()) {
+          if (res?.isUpdate) {
+            saveOnesConfig({ ...ONESConfig, ...res });
+          } else {
+            Browser.runtime.sendMessage({
+              type: 'injectPageScript',
+              data: {
+                code: `onesConfig=${JSON.stringify(ONESConfig)}`,
+                type: 'saveOnesConfig',
+              },
+            });
+            // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
+
+            // saveOnesConfig(onesConfig);
           }
-          // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
-          const onesConfig = res?.wechatBindSupport
-            ? { ...ONESConfig, ...onesConfigDev, ...res }
-            : ONESConfig;
-          saveOnesConfig(onesConfig);
         }
       });
     }
