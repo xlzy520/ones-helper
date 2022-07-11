@@ -3,6 +3,9 @@
     <n-message-provider>
       <main class="h-[360px] w-[720px] px-4">
         <n-tabs :value="currentTab" type="line" @update-value="changeTab">
+          <template #suffix>
+            <div class="cursor-pointer text-blue-500" @click="toOptionsPage">⚙ 菜单配置️</div>
+          </template>
           <n-tab-pane
             v-for="item in filterFeatures"
             :key="item.name"
@@ -21,6 +24,7 @@
 
 <script setup lang="ts">
 import { NMessageProvider, NTabs, NTabPane, NConfigProvider, zhCN, dateZhCN } from 'naive-ui';
+import Browser from 'webextension-polyfill';
 import { featuresConfigService } from '~/service';
 import { FeatureItem } from '~/common/types';
 
@@ -35,6 +39,12 @@ const filterFeatures = ref([]);
 const changeTab = (value: string) => {
   currentTab.value = value;
   featuresConfigService.saveCurrentTab(value);
+};
+
+const toOptionsPage = () => {
+  Browser.tabs.create({
+    url: '/dist/options/index.html?tab=功能开关',
+  });
 };
 
 onMounted(() => {

@@ -1,24 +1,28 @@
 <template>
   <div class="pb-5">
-    <div class="action-bar layout-items-center">
+    <div class="action-bar layout-slide">
       <div class="layout-items-center">
-        <div class="mr-4">代理开关：</div>
-        <n-switch v-model:value="proxyConfig.proxyEnable" class="" @change="changeProxyConfig" />
+        <div class="layout-items-center">
+          <div class="mr-4">代理开关：</div>
+          <n-switch v-model:value="proxyConfig.proxyEnable" class="" @change="changeProxyConfig" />
+        </div>
+        <div class="layout-items-center ml-6">
+          <div class="mr-4">提示开关：</div>
+          <n-tooltip placement="right" trigger="hover">
+            <template #trigger>
+              <n-switch
+                v-model:value="proxyConfig.showCustomApi"
+                class=""
+                @change="changeProxyConfig"
+              />
+            </template>
+            <p>网站页面右下角会有一块悬浮区域，</p>
+            <p>显示当前页面的自定义API配置信息</p>
+          </n-tooltip>
+        </div>
       </div>
-      <div class="layout-items-center ml-6">
-        <div class="mr-4">提示开关：</div>
-        <n-tooltip placement="right" trigger="hover">
-          <template #trigger>
-            <n-switch
-              v-model:value="proxyConfig.showCustomApi"
-              class=""
-              @change="changeProxyConfig"
-            />
-          </template>
-          <p>网站页面右下角会有一块悬浮区域，</p>
-          <p>显示当前页面的自定义API配置信息</p>
-        </n-tooltip>
-      </div>
+      <div class="cursor-pointer text-blue-500" @click="toOptionsPage">⚙ API匹配规则配置️</div>
+
       <!--      <div class="layout-items-center ml-6">-->
       <!--        <div class="mr-4">强制覆盖URL：</div>-->
       <!--        <n-tooltip placement="right" trigger="hover">-->
@@ -240,6 +244,12 @@ const changeProxyConfig = () => {
       sendMessage(messageData);
       Browser.runtime.sendMessage(messageData);
     });
+};
+
+const toOptionsPage = () => {
+  Browser.tabs.create({
+    url: '/dist/options/index.html?tab=API转发',
+  });
 };
 
 const setFormValue = (data: any) => {

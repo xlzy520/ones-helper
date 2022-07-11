@@ -20,15 +20,18 @@ import { NMessageProvider, NTabs, NTabPane } from 'naive-ui';
 import CustomApi from '~/options/custom_api/index.vue';
 import FeaturesConfig from '~/options/features_config/index.vue';
 
+const location = window.location;
+const url = new URL(location.href);
+const defaultTab = url.searchParams.get('tab') || 'API转发';
+
 const settingOptions = reactive([
-  {
-    name: 'API转发',
-    component: CustomApi,
-  },
   {
     name: '功能开关',
     component: FeaturesConfig,
   },
+  {
+    name: 'API转发',
+    component: CustomApi,
+  },
 ]);
-const defaultTab = ref('API转发');
 </script>
