@@ -5,7 +5,7 @@ import proxyAJAX from './proxyAJAX';
 import proxyWebsocket from './proxyWebsocket';
 import { CustomApiChange } from '~/common/message_type';
 import { CUSTOM_API_PATTERNS } from '~/common/constants';
-import { runtimeInjectPageScript, isDevDomain, isLocal } from '~/common/utils';
+import { runtimeInjectPageScript, isDevDomain, isLocal, isIp } from '~/common/utils';
 import {
   CustomApiData,
   PatternConfig,
@@ -31,7 +31,7 @@ const addEventListeners = () => {
   browser.runtime.onMessage.addListener((request: RuntimeMessage) => {
     const { type, data } = request;
     if (type === 'proxyConfigUpdate' || type === CustomApiChange) {
-      if (data.proxyEnable && data.showCustomApi) {
+      if (data?.proxyEnable && data?.showCustomApi) {
         syncCustomApiInfo();
         showCustomApiInfo();
       } else {
@@ -65,7 +65,7 @@ export async function handleCustomApi(customApiData: CustomApiData): Promise<voi
     if (!proxyConfig || (proxyConfig?.proxyEnable && proxyConfig?.showCustomApi)) {
       showCustomApiInfo();
     }
-    if (customONESApiHost.includes('http://localhost')) {
+    if (customONESApiHost.includes('http://localhost') || isIp(customONESApiHost)) {
       runtimeInjectPageScript({
         code: `${proxyAJAX};run('${customONESApiHost}')`,
         type: '',

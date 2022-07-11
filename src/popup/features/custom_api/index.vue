@@ -1,6 +1,6 @@
 <template>
   <div class="pb-5">
-    <div class="action-bar layout-center">
+    <div class="action-bar layout-items-center">
       <div class="layout-items-center">
         <div class="mr-4">代理开关：</div>
         <n-switch v-model:value="proxyConfig.proxyEnable" class="" @change="changeProxyConfig" />

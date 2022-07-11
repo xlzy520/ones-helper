@@ -231,4 +231,5 @@ export const ONESConfigTypeMap = {
 export const NetRequestIDMap = {
   ProjectAPI: 3,
   WikiAPI: 4,
+  StipeAPI: 5,
 };

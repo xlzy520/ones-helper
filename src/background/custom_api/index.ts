@@ -1,9 +1,9 @@
 import Browser from 'webextension-polyfill';
 import { HeaderCustomer } from '../utils/header_customer';
 import { customApiService } from '../../service';
+import { updateSessionRules } from '../utils/index';
 import { PatternConfig } from '~/service/custom_api';
 import { isSaas } from '~/common/utils';
-import { NetRequestIDMap } from '~/common/constants';
 
 async function syncPatterns(headerCustomer: HeaderCustomer) {
   const customApiData = await customApiService.getCustomApi();
@@ -27,9 +27,7 @@ export function customApi(): void {
       };
     }
     if (!proxyConfig.proxyEnable) {
-      chrome.declarativeNetRequest.updateSessionRules({
-        removeRuleIds: [NetRequestIDMap.WikiAPI, NetRequestIDMap.ProjectAPI],
-      });
+      updateSessionRules([]);
       return;
     }
     const headerCustomer = new HeaderCustomer();

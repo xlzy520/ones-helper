@@ -1,5 +1,6 @@
 import Browser from 'webextension-polyfill';
 
+import { updateSessionRules } from './index';
 import { isFirefox } from '~/env';
 import {
   DefaultPreset,
@@ -10,6 +11,7 @@ import {
 } from '~/common/constants';
 import { PresetOption } from '~/service/custom_api';
 import { getCurrentTab } from '~/common/tabs';
+import { isIp } from '~/common/utils';
 
 const RuleActionType = chrome.declarativeNetRequest.RuleActionType;
 const HeaderOperation = chrome.declarativeNetRequest.HeaderOperation;
@@ -20,12 +22,14 @@ export type Headers = Browser.WebRequest.HttpHeaders;
 export enum ApiPath {
   Project = '/api/project',
   Wiki = '/api/wiki',
+  Stripe = '/api/stripe',
 }
 
 export interface ProxyParams {
   id: number;
   value: string;
   urlFilter: string;
+  isCustomHOST: boolean;
 }
 
 export interface HeaderCustomerOptions {
@@ -201,18 +205,35 @@ export class HeaderCustomer {
     }
   };
 
-  getModifyHeadersApiHostRule = ({ id, value, urlFilter }: ProxyParams) => {
+  getModifyHeadersRules = ({ id, value, urlFilter, isCustomHOST }: ProxyParams) => {
+    let requestHeaders;
+    if (isCustomHOST) {
+      requestHeaders = [
+        {
+          header: 'x-ones-api-host',
+          operation: HeaderOperation.SET,
+          value: `${value}/project/api/project/`,
+        },
+      ];
+    } else {
+      requestHeaders = [
+        {
+          header: 'x-ones-api-branch-project',
+          operation: HeaderOperation.SET,
+          value,
+        },
+        {
+          header: 'x-ones-api-branch-wiki',
+          operation: HeaderOperation.SET,
+          value,
+        },
+      ];
+    }
     return {
       id,
       action: {
         type: RuleActionType.MODIFY_HEADERS,
-        requestHeaders: [
-          {
-            header: 'x-ones-api-host',
-            operation: HeaderOperation.SET,
-            value: `${value}/project/api/project/`,
-          },
-        ],
+        requestHeaders,
       },
       condition: {
         domains: this.hostList,
@@ -222,78 +243,53 @@ export class HeaderCustomer {
     };
   };
 
-  getModifyHeadersBranchRule = ({ id, value, urlFilter }: ProxyParams) => {
-    return {
-      id,
-      action: {
-        type: RuleActionType.MODIFY_HEADERS,
-        requestHeaders: [
-          {
-            header: 'x-ones-api-branch-project',
-            operation: HeaderOperation.SET,
-            value,
-          },
-          {
-            header: 'x-ones-api-branch-wiki',
-            operation: HeaderOperation.SET,
-            value,
-          },
-        ],
-      },
-      condition: {
-        domains: this.hostList,
-        urlFilter,
-        resourceTypes,
-      },
-    };
+  getRule = (isCustomHOST: boolean, value: string) => {
+    const rules = [];
+    const projectRule = this.getModifyHeadersRules({
+      id: NetRequestIDMap.ProjectAPI,
+      value: isCustomHOST ? value : `/project/${value}/`,
+      urlFilter: ApiPath.Project,
+      isCustomHOST,
+    });
+    const wikiRule = this.getModifyHeadersRules({
+      id: NetRequestIDMap.WikiAPI,
+      value: isCustomHOST ? value.replace(ApiPath.Project, ApiPath.Wiki) : `/wiki/${value}/`,
+      urlFilter: ApiPath.Wiki,
+      isCustomHOST,
+    });
+    const StripeRule = this.getModifyHeadersRules({
+      id: NetRequestIDMap.StipeAPI,
+      value: isCustomHOST ? value.replace(ApiPath.Project, ApiPath.Stripe) : `/stripe/${value}/`,
+      urlFilter: ApiPath.Stripe,
+      isCustomHOST,
+    });
+    rules.push(projectRule, wikiRule, StripeRule);
+    return rules;
   };
 
   onPatternsChange = (): void => {
     browser.storage.local.get('customApiData').then(({ customApiData = {} as any }) => {
       // const headers: Headers = [];
-      const rules: chrome.declarativeNetRequest.Rule[] = [];
+      let rules: chrome.declarativeNetRequest.Rule[] = [];
       const { preset = DefaultPreset, presetOptions = DefaultPresetOptions as PresetOption[] } =
         customApiData;
       const selectedConfig = presetOptions.find((v: any) => v.value === preset).config;
       const customHOST = selectedConfig[ONES_HOST_KEY];
       if (customHOST) {
-        if (customHOST.includes('localhost')) {
+        if (customHOST.includes('localhost') || isIp(customHOST)) {
+          updateSessionRules([]);
           return;
         }
-        const projectRule = this.getModifyHeadersApiHostRule({
-          id: NetRequestIDMap.ProjectAPI,
-          value: customHOST,
-          urlFilter: ApiPath.Project,
-        });
-        const wikiRule = this.getModifyHeadersApiHostRule({
-          id: NetRequestIDMap.WikiAPI,
-          value: customHOST.replace(ApiPath.Project, ApiPath.Wiki),
-          urlFilter: ApiPath.Wiki,
-        });
-        rules.push(projectRule, wikiRule);
+        rules = this.getRule(true, customHOST);
       } else {
         const projectBranch = selectedConfig[PROJECT_BRANCH_KEY];
         if (projectBranch) {
-          const projectRule = this.getModifyHeadersBranchRule({
-            id: NetRequestIDMap.ProjectAPI,
-            value: `/project/${projectBranch}/`,
-            urlFilter: ApiPath.Project,
-          });
-          const wikiRule = this.getModifyHeadersBranchRule({
-            id: NetRequestIDMap.WikiAPI,
-            value: `/wiki/${projectBranch}/`,
-            urlFilter: ApiPath.Wiki,
-          });
-          rules.push(projectRule, wikiRule);
+          rules = this.getRule(false, projectBranch);
         }
       }
 
       // console.log(this.authHeaders);
-
-      browser.declarativeNetRequest.updateSessionRules({
-        removeRuleIds: [NetRequestIDMap.WikiAPI, NetRequestIDMap.ProjectAPI],
-        addRules: rules,
-      });
+      updateSessionRules(rules);
     });
 
     this.removeCustomHeadersListener();
