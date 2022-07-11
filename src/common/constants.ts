@@ -139,6 +139,11 @@ export const featuresList = [
     component: 'CustomApi',
   },
   {
+    name: 'ONESConfig',
+    show: true,
+    component: 'ones-config',
+  },
+  {
     name: 'Github',
     show: true,
     component: 'github',
@@ -148,11 +153,7 @@ export const featuresList = [
     show: true,
     component: 'jenkins',
   },
-  {
-    name: 'OnesConfig',
-    show: true,
-    component: 'ones-config',
-  },
+
   {
     name: '工时',
     show: false,
