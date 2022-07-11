@@ -128,25 +128,19 @@
         </div>
         <div class="layout-slide">
           <div class="layout-items-center">
-            <div class="py-1">选择查询分支：</div>
-            <n-radio-group v-model:value="commitHash.branch" name="radiogroup">
-              <n-space>
-                <n-radio
-                  v-for="branch in commitHash.branchOptions"
-                  :key="branch.value"
-                  :value="branch.value"
-                >
-                  {{ branch.label }}
-                </n-radio>
-              </n-space>
-            </n-radio-group>
-            <!--          <n-select-->
-            <!--            v-model:value="commitHash.branch"-->
-            <!--            class="w-[200px]"-->
-            <!--            placeholder="选择分支"-->
-            <!--            clearable-->
-            <!--            :options="commitHash.branchOptions"-->
-            <!--          />-->
+            <div class="py-1">分支(可搜索)：</div>
+            <n-select
+              :value="commitHash.branch"
+              placeholder="选择分支, 可搜索"
+              class="w-[200px] mr-4"
+              clearable
+              :loading="branchLoading"
+              filterable
+              :options="allBranchOptions"
+              @search="handleBranchSearch"
+              @update-value="updateSearchBranch"
+              @clear="clearSearchBranch"
+            />
           </div>
           <n-button
             type="primary"
@@ -170,6 +164,7 @@ import { useMessage } from 'naive-ui';
 import browser from 'webextension-polyfill';
 import { $ref } from 'vue/macros';
 import { useDebounceFn } from '@vueuse/core';
+import { SelectBaseOption } from 'naive-ui/lib/select/src/interface';
 import { onesConfigService } from '~/service';
 import QuestionIcon from '~/components/question-icon.vue';
 import {
@@ -218,9 +213,21 @@ const checkedProjectsByRole = computed(() => {
 });
 
 const baseRef = $ref('master');
-let allBranchOptions = $ref([]);
+const DefaultBranchOptions = [
+  { label: 'preview2', value: 'preview2' },
+  { label: 'master', value: 'master' },
+];
+let allBranchOptions = $ref(DefaultBranchOptions);
 const branchName = ref('');
 let branchLoading = $ref(false);
+
+const commitHash = reactive({
+  branch: 'preview2',
+  branchOptions: [
+    { label: 'preview2', value: 'preview2' },
+    { label: 'master', value: 'master' },
+  ],
+});
 
 const handleBranchSearch = useDebounceFn((query) => {
   if (!query.length) {
@@ -273,15 +280,16 @@ const createBranches = () => {
   });
 };
 
-const commitHash = reactive({
-  branch: 'preview2',
-  branchOptions: [
-    { label: 'preview2', value: 'preview2' },
-    { label: 'master', value: 'master' },
-  ],
-});
-
 const copyHashLoading = ref(false);
+
+const updateSearchBranch = (val: string, option: SelectBaseOption) => {
+  commitHash.branch = option.label;
+};
+const clearSearchBranch = () => {
+  commitHash.branch = null;
+  allBranchOptions = DefaultBranchOptions;
+};
+
 const getAllCommitHashAndCopy = () => {
   copyHashLoading.value = true;
   const apis = filterProjectList.value.map((project) => {
