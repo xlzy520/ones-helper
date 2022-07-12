@@ -227,6 +227,11 @@ export class HeaderCustomer {
           operation: HeaderOperation.SET,
           value,
         },
+        {
+          header: 'x-ones-api-branch-stripe',
+          operation: HeaderOperation.SET,
+          value,
+        },
       ];
     }
     return {
