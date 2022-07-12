@@ -1,15 +1,16 @@
 export function injectPageScript(data: any) {
-  const injectPageScriptTag = document.querySelector('#injectPageScript');
-  if (injectPageScriptTag) {
-    document.dispatchEvent(
-      new CustomEvent('injectPageScript', {
-        detail: data,
-      })
-    );
-    return;
-  }
+  // console.log(data);
+  // const injectPageScriptTag = document.querySelector('#injectPageScript');
+  // if (injectPageScriptTag) {
+  //   document.dispatchEvent(
+  //     new CustomEvent('injectPageScript', {
+  //       detail: data,
+  //     })
+  //   );
+  //   return;
+  // }
   const script = document.createElement('script');
-  script.id = 'injectPageScript';
+  script.id = `injectPageScript-${Date.now()}`;
 
   script.setAttribute('type', 'text/javascript');
   script.setAttribute('src', browser.runtime.getURL('/evalScript/page-script.js'));
@@ -24,7 +25,10 @@ export function injectPageScript(data: any) {
         detail: data,
       })
     );
-    // document.head.removeChild(script);
+    const scriptDom = document.querySelector(`#${script.id}`);
+    if (scriptDom) {
+      document.head.removeChild(scriptDom);
+    }
   };
 
   document.head.appendChild(script);

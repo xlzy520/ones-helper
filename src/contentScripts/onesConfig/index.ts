@@ -1,15 +1,22 @@
 import Browser from 'webextension-polyfill';
-import { $All, isDevDomain, isPrivate, isSaas, runtimeInjectPageScript } from '~/common/utils';
+import {
+  $All,
+  isDevDomain,
+  isLocal,
+  isPrivate,
+  isSaas,
+  runtimeInjectPageScript,
+} from '~/common/utils';
 import { onesConfigService } from '~/service';
 import { getFeaturesConfig } from '~/service/featuresConfig';
 import { ONESConfig } from '~/common/constants';
 
-export const saveOnesConfig = (onesConfig: any) => {
+export const saveOnesConfig = (onesConfig: any, type = '') => {
   const dataStr = JSON.stringify(onesConfig);
   const newOnesConfig = dataStr.includes('onesConfig') ? dataStr : `onesConfig=${dataStr}`;
   runtimeInjectPageScript({
     code: newOnesConfig,
-    type: '',
+    type,
   });
   const path = location.origin + location.pathname;
   onesConfigService.saveOnesConfigApi({ [path]: onesConfig });
@@ -23,7 +30,7 @@ document.addEventListener('saveOnesConfig', (event) => {
 
 export const initOnesConfig = () => {
   getFeaturesConfig().then((res) => {
-    const onesConfigItem = res.find((v: any) => v.name === 'OnesConfig');
+    const onesConfigItem = res.find((v: any) => v.name === 'ONESConfig');
     if (onesConfigItem && onesConfigItem.show) {
       onesConfigService.getOnesConfigApi().then((res) => {
         if (isPrivate() || isSaas()) {
@@ -44,17 +51,18 @@ export const initOnesConfig = () => {
             });
           }
           // eslint-disable-next-line no-eval
-        } else if (isDevDomain()) {
+        } else if (isDevDomain() || isLocal()) {
           if (res?.isUpdate) {
             saveOnesConfig({ ...ONESConfig, ...res });
           } else {
-            Browser.runtime.sendMessage({
-              type: 'injectPageScript',
-              data: {
-                code: `onesConfig=${JSON.stringify(ONESConfig)}`,
-                type: 'saveOnesConfig',
-              },
-            });
+            saveOnesConfig(ONESConfig, '');
+            // Browser.runtime.sendMessage({
+            //   type: 'injectPageScript',
+            //   data: {
+            //     code: `onesConfig=${JSON.stringify()}`,
+            //     type: 'saveOnesConfig',
+            //   },
+            // });
             // console.log('%c 🍒 onesConfigDev: ', 'font-size:20px;background-color: #FFDD4D;color:#fff;', onesConfigDev)
 
             // saveOnesConfig(onesConfig);
