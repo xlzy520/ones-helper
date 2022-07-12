@@ -170,14 +170,15 @@ const fetchData = () => {
       const matchKey = keys.find((key) => url.includes(key));
       if (matchKey) {
         const config = res[matchKey];
-        const configKeys = Object.keys(config);
-        configFields.value = configKeys.map((key) => {
-          const value = config[key];
-          let type = ONESConfigTypeMap[value];
-          if (!type) type = 'input';
-
-          return { key, value, type };
-        });
+        if (config) {
+          const configKeys = Object.keys(config);
+          configFields.value = configKeys.map((key) => {
+            const value = config[key];
+            let type = ONESConfigTypeMap[value];
+            if (!type) type = 'input';
+            return { key, value, type };
+          });
+        }
       }
     });
   });
