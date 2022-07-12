@@ -11,6 +11,7 @@ import { $, isSaas, isInLimitedKanban, runtimeInjectPageScript } from '~/common/
 import { handleKanban } from '~/contentScripts/task_action/kanban';
 import { getJenkinsToken } from '~/contentScripts/Jenkins';
 import { initInjectContent } from '~/contentScripts/inject';
+import { handleBatchRequest } from '~/background/utils';
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (() => {
@@ -36,6 +37,8 @@ import { initInjectContent } from '~/contentScripts/inject';
         code: reloadScript,
         type: '',
       });
+    } else if (type === 'batchRequest') {
+      handleBatchRequest(data);
     }
     // else if (type === 'githubAccessToken') {
     //   window.alert('获取code成功，请重新打开ONES Helper即可');

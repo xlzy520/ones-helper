@@ -38,6 +38,7 @@ import ManHour from '~/popup/features/manhour/index.vue';
 import Jenkins from '~/popup/features/jenkins/index.vue';
 import FeedBack from '~/popup/features/feedback/index.vue';
 // import AboutMe from '~/popup/features/about/index.vue';
+import batchRequest from '~/popup/features/batchRequest/index.vue';
 
 export const app = createApp(App);
 
@@ -49,6 +50,7 @@ app.component('ManHour', ManHour);
 app.component('Jenkins', Jenkins);
 app.component('FeedBack', FeedBack);
 // app.component('AboutMe', AboutMe);
+app.component('BatchRequest', batchRequest);
 
 const naive = create({
   components: [

@@ -169,6 +169,11 @@ export const featuresList = [
     component: 'task-action',
   },
   {
+    name: '批量建数据',
+    show: false,
+    component: 'batch-request',
+  },
+  {
     name: '反馈与建议',
     show: true,
     component: 'FeedBack',
