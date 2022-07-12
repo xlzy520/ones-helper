@@ -1,21 +1,13 @@
 import Browser from 'webextension-polyfill';
 
-import { onMessage } from 'webext-bridge';
+// import { onMessage } from 'webext-bridge';
 import { handleCustomApi } from './custom_api/index';
 import { branchSelectEnhance } from './github_enhance/index';
 import { addTaskCopyButton, addViewRelateImplementTask } from './task_action/index';
-import $message from './antdMessage/index';
 import { saveOnesConfig, initOnesConfig } from './onesConfig';
 import { customApiService, onesConfigService } from '~/service';
 
-import {
-  $,
-  isSaas,
-  injectScript,
-  isInLimitedKanban,
-  isGithubOAuthUrl,
-  runtimeInjectPageScript,
-} from '~/common/utils';
+import { $, isSaas, isInLimitedKanban, runtimeInjectPageScript } from '~/common/utils';
 import { handleKanban } from '~/contentScripts/task_action/kanban';
 import { getJenkinsToken } from '~/contentScripts/Jenkins';
 import { initInjectContent } from '~/contentScripts/inject';
@@ -44,9 +36,10 @@ import { initInjectContent } from '~/contentScripts/inject';
         code: reloadScript,
         type: '',
       });
-    } else if (type === 'githubAccessToken') {
-      window.alert('获取code成功，请重新打开ONES Helper即可');
     }
+    // else if (type === 'githubAccessToken') {
+    //   window.alert('获取code成功，请重新打开ONES Helper即可');
+    // }
     // else if (type === 'copyAllTasks') {
     //   handleCopyAllTasks(data);
     // }
@@ -54,9 +47,9 @@ import { initInjectContent } from '~/contentScripts/inject';
     console.log('接收消息：', request);
   });
 
-  onMessage('githubAccessToken', (data) => {
-    window.alert('获取code成功，请重新打开ONES Helper即可');
-  });
+  // onMessage('githubAccessToken', (data) => {
+  //   window.alert('获取code成功，请重新打开ONES Helper即可');
+  // });
 
   initOnesConfig();
 
