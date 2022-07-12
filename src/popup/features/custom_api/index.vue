@@ -296,6 +296,7 @@ const handleFormValueUpdate = useDebounceFn(() => {
 }, 500);
 
 watch(formValue, handleFormValueUpdate);
+watch(selectedConfig, handleFormValueUpdate);
 
 const newPreset = reactive({
   showModal: false,
