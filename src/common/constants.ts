@@ -81,6 +81,10 @@ export const DefaultPatterns: PatternConfig[] = [
   },
   {
     enable: true,
+    pattern: 'http://dev.localhost',
+  },
+  {
+    enable: true,
     pattern: 'https://dev.myones.net',
   },
   {
