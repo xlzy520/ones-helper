@@ -67,7 +67,7 @@ export const DefaultPresetOptions = [
     label: 'SaaS',
     value: '本地=>SaaS',
     config: {
-      customONESApiHost: 'https://ones.ai/project',
+      customONESApiHost: 'https://ones.ai',
       customONESApiProjectBranch: '',
       isHost: true,
     },
