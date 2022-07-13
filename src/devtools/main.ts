@@ -74,8 +74,4 @@ app.use(JsonViewer);
 
 app.mount('#app');
 
-Browser.devtools.panels.create(
-  'ONES Helper',
-  './assets/favicon128.png',
-  './dist/devtools/index.html'
-);
+Browser.devtools.panels.create('🐈️ ONES Helper', '', './dist/devtools/index.html');
