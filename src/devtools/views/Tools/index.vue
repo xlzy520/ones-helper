@@ -38,7 +38,7 @@ const onlyAllowNumber = (value) => !value || /^\d+$/.test(value);
 
 const dispatchStoreUpdate = () => {
   Browser.devtools.inspectedWindow.eval(
-    "_store.dispatch({type: 'SAVE_PREFERENCE_IN_STORE', payload: {key: 'reRender_check_key', time: new Date()}})"
+    "_store.dispatch({type: 'SET_DATA_FETCHED', payload: [Date.now()]})"
   );
 };
 
