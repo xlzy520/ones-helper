@@ -55,10 +55,19 @@ export const DefaultPresetOptions = [
     },
   },
   {
+    label: 'ONES团队',
+    value: '本地=>ONES团队',
+    config: {
+      customONESApiHost: 'https://our.ones.pro',
+      customONESApiProjectBranch: '',
+      isHost: true,
+    },
+  },
+  {
     label: 'SaaS',
     value: '本地=>SaaS',
     config: {
-      customONESApiHost: 'https://our.ones.pro',
+      customONESApiHost: 'https://ones.ai/project',
       customONESApiProjectBranch: '',
       isHost: true,
     },
